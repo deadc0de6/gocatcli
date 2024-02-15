@@ -35,13 +35,14 @@ expected=$(find "${cur}/../" -type d | grep -v '^.$' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
-# for some reason du is not working on
-# github actions
-# see https://github.com/deadc0de6/gocatcli/actions/runs/7921674743/job/21627510166
-[ -n "${IN_CICD}" ] && exit 0
-
 # bin size
 echo ">>> test du bin size raw <<<"
+echo "--- 1 ---"
+du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli"
+echo "--- 2 ---"
+du -c --block=1 "${cur}/../cmd/gocatcli"
+echo "--- 3 ---"
+du -c --apparent-size "${cur}/../cmd/gocatcli"
 expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
 size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
