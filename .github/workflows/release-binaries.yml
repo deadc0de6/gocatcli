@@ -1,0 +1,26 @@
+name: release-binaries
+on:
+  release:
+    types: [created]
+jobs:
+  releases:
+    name: release binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux]
+        goarch: [arm, arm64, 386, amd64]
+    steps:
+    - uses: actions/checkout@v4
+    - uses: wangyoucao577/go-release-action@v1
+      with:
+        goversion: 1.20
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        goos: ${{ matrix.goos }}
+        goarch: ${{ matrix.goarch }}
+        project_path: "./cmd/gocatcli"
+        binary_name: "gocatcli"
+        ldflags: "-s -w"
+        overwrite: true
+        extra_files: LICENSE README.md
+        pre_command: "go mod tidy"
