@@ -39,6 +39,8 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 echo ">>> test du bin size raw <<<"
 expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
 size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
+cat_file "${out}"
+du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli"
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad bin size" && exit 1)
 
