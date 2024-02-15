@@ -43,6 +43,10 @@ echo "--- 2 ---"
 du -c --block=1 "${cur}/../cmd/gocatcli"
 echo "--- 3 ---"
 du -c --apparent-size "${cur}/../cmd/gocatcli"
+echo "--- 4 ---"
+du -c "${cur}/../cmd/gocatcli"
+echo "--- 5 ---"
+ls -lah "${cur}/../cmd/gocatcli"
 expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
 size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
