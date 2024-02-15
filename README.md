@@ -1,5 +1,10 @@
 # gocatcli
 
+[![Tests Status](https://github.com/deadc0de6/gocatcli/workflows/tests/badge.svg)](https://github.com/deadc0de6/gocatcli/actions)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
+[![Donate](https://img.shields.io/badge/donate-KoFi-blue.svg)](https://ko-fi.com/deadc0de6)
+
 *[gocatcli](https://github.com/deadc0de6/gocatcli) is a catalog tool for your offline data*
 
 Did you ever wanted to find back that specific file that should be on one of your backup DVDs or one of your external hard drives?
