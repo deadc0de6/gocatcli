@@ -29,7 +29,7 @@ gocatli tree
 
 `gocatcli` gives the ability to navigate, explore and find your files that are stored on external media
 (DVDs, hard drives, USB sticks, etc) when those are not connected.
-Gocatcli can just as easily index any arbitrary directories.
+`gocatcli` can just as easily index any arbitrary directories.
 
 ---
 
@@ -53,23 +53,24 @@ Gocatcli can just as easily index any arbitrary directories.
   * [Output formats](#output-formats)
   * [Convert catcli catalog](#convert-catcli-catalog)
 
-* [Example](#example)
 * [From catcli to gocatcli](#from-catcli-to-gocatcli)
 * [Contribution](#contribution)
 * [Thank you](#thank-you)
 
 # Installation
 
-download directly from the releases
+Pick a binary in the [releases](https://github.com/deadc0de6/gocatcli/releases)
 
+Install directly using go
 ```bash
 ## You need at least golang 1.20
 $ go install -v github.com/deadc0de6/gocatcli/cmd/gocatcli@latest
 $ gocatcli --help
 ```
 
-Compilation (min go 1.20)
+Compilation
 ```bash
+## You need at least golang 1.20
 $ go mod tidy
 $ make
 $ ./bin/gocatcli --help
@@ -82,9 +83,9 @@ and then have the ability to browse their content (as well as search, navigate, 
 are stored away.
 
 ```bash
-gocatcli --help
-gocatcli index --help
-gocatcli ls --help
+$ gocatcli --help
+$ gocatcli index --help
+$ gocatcli ls --help
 ...
 ```
 
@@ -92,8 +93,6 @@ Wildcards are supported in the `<path>` arguments of all commands and provide a 
 to explore the catalog using something like `'storage/directory*/sub-directory*'`,
 Make sure to quote these on the command line to avoid your shell interpreting the
 wildcards.
-
-For a complete walkthrough, see [the example](#example)
 
 All command line switches can be provided using environment variables by
 prefixing with `GOCATCLI_` and adding the switch name in capital and `-`
@@ -103,38 +102,39 @@ You can generate shell completion scripts using `gocatcli completion`
 ```bash
 ## for zsh
 ## copy the file to a path within ${fpath}
-gocatcli completion zsh
+$ gocatcli completion zsh
 ## for bash
 ## source the file
-gocatcli completion bash
+$ gocatcli completion bash
 ## for fish
 ## mkdir -p ~/.config/fish/completions
 ## cp gocatcli.fish ~/.config/fish/completions/gocatcli.fish
-gocatcli completion fish
+$ gocatcli completion fish
 ```
 
 ## Index data
 
 ```bash
-gocatli index --help
+$ gocatli index --help
 ```
 
 Index any directories with
 ```bash
-gocatcli index /some/directory
+$ gocatcli index /some/directory
 ```
 
 The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory:
 ```bash
-gocatcli index ../gocatcli --ignore="*.go" --ignore="*.md" --ignore="*.git/*"
+$ gocatcli index ../gocatcli --ignore="*.go" --ignore="*.md" --ignore="*.git/*"
 ```
 
 ## Reindex and update
 
 To re-index the content of an already indexed storage, simply re-run `index` on it
 ```bash
+## initial indexing
 $ ./bin/gocatcli index /tmp tmp-dir
-
+## re-indexing...
 $ ./bin/gocatcli index /tmp tmp-dir
 A storage with the name "tmp-dir" already exists, update it? [y/N]: y
 ```
@@ -163,26 +163,26 @@ Supported archive formats (from <https://github.com/mholt/archiver>):
 ## Navigate with ls
 
 ```bash
-gocatli ls --help
+$ gocatli ls --help
 ```
 
 ```bash
-gocatcli ls
-gocatcli ls storage-name/some/path
-gocatcli ls 'storage-name/direc*/subdire*'
+$ gocatcli ls
+$ gocatcli ls storage-name/some/path
+$ gocatcli ls 'storage-name/direc*/subdire*'
 ```
 
 ## File browser
 
 A terminal file browser for your catalog
 ```bash
-gocatli nav --help
+$ gocatli nav --help
 ```
 
 ## Tree view
 
 ```bash
-gocatli tree --help
+$ gocatli tree --help
 ```
 
 ## Find files
@@ -191,45 +191,45 @@ With the `find` command you can easily find all files matching a specific
 pattern. You can also limit your search to a specific path
 
 ```bash
-gocatli find --help
+$ gocatli find --help
 ## lists all files
-gocatcli find
-gocatcli find pattern
-gocatcli find pattern -p some/path
-gocatcli find pattern -p 'some/p*th'
+$ gocatcli find
+## find using pattern
+$ gocatcli find pattern
+## find using pattern and limit to a specific path
+$ gocatcli find pattern -p some/path
+$ gocatcli find pattern -p 'some/p*th'
 ```
 
 ## Find files with fzf
 
 A terminal fzf file browser for your catalog
 ```bash
-gocatli fzfind --help
+$ gocatli fzfind --help
 ```
 
 ## Disk usage
 
-Disk usage
-
 ```bash
-gocatli du --help
+$ gocatli du --help
 ```
 
 ## Create hierarchy locally
 
 ```bash
-gocatli create --help
+$ gocatli create --help
 ```
 
 ## Mount filesystem
 
 ```bash
-gocatli mount --help
+$ gocatli mount --help
 ```
 
 ## Edit storage
 
 ```bash
-gocatli storage --help
+$ gocatli storage --help
 ```
 
 List all storages with the `storage list` command.
@@ -254,7 +254,7 @@ Following commands allow to edit a storage and its fields:
 ## Convert catcli catalog
 
 ```bash
-gocatli convert --help
+$ gocatli convert --help
 ```
 
 # From catcli to gocatcli
@@ -262,7 +262,7 @@ gocatli convert --help
 <https://github.com/deadc0de6/catcli/>
 
 ```bash
-gocatli convert --help
+$ gocatli convert --help
 ```
 
 # Contribution
@@ -271,7 +271,7 @@ If you are having trouble installing or using `gocatcli`, open an issue.
 
 If you want to contribute, feel free to do a PR.
 
-The `test.sh` script handles the linting and runs the tests.
+The `tests.sh` script handles the linting and runs the tests.
 
 # Thank you
 
