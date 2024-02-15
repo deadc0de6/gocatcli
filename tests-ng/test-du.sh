@@ -38,7 +38,7 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 # for some reason du is not working on
 # github actions
 # see https://github.com/deadc0de6/gocatcli/actions/runs/7921674743/job/21627510166
-[ -n "${IN_CICD}" ] && return
+[ -n "${IN_CICD}" ] && exit 0
 
 # bin size
 echo ">>> test du bin size raw <<<"
