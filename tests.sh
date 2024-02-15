@@ -12,6 +12,8 @@ go install honnef.co/go/tools/cmd/staticcheck@latest
 go install github.com/mgechev/revive@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
+go mod tidy
+
 # linting
 echo "go fmt..."
 go fmt ./...
