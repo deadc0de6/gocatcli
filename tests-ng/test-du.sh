@@ -61,9 +61,10 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 
 # total size
 echo ">>> test du total size human <<<"
-expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
+#expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
 # for some reason "du -h" uses 1000 with above options instead of 1024
-expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
+#expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
+expected=$("${cur}/pdu.py" --human "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
 cat_file "${out}"
 size=$(tail -1 "${out}" | awk '{print $1}' | sed 's/MiB//g')
 echo "size:${size} VS exp:${expected}"
