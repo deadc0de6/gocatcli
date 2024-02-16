@@ -37,14 +37,16 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 
 # bin size
 echo ">>> test du bin size raw <<<"
-expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
+#expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
 size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad bin size" && exit 1)
 
 # total size
 echo ">>> test du total size raw <<<"
-expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}')
+#expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${cur}/../" | tail -1 | awk '{print $1}')
 #cat_file "${out}"
 size=$(tail -1 "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"

@@ -30,8 +30,9 @@ out="${tmpd}/output.txt"
 echo ">>> test file size <<<"
 "${bin}" --debug ls -r -S -c "${catalog}" "${cur}/../internal/walker/walker.go" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-du --block=1 "${cur}/../internal/walker/walker.go"
-expected=$(du --block=1 --apparent-size "${cur}/../internal/walker/walker.go" | awk '{print $1}')
+#expected=$(du --block=1 --apparent-size "${cur}/../internal/walker/walker.go" | awk '{print $1}')
+# shellcheck disable=SC2012
+expected=$(ls -la "${cur}/../internal/walker/walker.go" | awk '{print $5}')
 cat_file "${out}"
 size=$(grep 'walker.go' "${out}" | awk '{print $4}')
 echo "size:${size} VS exp:${expected}"
@@ -40,8 +41,10 @@ echo "size:${size} VS exp:${expected}"
 echo ">>> test directory size <<<"
 "${bin}" --debug ls -r -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-expected=$(du -c --block=1 --apparent-size "${cur}/../internal/catcli" | tail -1 | awk '{print $1}')
-cat_file "${out}"
+#expected=$(du -c --block=1 --apparent-size "${cur}/../internal/catcli" | tail -1 | awk '{print $1}')
+"${cur}/pdu.py" "${cur}/../internal/catcli" | tail -1
+expected=$("${cur}/pdu.py" "${cur}/../internal/catcli" | tail -1 | awk '{print $1}')
+#cat_file "${out}"
 size=$(grep '^catcli' "${out}" | awk '{print $4}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
@@ -49,7 +52,8 @@ echo "size:${size} VS exp:${expected}"
 echo ">>> test storage size <<<"
 "${bin}" --debug ls -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
-expected=$(du -c --block=1 --apparent-size "${cur}/../internal" | tail -1 | awk '{print $1}')
+#expected=$(du -c --block=1 --apparent-size "${cur}/../internal" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${cur}/../internal" | tail -1 | awk '{print $1}')
 size=$(grep '^storage' "${out}" | awk '{print $3}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
