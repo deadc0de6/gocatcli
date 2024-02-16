@@ -53,11 +53,13 @@ def must_ignore(path: str, patterns: List[str]) -> bool:
 
 
 def main(path: str, human: bool,
-         ign: List[str] = None):
+         ign: List[str] = []):
     """entry point"""
     if not os.path.exists(path):
         print(f'[ERROR] {path} does not exist')
         return False
+    if not ign:
+        ign = []
     ign.extend(IGNORE)
     total = 0
     for root, _, files in os.walk(path, topdown=True):
