@@ -24,18 +24,20 @@ def debug(txt: str):
     print(f'[DEBUG] {txt}')
 
 
-def size_to_str(size: float, human: bool = False) -> str:
+def size_to_str(size: int, human: bool = False) -> str:
     """size to string"""
     div = 1024.
     suf = ['B', 'K', 'M', 'G', 'T', 'P']
     if not human or size < div:
+        # not human
         return f'{size}'
+    size = float(size)
     for i in suf:
         if size < div:
-            return f'{size:.1f}{i}'
+            return f'{round(size)}{i}'
         size = size / div
     sufix = suf[-1]
-    return f'{size:.1f}{sufix}'
+    return f'{round(size)}{sufix}'
 
 
 def must_ignore(path: str, patterns: List[str]) -> bool:
