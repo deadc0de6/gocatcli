@@ -49,7 +49,8 @@ grep '^utils ' "${out}" && (echo "utils found" && exit 1)
 grep '^new' "${out}" || (echo "new not found" && exit 1)
 grep 'newfile ' "${out}" || (echo "new not found" && exit 1)
 
-expected=$(du -c --block=1 --apparent-size "${tmpd}/internal" | tail -1 | awk '{print $1}')
+#expected=$(du -c --block=1 --apparent-size "${tmpd}/internal" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${tmpd}/internal" | tail -1 | awk '{print $1}')
 size=$(grep '^storage' "${out}" | awk '{print $3}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
