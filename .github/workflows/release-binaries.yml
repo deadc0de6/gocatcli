@@ -28,3 +28,4 @@ jobs:
         ldflags: "-s -w"
         overwrite: true
         extra_files: LICENSE README.md
+        pre_command: "go mod tidy"
