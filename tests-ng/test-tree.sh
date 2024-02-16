@@ -30,24 +30,17 @@ out="${tmpd}/output.txt"
 # tree
 echo ">>> test tree no arg <<<"
 "${bin}" --debug tree -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
-echo "---"
-find "${cur}/../" -not -path '*/.git*'
-echo "---"
-cat "${out}"
-echo "---"
-expected=$(find "${cur}/../" -not -path '*/.git*' | tail -n +2 | wc -l)
-cnt=$(wc -l "${out}" | awk '{print $1}')
+#expected=$(find "${cur}/../" -not -path '*/.git*' | tail -n +2 | wc -l)
+expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 # tree with arg
 echo ">>> test tree with arg <<<"
 "${bin}" --debug tree -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
-cat_file "${out}"
-find "${cur}/../internal" -not -path '*/.git*'
-expected=$(find "${cur}/../internal" -not -path '*/.git*' | wc -l)
-expected=$((expected + 1))
-cnt=$(wc -l "${out}" | awk '{print $1}')
-[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
+expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/.git*')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 echo "test $(basename "${0}") OK!"
 exit 0

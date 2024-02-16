@@ -2,7 +2,7 @@
 # author: deadc0de6 (https://github.com/deadc0de6)
 # Copyright (c) 2024, deadc0de6
 #
-# a naive python du alternative
+# a naive python find files alternative
 # ./tests-ng/pdu.py . --ignore='*/.git*' -H
 #
 
@@ -13,7 +13,7 @@ import fnmatch
 from typing import List
 
 
-NAME = 'pdu'
+NAME = 'plist'
 DEBUG = True
 IGNORE = [
     '*/.DS_Store',
@@ -27,41 +27,22 @@ def debug(txt: str):
     print(f'[DEBUG] {txt}')
 
 
-def size_to_str(size: int, human: bool = False) -> str:
-    """size to string"""
-    div = 1024.
-    suf = ['B', 'K', 'M', 'G', 'T', 'P']
-    if not human or size < div:
-        # not human
-        return f'{size}'
-    size = float(size)
-    for i in suf:
-        if size < div:
-            return f'{round(size)}{i}'
-        size = size / div
-    sufix = suf[-1]
-    return f'{round(size)}{sufix}'
-
-
 def must_ignore(path: str, patterns: List[str]) -> bool:
     """must ignore path"""
     if not patterns:
         return False
     lst = [fnmatch.fnmatch(path, patt) for patt in patterns]
-    debug(f'{path} -> {lst}')
     return any(lst)
 
 
-def main(path: str, human: bool,
-         ign: List[str] = None):
+def main(path: str, ign: List[str] = None):
     """entry point"""
     if not os.path.exists(path):
         print(f'[ERROR] {path} does not exist')
         return False
     ign.extend(IGNORE)
-    total = 0
-    for root, _, files in os.walk(path, topdown=True):
-        dirsz = 0
+    cnt = 0
+    for root, dirs, files in os.walk(path, topdown=True):
         if must_ignore(root, ign):
             debug(f'ignore root {root}')
             continue
@@ -70,12 +51,16 @@ def main(path: str, human: bool,
             if must_ignore(fpath, ign):
                 debug(f'ignore sub {fpath}')
                 continue
-            size = os.path.getsize(fpath)
-            dirsz += size
-            total += size
-        if root != path:
-            print(f'{size_to_str(dirsz, human=human)} {root}')
-    print(f'{size_to_str(total, human=human)} {path}')
+            debug(f'file: {file}')
+            cnt += 1
+        for d in dirs:
+            fpath = os.path.join(root, d)
+            if must_ignore(fpath, ign):
+                debug(f'ignore sub {fpath}')
+                continue
+            debug(f'dir: {d}')
+            cnt += 1
+    print(f'{cnt}')
     return True
 
 
@@ -83,12 +68,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog=NAME,
                                      description='python du')
     parser.add_argument('path')
-    parser.add_argument('-H', '--human',
-                        action='store_true')
     parser.add_argument('-i', '--ignore',
                         nargs='+')
     parser.add_argument('-d', '--debug',
                         action='store_true')
     args = parser.parse_args()
     DEBUG = args.debug
-    main(args.path, args.human, ign=args.ignore)
+    main(args.path, ign=args.ignore)
