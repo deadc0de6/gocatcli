@@ -32,9 +32,11 @@ echo ">>> test index <<<"
 echo ">>> test ls <<<"
 "${bin}" --debug -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
+#expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
+cat_file "${out}"
+expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
 cnt=$(wc -l "${out}" | awk '{print $1}')
-[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 catalog="${tmpd}/catalog2"
 
@@ -49,7 +51,7 @@ echo ">>> test ls (2) <<<"
 # shellcheck disable=SC2126
 expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
-[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 echo "test $(basename "${0}") OK!"
 exit 0
