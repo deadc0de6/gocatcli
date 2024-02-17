@@ -29,15 +29,16 @@ out="${tmpd}/output.txt"
 
 # tree
 echo ">>> test tree no arg <<<"
-"${bin}" --debug tree -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug tree -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 #expected=$(find "${cur}/../" -not -path '*/.git*' | tail -n +2 | wc -l)
+cat_file "${out}"
 expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 # tree with arg
 echo ">>> test tree with arg <<<"
-"${bin}" --debug tree -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug tree -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/.git*')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
