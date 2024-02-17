@@ -3,3 +3,4 @@ go.sum
 catalog.json
 *.catalog
 .DS_Store
+dist/
