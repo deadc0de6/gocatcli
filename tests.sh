@@ -11,7 +11,9 @@ go install golang.org/x/lint/golint@latest
 go install honnef.co/go/tools/cmd/staticcheck@latest
 go install github.com/mgechev/revive@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+go install github.com/goreleaser/goreleaser@latest
 
+# download go deps
 go mod tidy
 
 # linting
@@ -57,5 +59,10 @@ find "${cur}/tests-ng" -iname 'test-*.sh' | while read -r line; do
     exit 1
   fi
 done
+
+# cross compilation
+echo "build releases..."
+goreleaser release --snapshot --clean
+#rm -rf dist/
 
 echo "done - all tests OK!"

@@ -68,14 +68,14 @@ Pick a binary in the [releases](https://github.com/deadc0de6/gocatcli/releases)
 
 Install directly using go
 ```bash
-## You need at least golang 1.20
+## You need at least golang 1.22
 $ go install -v github.com/deadc0de6/gocatcli/cmd/gocatcli@latest
 $ gocatcli --help
 ```
 
 Compilation
 ```bash
-## You need at least golang 1.20
+## You need at least golang 1.22
 $ go mod tidy
 $ make
 $ ./bin/gocatcli --help
