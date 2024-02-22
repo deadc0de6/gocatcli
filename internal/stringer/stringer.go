@@ -93,7 +93,6 @@ func GetSupportedFormats(treeOk bool, scriptOk bool) []string {
 
 // ColorLineByType colors a line by node type
 // if inline, inline colors are used
-// TODO
 func ColorLineByType(line string, n node.Node, inline bool) string {
 	var out string
 	switch n.GetType() {

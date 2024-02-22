@@ -14,8 +14,6 @@ import (
 	"strings"
 )
 
-// TODO add colors
-
 var (
 	topAttrs     = []string{"mode", "type", "size", "maccess"}
 	extraAttrs   = []string{"indexed", "children", "checksum"}
@@ -95,7 +93,6 @@ func getMoreAttrs(attrs map[string]string, notThose []string, cm *colorme.ColorM
 }
 
 // AttrsToString converts attributes to string
-// TODO color
 func AttrsToString(attrs map[string]string, mode *PrintMode, joiner string) string {
 	var outs []string
 
