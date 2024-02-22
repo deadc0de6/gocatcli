@@ -187,6 +187,8 @@ A terminal file browser for your catalog
 $ gocatli nav --help
 ```
 
+You can type `?` to get a list of available options.
+
 ## Tree view
 
 ```bash
