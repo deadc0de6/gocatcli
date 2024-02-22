@@ -33,6 +33,7 @@ type Navigator struct {
 	longMode       bool
 	helpFlag       bool
 	reloadFlag     bool
+	hasDotDot      bool
 }
 
 var (
@@ -111,8 +112,10 @@ func (a *Navigator) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 func (a *Navigator) fillList() []*stringer.Entry {
 	// insert entries
 	top, entries := a.callBack(a.path, a.showHiddenFlag, a.longMode)
+	a.hasDotDot = false
 	if !top {
 		// insert ".."
+		a.hasDotDot = true
 		a.list.InsertItem(0, "..", "", 0, nil)
 	}
 	for _, entry := range entries {
@@ -227,13 +230,17 @@ func (a *Navigator) runApp(_ string) {
 		if a.selectedFlag {
 			a.selectedFlag = false
 			idx := a.list.GetCurrentItem()
-			if idx == 0 {
+			if idx == 0 && a.hasDotDot {
 				// ..
 				a.goBackFlag = true
 			} else {
 				// item selected
-				idx--
+				if a.hasDotDot {
+					idx--
+				}
+
 				if idx < 0 || idx >= len(entries) {
+					// entry out of range
 					break
 				}
 				entry := entries[idx]
@@ -290,11 +297,11 @@ func (a *Navigator) Start(path string) {
 }
 
 // NewNavigator creates a new navigator
-func NewNavigator(callback CallbackFunc, showAll bool, long bool) *Navigator {
+func NewNavigator(callback CallbackFunc) *Navigator {
 	n := Navigator{
 		callBack:       callback,
-		showHiddenFlag: showAll,
-		longMode:       long,
+		showHiddenFlag: false,
+		longMode:       false,
 	}
 	return &n
 }

@@ -22,16 +22,10 @@ var (
 		PreRun: preRun(true),
 		RunE:   nav,
 	}
-
-	navOptShowAll bool
-	navOptLong    bool
 )
 
 func init() {
 	rootCmd.AddCommand(navCmd)
-
-	navCmd.PersistentFlags().BoolVarP(&navOptShowAll, "all", "a", false, "do not ignore entries starting with a dot")
-	navCmd.PersistentFlags().BoolVarP(&navOptLong, "long", "l", false, "long listing format")
 }
 
 func nav(_ *cobra.Command, args []string) error {
@@ -40,7 +34,7 @@ func nav(_ *cobra.Command, args []string) error {
 		path = args[0]
 	}
 
-	n := navigator.NewNavigator(callback(loadedTree), navOptShowAll, navOptLong)
+	n := navigator.NewNavigator(callback(loadedTree))
 
 	// get the base paths for start
 	startNodes := getStartPaths(path)
@@ -65,11 +59,8 @@ func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 		var entries []*stringer.Entry
 
 		log.Debugf("nav getting list of files for path \"%s\"", path)
-		log.Debugf("showhiden: %v", showHidden)
-		log.Debugf("long mode: %v", longMode)
-
 		m := &stringer.PrintMode{
-			FullPath:    true,
+			FullPath:    longMode,
 			Long:        longMode,
 			InlineColor: true,
 			RawSize:     false,
