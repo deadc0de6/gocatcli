@@ -300,8 +300,8 @@ func (a *Navigator) Start(path string) {
 func NewNavigator(callback CallbackFunc) *Navigator {
 	n := Navigator{
 		callBack:       callback,
-		showHiddenFlag: false,
-		longMode:       false,
+		showHiddenFlag: true,
+		longMode:       true,
 	}
 	return &n
 }
