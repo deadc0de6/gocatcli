@@ -75,10 +75,6 @@ func AttrsToString(attrs map[string]string, mode *PrintMode, joiner string) stri
 	}
 	outs = append(outs, getMoreAttrs(attrs, topAttrs)...)
 
-	if !mode.Extra {
-		return strings.Join(outs, joiner)
-	}
-
 	for _, attr := range topAttrs {
 		val := getAttr(attrs, attr)
 		if len(val) > 0 {

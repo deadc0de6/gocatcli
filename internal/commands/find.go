@@ -59,7 +59,6 @@ func find(_ *cobra.Command, args []string) error {
 	m := &stringer.PrintMode{
 		FullPath:    true,
 		Long:        true,
-		Extra:       true,
 		InlineColor: false,
 		RawSize:     false,
 		Separator:   separator,

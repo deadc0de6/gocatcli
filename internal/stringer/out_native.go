@@ -35,7 +35,7 @@ func (p *NativeStringer) storageToString(storage *node.StorageNode, pre string) 
 	out += p.cm.InPurple(fmt.Sprintf("%-20s", storage.GetName()))
 
 	// add attributes
-	attrs := storage.GetAttr(p.mode.RawSize, p.mode.Long, p.mode.Extra)
+	attrs := storage.GetAttr(p.mode.RawSize, p.mode.Long)
 	if len(attrs) > 0 {
 		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
@@ -57,7 +57,7 @@ func (p *NativeStringer) fileToString(n node.Node, pre string) string {
 	out += ColorLineByType(name, n, p.mode.InlineColor)
 
 	// add atrributes
-	attrs := n.GetAttr(p.mode.RawSize, p.mode.Long, p.mode.Extra)
+	attrs := n.GetAttr(p.mode.RawSize, p.mode.Long)
 	if len(attrs) > 0 {
 		out += " " + AttrsToString(attrs, p.mode, " ")
 	}

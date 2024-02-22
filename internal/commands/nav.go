@@ -71,7 +71,6 @@ func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 		m := &stringer.PrintMode{
 			FullPath:    true,
 			Long:        longMode,
-			Extra:       longMode,
 			InlineColor: true,
 			RawSize:     false,
 			Separator:   separator,

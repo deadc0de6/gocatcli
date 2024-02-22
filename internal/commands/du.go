@@ -59,7 +59,6 @@ func diskUsage(_ *cobra.Command, args []string) error {
 	m := &stringer.PrintMode{
 		FullPath:    false,
 		Long:        true,
-		Extra:       true,
 		InlineColor: false,
 		RawSize:     duOptRawSize,
 		Separator:   separator,

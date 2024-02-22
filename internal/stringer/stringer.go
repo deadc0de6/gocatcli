@@ -39,7 +39,6 @@ type Entry struct {
 type PrintMode struct {
 	FullPath    bool
 	Long        bool
-	Extra       bool // TODO remove me
 	InlineColor bool
 	RawSize     bool
 	Separator   string

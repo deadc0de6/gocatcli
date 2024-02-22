@@ -29,7 +29,7 @@ type aTree struct {
 func (p *TreeStringer) storageToString(storage *node.StorageNode) string {
 	out := color.InUnderline(color.InGray(nativeStorageName))
 	out += " " + color.InPurple(storage.GetName())
-	attrs := storage.GetAttr(false, p.mode.Long, p.mode.Extra)
+	attrs := storage.GetAttr(false, p.mode.Long)
 	if len(attrs) > 0 {
 		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
@@ -40,7 +40,7 @@ func (p *TreeStringer) fileToString(n node.Node) string {
 	var out string
 	name := fmt.Sprintf("%-20s", n.GetName())
 	out += ColorLineByType(name, n, false)
-	attrs := n.GetAttr(false, p.mode.Long, p.mode.Extra)
+	attrs := n.GetAttr(false, p.mode.Long)
 	if len(attrs) > 0 {
 		out += " " + AttrsToString(attrs, p.mode, " ")
 	}

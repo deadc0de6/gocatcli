@@ -59,7 +59,6 @@ func fzFind(_ *cobra.Command, args []string) error {
 	m := &stringer.PrintMode{
 		FullPath:    false,
 		Long:        false,
-		Extra:       false,
 		InlineColor: false,
 		RawSize:     false,
 		Separator:   separator,
@@ -104,7 +103,7 @@ func fzFind(_ *cobra.Command, args []string) error {
 		outs = append(outs, fmt.Sprintf("storage: %s", entry.storage.Name))
 		outs = append(outs, fmt.Sprintf("path: %s", entry.item.GetPath()))
 
-		entryAttrs := entry.item.GetAttr(m.RawSize, m.Long, m.Extra)
+		entryAttrs := entry.item.GetAttr(m.RawSize, m.Long)
 		attrs := stringer.AttrsToString(entryAttrs, m, "\n")
 
 		return strings.Join(outs, "\n") + "\n" + attrs

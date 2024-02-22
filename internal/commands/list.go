@@ -66,7 +66,6 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 	m := &stringer.PrintMode{
 		FullPath:    false,
 		Long:        long,
-		Extra:       long,
 		InlineColor: false,
 		RawSize:     rawSize,
 		Separator:   separator,

@@ -153,7 +153,6 @@ func listStorages() {
 	m := &stringer.PrintMode{
 		FullPath:    true,
 		Long:        true,
-		Extra:       true,
 		InlineColor: false,
 		RawSize:     false,
 		Separator:   separator,
