@@ -15,9 +15,9 @@ import (
 	"github.com/pterm/pterm/putils"
 )
 
-// PTreeStringer printer struct
-type PTreeStringer struct {
-	long        bool
+// TreeStringer printer struct
+type TreeStringer struct {
+	mode        *PrintMode
 	listOfTrees []*aTree
 }
 
@@ -26,29 +26,29 @@ type aTree struct {
 	pterm.LeveledList
 }
 
-func (p *PTreeStringer) storageToString(storage *node.StorageNode) string {
+func (p *TreeStringer) storageToString(storage *node.StorageNode) string {
 	out := color.InUnderline(color.InGray(nativeStorageName))
 	out += " " + color.InPurple(storage.GetName())
-	attrs := storage.GetAttr(false, p.long)
+	attrs := storage.GetAttr(false, p.mode.Long, p.mode.Extra)
 	if len(attrs) > 0 {
-		out += " " + AttrsToString(true, attrs, " ")
+		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
 	return out
 }
 
-func (p *PTreeStringer) fileToString(n node.Node, _ bool) string {
+func (p *TreeStringer) fileToString(n node.Node) string {
 	var out string
 	name := fmt.Sprintf("%-20s", n.GetName())
-	out += ColorByType(name, n, false)
-	attrs := n.GetAttr(false, p.long)
+	out += ColorLineByType(name, n, false)
+	attrs := n.GetAttr(false, p.mode.Long, p.mode.Extra)
 	if len(attrs) > 0 {
-		out += " " + AttrsToString(p.long, attrs, " ")
+		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
 	return out
 }
 
 // Print adds the node to the accumulator
-func (p *PTreeStringer) Print(n node.Node, depth int, fullPath bool) {
+func (p *TreeStringer) Print(n node.Node, depth int) {
 	if n == nil {
 		// ignore empty node
 		return
@@ -62,15 +62,15 @@ func (p *PTreeStringer) Print(n node.Node, depth int, fullPath bool) {
 	}
 
 	lastTree := p.listOfTrees[len(p.listOfTrees)-1]
-	if isStorage || fullPath {
+	if isStorage || p.mode.FullPath {
 		// add storage or first node as top level
-		e := p.ToString(n, depth, fullPath)
+		e := p.ToString(n, depth)
 		lastTree.headerLine = e.Line
 		return
 	}
 
 	// create the item
-	e := p.ToString(n, depth, fullPath)
+	e := p.ToString(n, depth)
 	item := pterm.LeveledListItem{
 		Level: depth,
 		Text:  e.Line,
@@ -81,7 +81,7 @@ func (p *PTreeStringer) Print(n node.Node, depth int, fullPath bool) {
 }
 
 // ToString converts node to string for printing
-func (p *PTreeStringer) ToString(n node.Node, _ int, fullPath bool) *Entry {
+func (p *TreeStringer) ToString(n node.Node, _ int) *Entry {
 	var entry Entry
 
 	if n == nil {
@@ -93,16 +93,16 @@ func (p *PTreeStringer) ToString(n node.Node, _ int, fullPath bool) *Entry {
 	if node.IsStorage(n) {
 		entry.Line = p.storageToString(n.(*node.StorageNode))
 	} else {
-		entry.Line = p.fileToString(n, fullPath)
+		entry.Line = p.fileToString(n)
 	}
 	return &entry
 }
 
 // PrintPrefix unused
-func (p *PTreeStringer) PrintPrefix() {}
+func (p *TreeStringer) PrintPrefix() {}
 
 // PrintSuffix print entire tree
-func (p *PTreeStringer) PrintSuffix() {
+func (p *TreeStringer) PrintSuffix() {
 	// print each tree
 	log.Debugf("number of trees: %d", len(p.listOfTrees))
 	for _, atree := range p.listOfTrees {
@@ -120,10 +120,10 @@ func (p *PTreeStringer) PrintSuffix() {
 	p.listOfTrees = []*aTree{}
 }
 
-// NewPTreeStringer creates a new ptree printer
-func NewPTreeStringer(long bool) *PTreeStringer {
-	p := PTreeStringer{
-		long: long,
+// NewTreeStringer creates a new tree printer
+func NewTreeStringer(mode *PrintMode) *TreeStringer {
+	p := TreeStringer{
+		mode: mode,
 	}
 	return &p
 }

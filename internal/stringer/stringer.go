@@ -35,46 +35,40 @@ type Entry struct {
 	Node node.Node
 }
 
+// PrintMode the type of mode for printing
+type PrintMode struct {
+	FullPath    bool
+	Long        bool
+	Extra       bool // TODO remove me
+	InlineColor bool
+	RawSize     bool
+	Separator   string
+}
+
 // Stringer interface for printing
 type Stringer interface {
 	PrintPrefix()
-	Print(node.Node, int, bool) // node, depth, print-fullpath
+	Print(node.Node, int) // node, depth
 	PrintSuffix()
-	ToString(node.Node, int, bool) *Entry // node, depth, print-fullpath
-}
-
-// DisableColors disables the use of colors
-func DisableColors() {
-	color.Reset = ""
-	color.Bold = ""
-	color.Underline = ""
-	color.Black = ""
-	color.Red = ""
-	color.Green = ""
-	color.Yellow = ""
-	color.Blue = ""
-	color.Purple = ""
-	color.Cyan = ""
-	color.Gray = ""
-	color.White = ""
+	ToString(node.Node, int) *Entry // node, depth
 }
 
 // GetStringer returns a stringer
-func GetStringer(tree *tree.Tree, format string, rawSize bool, long bool, separator string) (Stringer, error) {
+func GetStringer(tree *tree.Tree, format string, mode *PrintMode) (Stringer, error) {
 	var stringGetter Stringer
 	switch format {
 	case FormatNative:
-		stringGetter = NewNativeStringer(tree, rawSize, long)
+		stringGetter = NewNativeStringer(tree, mode)
 	case FormatCSV:
-		stringGetter = NewCSVStringer(tree, separator, false, rawSize)
+		stringGetter = NewCSVStringer(tree, mode, false)
 	case FormatCSVWithHeader:
-		stringGetter = NewCSVStringer(tree, separator, true, rawSize)
+		stringGetter = NewCSVStringer(tree, mode, true)
 	case FormatScript:
 		stringGetter = NewScriptStringer()
 	case FormatTree:
-		stringGetter = NewPTreeStringer(long)
+		stringGetter = NewTreeStringer(mode)
 	case FormatDebug:
-		stringGetter = NewDebugStringer(tree, rawSize)
+		stringGetter = NewDebugStringer(tree, mode)
 	default:
 		return nil, fmt.Errorf("not such format: %s", format)
 	}
@@ -98,8 +92,9 @@ func GetSupportedFormats(treeOk bool, scriptOk bool) []string {
 	return fmts
 }
 
-// ColorByType colors a line by node type
-func ColorByType(line string, n node.Node, inline bool) string {
+// ColorLineByType colors a line by node type
+// if inline, inline colors are used
+func ColorLineByType(line string, n node.Node, inline bool) string {
 	var out string
 	switch n.GetType() {
 	case node.FileTypeDir:

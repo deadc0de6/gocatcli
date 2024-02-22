@@ -56,7 +56,15 @@ func diskUsage(_ *cobra.Command, args []string) error {
 		}
 	}
 
-	stringer := stringer.NewDuStringer(loadedTree, duOptRawSize)
+	m := &stringer.PrintMode{
+		FullPath:    false,
+		Long:        true,
+		Extra:       true,
+		InlineColor: false,
+		RawSize:     duOptRawSize,
+		Separator:   separator,
+	}
+	stringer := stringer.NewDuStringer(loadedTree, m)
 	for _, n := range startNodes {
 		var nodes []node.Node
 		callback := func(n node.Node, _ int, _ node.Node) bool {

@@ -33,13 +33,12 @@ var (
 // CSVStringer the CSV stringer
 type CSVStringer struct {
 	theTree    *tree.Tree
-	sep        string
-	rawSize    bool
+	mode       *PrintMode
 	withHeader bool
 }
 
 func (p *CSVStringer) getSize(sz uint64) string {
-	if p.rawSize {
+	if p.mode.RawSize {
 		return fmt.Sprintf("%d", sz)
 	}
 	return utils.SizeToHuman(sz)
@@ -59,7 +58,7 @@ func (p *CSVStringer) storageToString(storage *node.StorageNode) string {
 	fields = append(fields, p.getSize(storage.Total))
 	fields = append(fields, storage.Meta)
 	fields = append(fields, storage.Name) // storage (self)
-	return strings.Join(fields, p.sep)
+	return strings.Join(fields, p.mode.Separator)
 }
 
 func (p *CSVStringer) fileToString(n *node.FileNode) string {
@@ -83,11 +82,11 @@ func (p *CSVStringer) fileToString(n *node.FileNode) string {
 		fields = append(fields, "")
 	}
 
-	return strings.Join(fields, p.sep)
+	return strings.Join(fields, p.mode.Separator)
 }
 
 // ToString converts node to csv for printing
-func (p *CSVStringer) ToString(n node.Node, _ int, _ bool) *Entry {
+func (p *CSVStringer) ToString(n node.Node, _ int) *Entry {
 	var entry Entry
 
 	entry.Name = n.GetName()
@@ -105,25 +104,24 @@ func (p *CSVStringer) PrintPrefix() {
 	if !p.withHeader {
 		return
 	}
-	fmt.Println(strings.Join(header, p.sep))
+	fmt.Println(strings.Join(header, p.mode.Separator))
 }
 
 // PrintSuffix unused
 func (p *CSVStringer) PrintSuffix() {}
 
 // Print prints a node
-func (p *CSVStringer) Print(n node.Node, depth int, fullPath bool) {
-	e := p.ToString(n, depth, fullPath)
+func (p *CSVStringer) Print(n node.Node, depth int) {
+	e := p.ToString(n, depth)
 	fmt.Println(e.Line)
 }
 
 // NewCSVStringer creates a new CSV printer
-func NewCSVStringer(t *tree.Tree, sep string, withHeader bool, rawSize bool) *CSVStringer {
+func NewCSVStringer(t *tree.Tree, mode *PrintMode, withHeader bool) *CSVStringer {
 	p := CSVStringer{
 		theTree:    t,
-		sep:        sep,
+		mode:       mode,
 		withHeader: withHeader,
-		rawSize:    rawSize,
 	}
 	return &p
 }

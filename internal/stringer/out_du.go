@@ -16,7 +16,7 @@ import (
 // DuString printer struct
 type DuString struct {
 	theTree *tree.Tree
-	rawSize bool
+	mode    *PrintMode
 }
 
 // Print prints a node
@@ -43,7 +43,7 @@ func (p *DuString) ToString(n node.Node, _ int, _ bool) *Entry {
 	entry.Name = path
 	entry.Node = n
 	var size string
-	if p.rawSize {
+	if p.mode.RawSize {
 		size = fmt.Sprintf("%d", n.GetSize())
 		entry.Line = fmt.Sprintf("%-10s    %s", size, path)
 	} else {
@@ -60,10 +60,10 @@ func (p *DuString) PrintPrefix() {}
 func (p *DuString) PrintSuffix() {}
 
 // NewDuStringer creates a new native printer
-func NewDuStringer(theTree *tree.Tree, rawSize bool) *DuString {
+func NewDuStringer(theTree *tree.Tree, mode *PrintMode) *DuString {
 	p := DuString{
 		theTree: theTree,
-		rawSize: rawSize,
+		mode:    mode,
 	}
 	return &p
 }

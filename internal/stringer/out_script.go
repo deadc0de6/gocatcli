@@ -18,7 +18,7 @@ const (
 type ScriptStringer struct{}
 
 // Print prints a node
-func (p *ScriptStringer) Print(n node.Node, _ int, _ bool) {
+func (p *ScriptStringer) Print(n node.Node, _ int) {
 	if n == nil {
 		return
 	}
@@ -33,7 +33,7 @@ func (p *ScriptStringer) Print(n node.Node, _ int, _ bool) {
 }
 
 // ToString unsupported
-func (p *ScriptStringer) ToString(node.Node, int, bool) *Entry {
+func (p *ScriptStringer) ToString(node.Node, int) *Entry {
 	return nil
 }
 

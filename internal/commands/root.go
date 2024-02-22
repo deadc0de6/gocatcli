@@ -6,6 +6,7 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
+	"gocatcli/internal/colorme"
 	"gocatcli/internal/log"
 	"gocatcli/internal/stringer"
 	"gocatcli/internal/tree"
@@ -34,6 +35,7 @@ var (
 
 	rootOptCatalogPath string
 	rootOptDebugMode   bool
+	rootOptNoColor     bool
 )
 
 func init() {
@@ -49,6 +51,7 @@ func init() {
 	}
 	rootCmd.PersistentFlags().StringVarP(&rootOptCatalogPath, "catalog", "c", defCatalogPath, "catalog file path")
 	rootCmd.PersistentFlags().BoolVarP(&rootOptDebugMode, "debug", "d", viper.GetBool("DEBUG"), "enable debug mode")
+	rootCmd.PersistentFlags().BoolVar(&rootOptNoColor, "nocolor", false, "disable colors")
 }
 
 func preRunDebug(*cobra.Command, []string) {
@@ -62,6 +65,11 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		var err error
 
 		preRunDebug(ccmd, args)
+
+		// colors
+		if rootOptNoColor {
+			colorme.UseColors = false
+		}
 
 		// check catalog file path
 		if !utils.FileExists(rootOptCatalogPath) && loadCatalogFatal {

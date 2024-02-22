@@ -7,12 +7,11 @@ package stringer
 
 import (
 	"fmt"
+	"gocatcli/internal/colorme"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
 	"path/filepath"
 	"strings"
-
-	"github.com/TwiN/go-color"
 )
 
 const (
@@ -22,56 +21,61 @@ const (
 
 // NativeStringer printer struct
 type NativeStringer struct {
-	theTree  *tree.Tree
-	rawSize  bool
-	fullInfo bool
+	theTree *tree.Tree
+	mode    *PrintMode
+	cm      *colorme.ColorMe
 }
 
 func (p *NativeStringer) storageToString(storage *node.StorageNode, pre string) string {
 	out := pre
-	out += color.InUnderline(color.InGray(nativeStorageName))
-	out += " " + color.InPurple(storage.GetName())
-	attrs := storage.GetAttr(p.rawSize, p.fullInfo)
+	// "storage"
+	out += p.cm.InUnderline(p.cm.InGray(nativeStorageName))
+	// the storage name
+	out += " "
+	out += p.cm.InPurple(fmt.Sprintf("%-20s", storage.GetName()))
+
+	// add attributes
+	attrs := storage.GetAttr(p.mode.RawSize, p.mode.Long, p.mode.Extra)
 	if len(attrs) > 0 {
-		out += " " + AttrsToString(true, attrs, " ")
+		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
 	return out
 }
 
-func (p *NativeStringer) fileToString(n node.Node, pre string, fullPath bool) string {
+func (p *NativeStringer) fileToString(n node.Node, pre string) string {
 	out := pre
 
-	name := fmt.Sprintf("%-5s", n.GetName())
-	if p.fullInfo {
+	// name
+	name := fmt.Sprintf("%-30s", n.GetName())
+	if p.mode.FullPath {
 		// full path and storage info
 		sto := p.theTree.GetStorageNode(n)
-		if fullPath && sto != nil {
-			name = fmt.Sprintf("%-20s", filepath.Join(sto.GetName(), n.GetPath()))
+		if sto != nil {
+			name = fmt.Sprintf("%-50s", filepath.Join(sto.GetName(), n.GetPath()))
 		}
 	}
-
-	out += ColorByType(name, n, false)
+	out += ColorLineByType(name, n, p.mode.InlineColor)
 
 	// add atrributes
-	attrs := n.GetAttr(p.rawSize, p.fullInfo)
+	attrs := n.GetAttr(p.mode.RawSize, p.mode.Long, p.mode.Extra)
 	if len(attrs) > 0 {
-		out += " " + AttrsToString(p.fullInfo, attrs, " ")
+		out += " " + AttrsToString(attrs, p.mode, " ")
 	}
 
 	return out
 }
 
 // Print prints a node
-func (p *NativeStringer) Print(n node.Node, depth int, fullPath bool) {
+func (p *NativeStringer) Print(n node.Node, depth int) {
 	if n == nil {
 		return
 	}
-	e := p.ToString(n, depth, fullPath)
+	e := p.ToString(n, depth)
 	fmt.Println(e.Line)
 }
 
 // ToString converts node to string for printing
-func (p *NativeStringer) ToString(n node.Node, depth int, fullPath bool) *Entry {
+func (p *NativeStringer) ToString(n node.Node, depth int) *Entry {
 	if n == nil {
 		return nil
 	}
@@ -83,7 +87,7 @@ func (p *NativeStringer) ToString(n node.Node, depth int, fullPath bool) *Entry 
 	if n.GetType() == node.FileTypeStorage {
 		entry.Line = p.storageToString(n.(*node.StorageNode), pre)
 	} else {
-		entry.Line = p.fileToString(n, pre, fullPath)
+		entry.Line = p.fileToString(n, pre)
 	}
 	return &entry
 }
@@ -95,11 +99,11 @@ func (p *NativeStringer) PrintPrefix() {}
 func (p *NativeStringer) PrintSuffix() {}
 
 // NewNativeStringer creates a new native printer
-func NewNativeStringer(theTree *tree.Tree, rawSize bool, fullInfo bool) *NativeStringer {
+func NewNativeStringer(theTree *tree.Tree, mode *PrintMode) *NativeStringer {
 	p := NativeStringer{
-		theTree:  theTree,
-		rawSize:  rawSize,
-		fullInfo: fullInfo,
+		theTree: theTree,
+		mode:    mode,
+		cm:      colorme.NewColorme(mode.InlineColor),
 	}
 	return &p
 }

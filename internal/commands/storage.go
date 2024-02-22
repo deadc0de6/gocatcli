@@ -150,13 +150,21 @@ func listStorages() {
 	}
 
 	// get a stringer to print found nodes
-	stringGetter, err := stringer.GetStringer(loadedTree, stringer.FormatNative, false, true, separator)
+	m := &stringer.PrintMode{
+		FullPath:    true,
+		Long:        true,
+		Extra:       true,
+		InlineColor: false,
+		RawSize:     false,
+		Separator:   separator,
+	}
+	stringGetter, err := stringer.GetStringer(loadedTree, stringer.FormatNative, m)
 	if err != nil {
 		return
 	}
 
 	for _, sto := range storages {
-		stringGetter.Print(sto, 0, true)
+		stringGetter.Print(sto, 0)
 	}
 }
 

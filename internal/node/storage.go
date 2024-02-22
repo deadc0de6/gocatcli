@@ -129,8 +129,11 @@ func sizeToString(sz uint64, rawSize bool) string {
 }
 
 // GetAttr returns the node attribute as string
-func (n *StorageNode) GetAttr(rawSize bool, long bool) map[string]string {
+func (n *StorageNode) GetAttr(rawSize bool, long bool, extra bool) map[string]string {
 	attrs := make(map[string]string)
+	if !long {
+		return attrs
+	}
 	attrs["nbfiles"] = fmt.Sprintf("%d", n.TotalFiles)
 	attrs["size"] = sizeToString(n.Size, rawSize)
 	total := sizeToString(n.Total, rawSize)
@@ -144,7 +147,7 @@ func (n *StorageNode) GetAttr(rawSize bool, long bool) map[string]string {
 	attrs["fs_du"] = fmt.Sprintf("%s/%s", used, total)
 	attrs["indexed"] = utils.DateToString(n.IndexedAt)
 
-	if !long {
+	if !extra {
 		return attrs
 	}
 

@@ -56,7 +56,15 @@ func find(_ *cobra.Command, args []string) error {
 	}
 
 	// get a stringer to print found nodes
-	stringGetter, err := stringer.GetStringer(loadedTree, findOptFormat, false, true, separator)
+	m := &stringer.PrintMode{
+		FullPath:    true,
+		Long:        true,
+		Extra:       true,
+		InlineColor: false,
+		RawSize:     false,
+		Separator:   separator,
+	}
+	stringGetter, err := stringer.GetStringer(loadedTree, findOptFormat, m)
 	if err != nil {
 		return err
 	}
@@ -105,7 +113,7 @@ func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stri
 		ret := patt.MatchString(name)
 		if ret {
 			log.Debugf("\"%s\" matching \"%v\": %v", name, patt, ret)
-			prt.Print(n, 0, true)
+			prt.Print(n, 0)
 			cnt++
 		}
 		// always continue

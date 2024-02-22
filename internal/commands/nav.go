@@ -24,12 +24,14 @@ var (
 	}
 
 	navOptShowAll bool
+	navOptLong    bool
 )
 
 func init() {
 	rootCmd.AddCommand(navCmd)
 
 	navCmd.PersistentFlags().BoolVarP(&navOptShowAll, "all", "a", false, "do not ignore entries starting with a dot")
+	navCmd.PersistentFlags().BoolVarP(&navOptLong, "long", "l", false, "long listing format")
 }
 
 func nav(_ *cobra.Command, args []string) error {
@@ -38,9 +40,7 @@ func nav(_ *cobra.Command, args []string) error {
 		path = args[0]
 	}
 
-	stringer.DisableColors()
-
-	n := navigator.NewNavigator(getLines(loadedTree), navOptShowAll)
+	n := navigator.NewNavigator(callback(loadedTree), navOptShowAll, navOptLong)
 
 	// get the base paths for start
 	startNodes := getStartPaths(path)
@@ -59,32 +59,47 @@ func nav(_ *cobra.Command, args []string) error {
 	return nil
 }
 
-func getLines(t *tree.Tree) func(string, bool) []*stringer.Entry {
+func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 	// returns all entries for a specific path (no pattern expected)
-	return func(path string, _ bool) []*stringer.Entry {
+	return func(path string, showHidden bool, longMode bool) (bool, []*stringer.Entry) {
 		var entries []*stringer.Entry
 
 		log.Debugf("nav getting list of files for path \"%s\"", path)
+		log.Debugf("showhiden: %v", showHidden)
+		log.Debugf("long mode: %v", longMode)
 
+		m := &stringer.PrintMode{
+			FullPath:    true,
+			Long:        longMode,
+			Extra:       longMode,
+			InlineColor: true,
+			RawSize:     false,
+			Separator:   separator,
+		}
+		printer := stringer.NewNativeStringer(t, m)
 		if len(path) < 1 {
 			// return all storages
 			log.Debugf("returning all storages...")
 			for _, storage := range t.Storages {
-				entry := stringer.NewNativeStringer(t, false, false).ToString(storage, 0, false)
+				entry := printer.ToString(storage, 0)
 				entries = append(entries, entry)
 			}
-			return entries
+			return true, entries
 		}
 
-		n := loadedTree.GetNodesFromPath(path)
-		if len(n) != 1 {
-			return nil
+		founds := loadedTree.GetNodesFromPath(path)
+		if len(founds) != 1 {
+			// nothing there
+			return false, nil
 		}
-		for _, sub := range n[0].GetDirectChildren() {
-			printer := stringer.NewNativeStringer(t, false, false)
-			entry := printer.ToString(sub, 0, false)
-			entries = append(entries, entry)
+
+		// fill the list
+		callback := func(n node.Node, depth int, _ node.Node) bool {
+			sub := printer.ToString(n, 0)
+			entries = append(entries, sub)
+			return true
 		}
-		return entries
+		loadedTree.ProcessChildren(founds[0], showHidden, callback, 0)
+		return false, entries
 	}
 }

@@ -14,20 +14,20 @@ import (
 // DebugStringer printer struct
 type DebugStringer struct {
 	theTree *tree.Tree
-	rawSize bool
+	mode    *PrintMode
 }
 
 // Print prints a node
-func (p *DebugStringer) Print(n node.Node, depth int, fullPath bool) {
+func (p *DebugStringer) Print(n node.Node, depth int) {
 	if n == nil {
 		return
 	}
-	e := p.ToString(n, depth, fullPath)
+	e := p.ToString(n, depth)
 	fmt.Println(e.Line)
 }
 
 // ToString converts node to string for printing
-func (p *DebugStringer) ToString(n node.Node, _ int, _ bool) *Entry {
+func (p *DebugStringer) ToString(n node.Node, _ int) *Entry {
 	if n == nil {
 		return nil
 	}
@@ -45,10 +45,10 @@ func (p *DebugStringer) PrintPrefix() {}
 func (p *DebugStringer) PrintSuffix() {}
 
 // NewDebugStringer creates a new debug printer
-func NewDebugStringer(theTree *tree.Tree, rawSize bool) *DebugStringer {
+func NewDebugStringer(theTree *tree.Tree, mode *PrintMode) *DebugStringer {
 	p := DebugStringer{
 		theTree: theTree,
-		rawSize: rawSize,
+		mode:    mode,
 	}
 	return &p
 }

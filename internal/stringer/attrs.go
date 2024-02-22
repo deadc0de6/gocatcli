@@ -15,6 +15,8 @@ import (
 	"github.com/TwiN/go-color"
 )
 
+// TODO add colors
+
 var (
 	topAttrs     = []string{"mode", "type", "size", "maccess"}
 	childrenAttr = "children"
@@ -58,23 +60,29 @@ func getMoreAttrs(attrs map[string]string, notThose []string) []string {
 }
 
 // AttrsToString converts attributes to string
-func AttrsToString(all bool, attrs map[string]string, joiner string) string {
+func AttrsToString(attrs map[string]string, mode *PrintMode, joiner string) string {
 	var outs []string
 
-	if all {
-		for _, attr := range topAttrs {
-			val := getAttr(attrs, attr)
-			if len(val) > 0 {
-				outs = append(outs, color.InGray(val))
-			}
+	if !mode.Long {
+		return strings.Join(outs, joiner)
+	}
+
+	for _, attr := range topAttrs {
+		val := getAttr(attrs, attr)
+		if len(val) > 0 {
+			outs = append(outs, color.InGray(val))
 		}
-		outs = append(outs, getMoreAttrs(attrs, topAttrs)...)
-	} else {
-		for _, attr := range topAttrs {
-			val := getAttr(attrs, attr)
-			if len(val) > 0 {
-				outs = append(outs, color.InGray(val))
-			}
+	}
+	outs = append(outs, getMoreAttrs(attrs, topAttrs)...)
+
+	if !mode.Extra {
+		return strings.Join(outs, joiner)
+	}
+
+	for _, attr := range topAttrs {
+		val := getAttr(attrs, attr)
+		if len(val) > 0 {
+			outs = append(outs, color.InGray(val))
 		}
 	}
 

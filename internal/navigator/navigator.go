@@ -17,7 +17,7 @@ import (
 )
 
 // CallbackFunc callback to get list of entries
-type CallbackFunc func(string, bool) []*stringer.Entry
+type CallbackFunc func(string, bool, bool) (bool, []*stringer.Entry)
 
 // Navigator base struct
 type Navigator struct {
@@ -30,7 +30,9 @@ type Navigator struct {
 	goBackFlag     bool
 	selectedFlag   bool
 	showHiddenFlag bool
+	longMode       bool
 	helpFlag       bool
+	reloadFlag     bool
 }
 
 var (
@@ -40,6 +42,7 @@ var (
 		h: go to parent directory
 		q: exit
 		esc: exit
+		L: toggle long mode
 		H: toggle hidden files
 		enter: open file/directory
 		?: show this help.
@@ -91,6 +94,12 @@ func (a *Navigator) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	} else if eventKey.Rune() == 'H' {
 		// toggle hidden files
 		a.showHiddenFlag = !a.showHiddenFlag
+		a.reloadFlag = true
+		a.app.Stop()
+		return nil
+	} else if eventKey.Rune() == 'L' {
+		a.longMode = !a.longMode
+		a.reloadFlag = true
 		a.app.Stop()
 		return nil
 	}
@@ -98,14 +107,16 @@ func (a *Navigator) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 }
 
 // file list with file infos
+// -1 inserts at the end of the list
 func (a *Navigator) fillList() []*stringer.Entry {
-	// insert ".."
-	a.list.InsertItem(-1, "..", "", 0, nil)
-
 	// insert entries
-	entries := a.callBack(a.path, a.showHiddenFlag)
+	top, entries := a.callBack(a.path, a.showHiddenFlag, a.longMode)
+	if !top {
+		// insert ".."
+		a.list.InsertItem(0, "..", "", 0, nil)
+	}
 	for _, entry := range entries {
-		line := stringer.ColorByType(entry.Line, entry.Node, true)
+		line := stringer.ColorLineByType(entry.Line, entry.Node, true)
 		a.list.InsertItem(-1, line, "", 0, nil)
 	}
 	return entries
@@ -141,7 +152,6 @@ func (a *Navigator) updateList() []*stringer.Entry {
 	a.list.Clear()
 	entries := a.fillList()
 	a.textarea.SetText(a.path)
-
 	return entries
 }
 
@@ -179,19 +189,27 @@ func (a *Navigator) runApp(_ string) {
 	a.createList()
 
 	// navigate
-	var reload bool
-	entries := a.updateList()
+	var entries []*stringer.Entry
+	reload := true
 	for {
 		if reload {
+			// reload content
 			entries = a.updateList()
 			reload = false
 			log.Debug("reload")
 		}
 
+		// run the app and display list
 		err = a.app.Run()
 		if err != nil {
 			break
 		}
+		log.Debugf("app exited to recheck...")
+		log.Debugf("exitflag: %v", a.exitFlag)
+		log.Debugf("helpFlag: %v", a.helpFlag)
+		log.Debugf("selectedFlag: %v", a.selectedFlag)
+		log.Debugf("goBackFlag: %v", a.goBackFlag)
+		log.Debugf("reloadFlag: %v", a.reloadFlag)
 
 		// exit
 		if a.exitFlag {
@@ -200,11 +218,12 @@ func (a *Navigator) runApp(_ string) {
 
 		// show help
 		if a.helpFlag {
+			a.helpFlag = false
 			a.showHelp()
 			continue
 		}
 
-		// enter
+		// enter directory
 		if a.selectedFlag {
 			a.selectedFlag = false
 			idx := a.list.GetCurrentItem()
@@ -238,6 +257,13 @@ func (a *Navigator) runApp(_ string) {
 			a.goBackFlag = false
 			a.goBack()
 			reload = true
+			continue
+		}
+
+		// reload flag for options
+		if a.reloadFlag {
+			reload = true
+			a.reloadFlag = false
 		}
 	}
 }
@@ -264,10 +290,11 @@ func (a *Navigator) Start(path string) {
 }
 
 // NewNavigator creates a new navigator
-func NewNavigator(callback CallbackFunc, showAll bool) *Navigator {
+func NewNavigator(callback CallbackFunc, showAll bool, long bool) *Navigator {
 	n := Navigator{
 		callBack:       callback,
 		showHiddenFlag: showAll,
+		longMode:       long,
 	}
 	return &n
 }

@@ -88,8 +88,12 @@ func (n *FileNode) GetType() FileType {
 }
 
 // GetAttr returns the node attribute as string
-func (n *FileNode) GetAttr(rawSize bool, long bool) map[string]string {
+func (n *FileNode) GetAttr(rawSize bool, long bool, extra bool) map[string]string {
 	attrs := make(map[string]string)
+
+	if !long {
+		return attrs
+	}
 
 	// size
 	size := fmt.Sprintf("%d", n.Size)
@@ -108,7 +112,7 @@ func (n *FileNode) GetAttr(rawSize bool, long bool) map[string]string {
 	tstr := utils.DateToString(n.Maccess)
 	attrs["maccess"] = tstr
 
-	if !long {
+	if !extra {
 		return attrs
 	}
 

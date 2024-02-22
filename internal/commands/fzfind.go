@@ -56,7 +56,15 @@ func fzFind(_ *cobra.Command, args []string) error {
 	}
 
 	// get the stringer
-	stringGetter, err := stringer.GetStringer(loadedTree, fzFindOptFormat, false, true, separator)
+	m := &stringer.PrintMode{
+		FullPath:    false,
+		Long:        false,
+		Extra:       false,
+		InlineColor: false,
+		RawSize:     false,
+		Separator:   separator,
+	}
+	stringGetter, err := stringer.GetStringer(loadedTree, fzFindOptFormat, m)
 	if err != nil {
 		return err
 	}
@@ -96,8 +104,8 @@ func fzFind(_ *cobra.Command, args []string) error {
 		outs = append(outs, fmt.Sprintf("storage: %s", entry.storage.Name))
 		outs = append(outs, fmt.Sprintf("path: %s", entry.item.GetPath()))
 
-		entryAttrs := entry.item.GetAttr(false, true)
-		attrs := stringer.AttrsToString(true, entryAttrs, "\n")
+		entryAttrs := entry.item.GetAttr(m.RawSize, m.Long, m.Extra)
+		attrs := stringer.AttrsToString(entryAttrs, m, "\n")
 
 		return strings.Join(outs, "\n") + "\n" + attrs
 	}
@@ -127,12 +135,12 @@ func fzFind(_ *cobra.Command, args []string) error {
 
 		// print the rest
 		callback := func(n node.Node, depth int, _ node.Node) bool {
-			stringGetter.Print(n, depth+1, false)
+			stringGetter.Print(n, depth+1)
 			return true
 		}
 
 		stringGetter.PrintPrefix()
-		stringGetter.Print(entry.item, 0, true)
+		stringGetter.Print(entry.item, 0)
 		if hasChildren {
 			loadedTree.ProcessChildren(entry.item, fzFindOptShowAll, callback, 1)
 		}

@@ -21,7 +21,7 @@ type Node interface {
 	GetType() FileType
 	GetMAccess() int64
 	GetMode() string
-	GetAttr(bool, bool) map[string]string
+	GetAttr(bool, bool, bool) map[string]string // rawsize, long, extra
 	GetSize() uint64
 	SetSize(uint64)
 	Seen() bool

@@ -63,7 +63,15 @@ func ls(path string, format string, recursive bool, long bool, rawSize bool, sho
 func listHierarchy(path string, recursive bool, format string, showAll bool, rawSize bool, long bool, depth int) error {
 	log.Debugf("ls path:%s rec:%v format:%s raw:%v", path, recursive, format, rawSize)
 	// get the stringer
-	stringGetter, err := stringer.GetStringer(loadedTree, format, rawSize, long, separator)
+	m := &stringer.PrintMode{
+		FullPath:    false,
+		Long:        long,
+		Extra:       long,
+		InlineColor: false,
+		RawSize:     rawSize,
+		Separator:   separator,
+	}
+	stringGetter, err := stringer.GetStringer(loadedTree, format, m)
 	if err != nil {
 		return err
 	}
@@ -86,7 +94,7 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 			// we are intentionally not listing recursively
 			// when no storage is selected use find for that
 			for _, top := range loadedTree.GetStorages() {
-				stringGetter.Print(top, 0, false)
+				stringGetter.Print(top, 0)
 			}
 		}
 
@@ -118,14 +126,14 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 
 func listPrint(prt stringer.Stringer, n node.Node, recursive bool, showAll bool, depth int) error {
 	// printing the found node
-	prt.Print(n, 0, true)
+	prt.Print(n, 0)
 	if !node.MayHaveChildren(n) {
 		return nil
 	}
 
 	// print the rest
 	callback := func(n node.Node, depth int, _ node.Node) bool {
-		prt.Print(n, depth, false)
+		prt.Print(n, depth)
 		return true
 	}
 
