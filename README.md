@@ -27,6 +27,7 @@ Features:
 Quick start:
 ```bash
 gocatcli index <some-path>
+gocatli nav
 gocatli tree
 ```
 
@@ -66,14 +67,14 @@ gocatli tree
 
 Pick a binary in the [releases](https://github.com/deadc0de6/gocatcli/releases)
 
-Install directly using go
+Or if you have go installed, you can installed it directly
 ```bash
 ## You need at least golang 1.22
 $ go install -v github.com/deadc0de6/gocatcli/cmd/gocatcli@latest
 $ gocatcli --help
 ```
 
-Compilation
+Or if you want to compile it yourself
 ```bash
 ## You need at least golang 1.22
 $ go mod tidy
@@ -91,6 +92,8 @@ are stored away.
 $ gocatcli --help
 $ gocatcli index --help
 $ gocatcli ls --help
+$ gocatcli tree --help
+$ gocatcli nav --help
 ...
 ```
 
