@@ -7,10 +7,9 @@ package stringer
 
 import (
 	"fmt"
+	"gocatcli/internal/colorme"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-
-	"github.com/TwiN/go-color"
 )
 
 const (
@@ -95,33 +94,19 @@ func GetSupportedFormats(treeOk bool, scriptOk bool) []string {
 // if inline, inline colors are used
 func ColorLineByType(line string, n node.Node, inline bool) string {
 	var out string
+
+	cm := colorme.NewColorme(inline)
 	switch n.GetType() {
 	case node.FileTypeDir:
-		if inline {
-			out = fmt.Sprintf("[blue]%s[-]", line)
-		} else {
-			out = color.InBlue(line)
-		}
+		out = cm.InBlue(line)
 	case node.FileTypeArchived:
-		if inline {
-			out = fmt.Sprintf("[yellow]%s[-]", line)
-		} else {
-			out = color.InYellow(line)
-		}
+		out = cm.InYellow(line)
 	case node.FileTypeArchive:
-		if inline {
-			out = fmt.Sprintf("[red]%s[-]", line)
-		} else {
-			out = color.InRed(line)
-		}
+		out = cm.InRed(line)
 	case node.FileTypeFile:
 		fn := n.(*node.FileNode)
 		if fn.IsExec() {
-			if inline {
-				out = fmt.Sprintf("[green]%s[-]", line)
-			} else {
-				out = color.InGreen(line)
-			}
+			out = cm.InGreen(line)
 		} else {
 			out = line
 		}

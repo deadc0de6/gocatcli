@@ -51,7 +51,7 @@ func (p *NativeStringer) fileToString(n node.Node, pre string) string {
 		// full path and storage info
 		sto := p.theTree.GetStorageNode(n)
 		if sto != nil {
-			name = fmt.Sprintf("%-50s", filepath.Join(sto.GetName(), n.GetPath()))
+			name = fmt.Sprintf("%-60s", filepath.Join(sto.GetName(), n.GetPath()))
 		}
 	}
 	out += ColorLineByType(name, n, p.mode.InlineColor)
