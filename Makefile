@@ -3,6 +3,7 @@
 
 GOBIN=$(shell pwd)/bin
 BIN=$(GOBIN)/gocatcli
+RELEASES=dist/
 CGO=0
 GOOS=$(shell go env GOOS)
 GOARCH=$(shell go env GOARCH)
@@ -34,5 +35,6 @@ build-all: build-linux build-windows build-darwin
 
 clean:
 	@rm -rf $(GOBIN)
+	@rm -rf $(RELEASES)
 
 .PHONY: build build-linux build-windows build-darwin clean all

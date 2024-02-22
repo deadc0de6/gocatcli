@@ -47,6 +47,8 @@ echo "compiling..."
 make clean
 make
 
+rm -rf dist/
+
 # integration tests
 find "${cur}/tests-ng" -iname 'test-*.sh' | while read -r line; do
   echo "running test script: ${line}"

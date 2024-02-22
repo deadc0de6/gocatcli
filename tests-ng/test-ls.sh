@@ -45,24 +45,24 @@ grep '^storage internal.*' "${out}" || (echo "bad content" && exit 1)
 
 # ls storage
 echo ">>> test ls storage <<<"
-"${bin}" --debug ls -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug ls -l -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
-[ "${cnt}" != "11" ] && echo "expecting 11 lines" && exit 1
-grep '^storage internal.*' "${out}" || (echo "bad content 1" && exit 1)
-grep 'fuser d.*' "${out}" || (echo "bad content 2" && exit 1)
-grep 'walker d.*' "${out}" || (echo "bad content 3" && exit 1)
+[ "${cnt}" != "11" ] && echo "expecting 11 lines got ${cnt}" && exit 1
+#grep '^storage internal.*' "${out}" || (echo "bad content 1" && exit 1)
+grep 'fuser *d.*' "${out}" || (echo "bad content 2" && exit 1)
+grep 'walker *d.*' "${out}" || (echo "bad content 3" && exit 1)
 
 # ls recursive
 echo ">>> test ls recursive <<<"
-"${bin}" --debug ls -r -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug ls -l -r -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
 # shellcheck disable=SC2126
-expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
-[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
-grep 'walker.go -.*' "${out}" || (echo "bad content 1" && exit 1)
-grep 'walker d.*' "${out}" || (echo "bad content 2" && exit 1)
+expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | tail -n+2 | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+grep 'walker.go *-.*' "${out}" || (echo "bad content 1" && exit 1)
+grep 'walker *d.*' "${out}" || (echo "bad content 2" && exit 1)
 
 # ls pattern
 echo ">>> test ls pattern <<<"
@@ -72,11 +72,9 @@ echo ">>> test ls pattern <<<"
 "${bin}" --debug ls -r -a -l -c "${catalog}" 'inter*/n*' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
-expected=$(find "${cur}/../internal/navigator" "${cur}/../internal/node" | wc -l)
-[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
-grep 'node *d.*' "${out}" || (echo "bad content 1" && exit 1)
+expected=$(find "${cur}/../internal/navigator/"* "${cur}/../internal/node/"* | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 grep 'node.go *-.*' "${out}" || (echo "bad content 2" && exit 1)
-grep 'navigator *d.*' "${out}" || (echo "bad content 3" && exit 1)
 grep 'navigator.go *-.*' "${out}" || (echo "bad content 4" && exit 1)
 
 echo "test $(basename "${0}") OK!"

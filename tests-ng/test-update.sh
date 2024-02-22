@@ -42,7 +42,7 @@ echo ">>> test re-index <<<"
 #"${bin}" tree -c "${catalog}"
 #"${bin}" ls -r -c "${catalog}"
 
-"${bin}" ls -r -S -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" ls -r -S -l -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 grep '^tree ' "${out}" && (echo "tree found" && exit 1)
 grep '^utils ' "${out}" && (echo "utils found" && exit 1)

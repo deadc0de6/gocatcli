@@ -35,7 +35,7 @@ def must_ignore(path: str, patterns: List[str]) -> bool:
     return any(lst)
 
 
-def main(path: str, ign: List[str] = []):
+def main(path: str, ign: List[str] = [], lst: bool = False):
     """entry point"""
     if not os.path.exists(path):
         print(f'[ERROR] {path} does not exist')
@@ -48,19 +48,33 @@ def main(path: str, ign: List[str] = []):
         if must_ignore(root, ign):
             debug(f'ignore root {root}')
             continue
+
+        # count current
+        if root != path:
+            if lst:
+                print(root)
+                cnt += 1
+
+        # count files
         for file in files:
             fpath = os.path.join(root, file)
             if must_ignore(fpath, ign):
                 debug(f'ignore sub {fpath}')
                 continue
             debug(f'file: {file}')
+            if lst:
+                print(fpath)
             cnt += 1
+
+        # count subdir
         for d in dirs:
             fpath = os.path.join(root, d)
             if must_ignore(fpath, ign):
                 debug(f'ignore sub {fpath}')
                 continue
             debug(f'dir: {d}')
+            if lst:
+                print(fpath)
             cnt += 1
     print(f'{cnt}')
     return True
@@ -74,6 +88,7 @@ if __name__ == "__main__":
                         nargs='+')
     parser.add_argument('-d', '--debug',
                         action='store_true')
+    parser.add_argument("-l", "--list", action="store_true")
     args = parser.parse_args()
     DEBUG = args.debug
-    main(args.path, ign=args.ignore)
+    main(args.path, ign=args.ignore, lst=args.list)

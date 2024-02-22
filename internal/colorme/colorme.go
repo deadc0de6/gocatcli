@@ -16,7 +16,7 @@ type ColorMe struct {
 	inline bool
 }
 
-// Underline underline
+// InUnderline underline
 func (c *ColorMe) InUnderline(txt string) string {
 	if !UseColors {
 		return txt

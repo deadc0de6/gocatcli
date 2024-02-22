@@ -41,7 +41,7 @@ func init() {
 	listCmd.PersistentFlags().StringVarP(&lsOptFormat, "format", "f", "native", hlp)
 	listCmd.PersistentFlags().BoolVarP(&lsOptRawSize, "raw-size", "S", false, "do not humanize sizes when printing")
 	listCmd.PersistentFlags().BoolVarP(&lsOptLong, "long", "l", false, "long listing format")
-	listCmd.PersistentFlags().IntVarP(&lsOptDepth, "depth", "D", -1, "max depth")
+	listCmd.PersistentFlags().IntVarP(&lsOptDepth, "depth", "D", 0, "max depth")
 }
 
 func list(_ *cobra.Command, args []string) error {
@@ -49,19 +49,23 @@ func list(_ *cobra.Command, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	}
-	return ls(path, lsOptFormat, lsOptRecursive, lsOptLong, lsOptRawSize, lsOptShowAll, lsOptDepth)
+	depth := lsOptDepth
+	if lsOptRecursive && depth == 0 {
+		depth = -1
+	}
+	return ls(path, lsOptFormat, lsOptLong, lsOptRawSize, lsOptShowAll, depth, false)
 }
 
-func ls(path string, format string, recursive bool, long bool, rawSize bool, showAll bool, depth int) error {
+func ls(path string, format string, long bool, rawSize bool, showAll bool, maxDepth int, printParent bool) error {
 	if !formatOk(format, true, true) {
 		return fmt.Errorf("unsupported format %s", format)
 	}
-	return listHierarchy(path, recursive, format, showAll, rawSize, long, depth)
+	return listHierarchy(path, format, showAll, rawSize, long, maxDepth, printParent)
 }
 
 // list files at "path" or storages if empty
-func listHierarchy(path string, recursive bool, format string, showAll bool, rawSize bool, long bool, depth int) error {
-	log.Debugf("ls path:%s rec:%v format:%s raw:%v", path, recursive, format, rawSize)
+func listHierarchy(path string, format string, showAll bool, rawSize bool, long bool, maxDepth int, printParent bool) error {
+	log.Debugf("ls path:%s format:%s raw:%v maxdepth:%d", path, format, rawSize, maxDepth)
 	// get the stringer
 	m := &stringer.PrintMode{
 		FullPath:    false,
@@ -78,12 +82,12 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 	// print prefix
 	stringGetter.PrintPrefix()
 
-	log.Debugf("ls path arg: %s (rec:%v)", path, recursive)
+	log.Debugf("ls path arg: %s", path)
 	if len(path) < 1 {
-		if recursive {
+		if maxDepth != 0 {
 			// list everything recursively
 			for _, top := range loadedTree.GetStorages() {
-				err := listPrint(stringGetter, top, recursive, showAll, depth)
+				err := listPrint(stringGetter, top, showAll, maxDepth, true)
 				if err != nil {
 					log.Error(err)
 				}
@@ -111,7 +115,7 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 	// ls each of the found node
 	for _, n := range startNodes {
 		log.Debugf("handling found start node \"%s\"", n.GetName())
-		err := listPrint(stringGetter, n, recursive, showAll, depth)
+		err := listPrint(stringGetter, n, showAll, maxDepth, printParent)
 		if err != nil {
 			log.Error(err)
 		}
@@ -123,10 +127,18 @@ func listHierarchy(path string, recursive bool, format string, showAll bool, raw
 	return nil
 }
 
-func listPrint(prt stringer.Stringer, n node.Node, recursive bool, showAll bool, depth int) error {
+func listPrint(prt stringer.Stringer, n node.Node, showAll bool, maxDepth int, topToo bool) error {
+	var topPrinted bool
 	// printing the found node
-	prt.Print(n, 0)
+	if topToo {
+		prt.Print(n, 0)
+		topPrinted = true
+	}
+
 	if !node.MayHaveChildren(n) {
+		if !topPrinted {
+			prt.Print(n, 0)
+		}
 		return nil
 	}
 
@@ -138,10 +150,6 @@ func listPrint(prt stringer.Stringer, n node.Node, recursive bool, showAll bool,
 
 	// for a directory, this will automatically
 	// list direct children even if recursive is false
-	maxDepth := 0
-	if recursive {
-		maxDepth = depth
-	}
 	loadedTree.ProcessChildren(n, showAll, callback, maxDepth)
 	return nil
 }

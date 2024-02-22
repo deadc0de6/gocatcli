@@ -119,7 +119,7 @@ func (t *Tree) GetStorages() []*node.StorageNode {
 // ProcessChildren process the tree depth-first
 // when callback is defined, return is empty, when undefined, return is filled
 // callback arguments: current node, depth, parent node
-// maxDepth: max depth to process
+// maxDepth: max depth to process (-1 for infinite)
 // callback returns true to continue down the tree or false to stop
 func (t *Tree) ProcessChildren(start node.Node, hiddenToo bool, callback ProcessCallback, maxDepth int) []node.Node {
 	log.Debugf("processing nodes children from \"%s\" (show hidden:%v)", start.GetName(), hiddenToo)

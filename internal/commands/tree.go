@@ -39,5 +39,5 @@ func treeView(_ *cobra.Command, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	}
-	return ls(path, stringer.FormatTree, true, treeOptLong, treeOptRawSize, treeOptShowAll, treeOptDepth)
+	return ls(path, stringer.FormatTree, treeOptLong, treeOptRawSize, treeOptShowAll, treeOptDepth, true)
 }

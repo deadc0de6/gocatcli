@@ -28,7 +28,7 @@ out="${tmpd}/output.txt"
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 echo ">>> test file size <<<"
-"${bin}" --debug ls -r -S -c "${catalog}" "${cur}/../internal/walker/walker.go" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug ls -r -l -S -c "${catalog}" "${cur}/../internal/walker/walker.go" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(du --block=1 --apparent-size "${cur}/../internal/walker/walker.go" | awk '{print $1}')
 # shellcheck disable=SC2012
@@ -39,7 +39,7 @@ echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
 echo ">>> test directory size <<<"
-"${bin}" --debug ls -r -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug ls -l -r -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(du -c --block=1 --apparent-size "${cur}/../internal/catcli" | tail -1 | awk '{print $1}')
 "${cur}/pdu.py" "${cur}/../internal/catcli" | tail -1
@@ -50,7 +50,7 @@ echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
 echo ">>> test storage size <<<"
-"${bin}" --debug ls -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug ls -l -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../internal" | tail -1 | awk '{print $1}')
 expected=$("${cur}/pdu.py" "${cur}/../internal" | tail -1 | awk '{print $1}')

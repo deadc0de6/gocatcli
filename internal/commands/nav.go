@@ -84,7 +84,7 @@ func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 		}
 
 		// fill the list
-		callback := func(n node.Node, depth int, _ node.Node) bool {
+		callback := func(n node.Node, _ int, _ node.Node) bool {
 			sub := printer.ToString(n, 0)
 			entries = append(entries, sub)
 			return true

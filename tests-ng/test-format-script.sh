@@ -35,7 +35,7 @@ echo ">>> test index <<<"
 cat_file "${out}"
 
 # shellcheck disable=SC2016
-exp='op=file; source=/media/mnt; ${op} "${source}/tree" "${source}/tree/tree.go"'
+exp='op=file; source=/media/mnt; ${op} "${source}/tree/tree.go"'
 grep "${exp}" "${out}" || (echo "bad output" && exit 1)
 
 echo "test $(basename "${0}") OK!"

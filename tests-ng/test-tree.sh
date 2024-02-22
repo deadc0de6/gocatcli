@@ -39,6 +39,7 @@ cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 # tree with arg
 echo ">>> test tree with arg <<<"
 "${bin}" --debug tree -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+cat_file "${out}"
 expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/.git*')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1

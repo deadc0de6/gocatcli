@@ -52,7 +52,7 @@ func find(_ *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		// calling ls when no args are provided
 		log.Debugf("running ls recursive...")
-		return ls("", findOptFormat, true, true, false, true, findOptDepth)
+		return ls("", findOptFormat, true, false, true, findOptDepth, true)
 	}
 
 	// get a stringer to print found nodes
