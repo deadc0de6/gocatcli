@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	version    = "0.2.4"
+	version    = "1.0"
 	myName     = "gocatcli"
 	defCatalog = "gocatcli.catalog"
 	loadedTree *tree.Tree
