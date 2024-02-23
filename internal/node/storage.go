@@ -137,14 +137,14 @@ func (n *StorageNode) GetAttr(rawSize bool, long bool) map[string]string {
 	attrs["nbfiles"] = fmt.Sprintf("%d", n.TotalFiles)
 	attrs["size"] = sizeToString(n.Size, rawSize)
 	total := sizeToString(n.Total, rawSize)
-	attrs["fs_size"] = total
+	attrs["fs_size"] = fmt.Sprintf("%-6s", total)
 	freePercent := "??"
 	if n.Total != 0 {
 		freePercent = fmt.Sprintf("%d%%", n.Free*100/n.Total)
 	}
-	attrs["fs_free"] = freePercent
+	attrs["fs_free"] = fmt.Sprintf("%3s", freePercent)
 	used := sizeToString(n.Total-n.Free, rawSize)
-	attrs["fs_du"] = fmt.Sprintf("%s/%s", used, total)
+	attrs["fs_du"] = fmt.Sprintf("%6s/%6s", used, total)
 	attrs["indexed"] = utils.DateToString(n.IndexedAt)
 
 	attrs["meta"] = n.Meta

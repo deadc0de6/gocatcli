@@ -87,7 +87,7 @@ func (a *Navigator) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 		a.selectedFlag = true
 		a.app.Stop()
 		return nil
-	} else if eventKey.Rune() == 'h' || eventKey.Key() == tcell.KeyLeft {
+	} else if eventKey.Rune() == 'h' || eventKey.Key() == tcell.KeyLeft || eventKey.Key() == tcell.KeyBackspace2 {
 		// open parent directory
 		a.goBackFlag = true
 		a.app.Stop()
@@ -99,6 +99,7 @@ func (a *Navigator) eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 		a.app.Stop()
 		return nil
 	} else if eventKey.Rune() == 'L' {
+		// toggle long mode
 		a.longMode = !a.longMode
 		a.reloadFlag = true
 		a.app.Stop()

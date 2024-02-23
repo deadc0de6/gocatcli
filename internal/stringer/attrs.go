@@ -29,7 +29,7 @@ func attrToStringColored(key string, value string, cm *colorme.ColorMe) string {
 	} else if key == "mode" {
 		line = cm.InYellow(value)
 	} else if key == "size" {
-		line = cm.InGreen(fmt.Sprintf("%-6s", value))
+		line = cm.InGreen(fmt.Sprintf("%6s", value))
 	} else if key == "type" {
 		line = cm.InRed(fmt.Sprintf("%-4s", value))
 	} else {
