@@ -115,22 +115,33 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 			// handle archives
 			if w.withArchive && archives.IsArchive(pathUnderRoot) {
 				log.Debugf("%s is archive", pathUnderRoot)
-				child.Type = node.FileTypeArchive
-				archived, _ := archives.GetFiles(pathUnderRoot)
-				for _, arc := range archived {
-					fpath, err := filepath.Rel(storagePath, pathUnderRoot)
-					if err != nil {
-						return err
-					}
-					sub := node.NewArchivedFileNode(storageID, fpath, arc.FileInfo, arc.Path)
-					child.AddChild(sub)
-				}
+				processArchive(pathUnderRoot, storageID, storagePath, child)
 			}
 		}
 		return nil
 	})
 
 	return cnt, err
+}
+
+func processArchive(path string, storageID int, storagePath string, child *node.FileNode) {
+	//defer func() {
+	//	r := recover()
+	//	if r != nil {
+	//		log.Errorf("archive indexing failed for %s", path)
+	//	}
+	//}()
+	archived, _ := archives.GetFiles(path)
+	for _, arc := range archived {
+		fpath, err := filepath.Rel(storagePath, path)
+		if err != nil {
+			log.Errorf("archive indexing failed for %s: %v", path, err)
+			return
+		}
+		sub := node.NewArchivedFileNode(storageID, fpath, arc.FileInfo, arc.Path)
+		child.AddChild(sub)
+	}
+	child.Type = node.FileTypeArchive
 }
 
 // Walk walks the filesystem hierarchy

@@ -7,6 +7,7 @@ package archives
 
 import (
 	"context"
+	"fmt"
 	"gocatcli/internal/log"
 	"io/fs"
 	"os"
@@ -42,7 +43,7 @@ func GetFiles(path string) ([]*ArchivedFile, error) {
 	}
 	defer fd.Close()
 
-	format, _, err := archiver.Identify(path, fd)
+	format, stream, err := archiver.Identify(path, fd)
 	if err == archiver.ErrNoMatch {
 		log.Debugf("file \"%s\" is not an archive", path)
 		return names, nil
@@ -61,13 +62,19 @@ func GetFiles(path string) ([]*ArchivedFile, error) {
 		return nil
 	}
 
-	ext := format.(archiver.Extractor)
-	ctx := context.Background()
-	err = ext.Extract(ctx, fd, nil, handler)
-	if err != nil {
-		return names, err
+	switch archive := format.(type) {
+	case archiver.Extractor:
+		ctx := context.Background()
+		err = archive.Extract(ctx, stream, nil, handler)
+		if err != nil {
+			return names, err
+		}
+		log.Debugf("got %d file(s) inside %s", len(names), path)
+		return names, nil
+	case archiver.Decompressor:
+		// no children
+		return names, nil
 	}
 
-	log.Debugf("got %d file(s) inside %s", len(names), path)
-	return names, nil
+	return nil, fmt.Errorf("cannot read archive content for %s", path)
 }
