@@ -24,13 +24,15 @@ var (
 		RunE:   create,
 	}
 
-	createOptStart string
+	createOptStart       string
+	createOptWithArchive bool
 )
 
 func init() {
 	rootCmd.AddCommand(createCmd)
 
 	createCmd.PersistentFlags().StringVarP(&createOptStart, "path", "p", "", "catalog start path")
+	createCmd.PersistentFlags().BoolVar(&createOptWithArchive, "archive", false, "create archived files/dirs too")
 }
 
 func create(_ *cobra.Command, args []string) error {
@@ -85,39 +87,40 @@ func create(_ *cobra.Command, args []string) error {
 					fd.Close()
 				}
 			case node.FileTypeArchived:
-				sub := filepath.Dir(p)
-				log.Debugf("mkdir for archived %s", sub)
-				err := os.MkdirAll(sub, os.ModePerm)
-				if err != nil {
-					log.Error(err)
-				}
-				// handle files inside archive
-				isArchivedDir := false
-				if n.GetMode() == "" {
-					// in doubt or when imported from catcli
-					// check the children
-					if len(n.GetDirectChildren()) > 0 {
+				if createOptWithArchive {
+					sub := filepath.Dir(p)
+					log.Debugf("mkdir for archived %s", sub)
+					err := os.MkdirAll(sub, os.ModePerm)
+					if err != nil {
+						log.Error(err)
+					}
+					// handle files inside archive
+					isArchivedDir := false
+					if n.GetMode() == "" {
+						// in doubt or when imported from catcli
+						// check the children
+						if len(n.GetDirectChildren()) > 0 {
+							isArchivedDir = true
+						}
+					} else if node.IsModeDir(n) {
 						isArchivedDir = true
 					}
-				} else if node.IsModeDir(n) {
-					isArchivedDir = true
-				}
 
-				if isArchivedDir {
-					log.Debugf("mkdir for archived %s", p)
-					err := os.MkdirAll(p, os.ModePerm)
-					if err != nil {
-						log.Error(err)
+					if isArchivedDir {
+						log.Debugf("mkdir for archived %s", p)
+						err := os.MkdirAll(p, os.ModePerm)
+						if err != nil {
+							log.Error(err)
+						}
+					} else {
+						log.Debugf("touch for archived %s", p)
+						fd, err := os.Create(p)
+						if err != nil {
+							log.Error(err)
+						}
+						fd.Close()
 					}
-				} else {
-					log.Debugf("touch for archived %s", p)
-					fd, err := os.Create(p)
-					if err != nil {
-						log.Error(err)
-					}
-					fd.Close()
 				}
-
 			case node.FileTypeDir:
 				log.Debugf("mkdir for dir %s", p)
 				err := os.MkdirAll(p, os.ModePerm)

@@ -31,9 +31,10 @@ type FuseDir struct {
 func getNodeType(theNode node.Node) fuse.DirentType {
 	switch theNode.GetType() {
 	case node.FileTypeArchive:
-		return fuse.DT_Dir
-	case node.FileTypeArchived:
 		return fuse.DT_File
+	case node.FileTypeArchived:
+		// skip archived files
+		return fuse.DT_Unknown
 	case node.FileTypeDir:
 		return fuse.DT_Dir
 	case node.FileTypeFile:
@@ -54,6 +55,9 @@ func nodeToDirent(theNode node.Node) fuse.Dirent {
 
 func nodeToFuse(theNode node.Node, theTree *tree.Tree, filesys *FS) fs.Node {
 	fuseType := getNodeType(theNode)
+	if fuseType == fuse.DT_Unknown {
+		return nil
+	}
 	if fuseType == fuse.DT_Dir {
 		sub := &FuseDir{
 			theTree: theTree,
@@ -155,6 +159,9 @@ func (h *FuseDir) ReadDirAll(_ context.Context) ([]fuse.Dirent, error) {
 		// children
 		entries := h.current.GetDirectChildren()
 		for _, child := range entries {
+			if child.GetType() == node.FileTypeArchived {
+				continue
+			}
 			dirent := nodeToDirent(child)
 			tops = append(tops, dirent)
 		}

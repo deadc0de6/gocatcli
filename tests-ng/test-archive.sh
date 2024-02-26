@@ -59,7 +59,7 @@ grep '^gzipped.gz' "${out}" || (echo "no gzipped" && exit 1)
 
 echo ">>> test archive create <<<"
 dst="${tmpd}/created"
-"${bin}" --debug -c "${catalog}" create "${dst}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+"${bin}" --debug -c "${catalog}" create --archive "${dst}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 
 tree "${dst}/arcdir"
 #cat "${catalog}"

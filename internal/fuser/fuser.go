@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	logPath = "/tmp/fuser.log"
+	logPath = "/tmp/gocatcli-fuser.log"
 )
 
 // FS fuse filesystem
