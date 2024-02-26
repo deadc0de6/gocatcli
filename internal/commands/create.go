@@ -70,10 +70,19 @@ func create(_ *cobra.Command, args []string) error {
 			p := filepath.Join(subPath, n.GetPath())
 			switch n.GetType() {
 			case node.FileTypeArchive:
-				log.Debugf("mkdir for archive %s", p)
-				err := os.MkdirAll(p, os.ModePerm)
-				if err != nil {
-					log.Error(err)
+				if len(n.GetDirectChildren()) > 0 {
+					log.Debugf("mkdir for archive %s", p)
+					err := os.MkdirAll(p, os.ModePerm)
+					if err != nil {
+						log.Error(err)
+					}
+				} else {
+					log.Debugf("touch for archive %s", p)
+					fd, err := os.Create(p)
+					if err != nil {
+						log.Error(err)
+					}
+					fd.Close()
 				}
 			case node.FileTypeArchived:
 				sub := filepath.Dir(p)
