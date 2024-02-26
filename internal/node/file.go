@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"gocatcli/internal/utils"
 	"io/fs"
+	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -63,6 +64,9 @@ func (n *FileNode) GetSortedDirectChildren() []*FileNode {
 
 // GetPath returns the node relative path to its parent
 func (n *FileNode) GetPath() string {
+	if n.Type == FileTypeArchived {
+		return filepath.Join(n.RelPath, n.Name)
+	}
 	return n.RelPath
 }
 
@@ -159,7 +163,7 @@ func (n *FileNode) SetSize(size uint64) {
 
 // recursiveFillSize return size of subtree and cnt of file
 func (n *FileNode) recursiveFillSize() (uint64, uint64) {
-	if !MayHaveChildren(n) {
+	if !ShouldDescendForRecSize(n) {
 		return n.GetSize(), 1
 	}
 

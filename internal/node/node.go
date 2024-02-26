@@ -5,6 +5,8 @@ Copyright (c) 2024, deadc0de6
 
 package node
 
+import "strings"
+
 const (
 	sortByType = false
 )
@@ -29,9 +31,15 @@ type Node interface {
 	RemoveChild(Node)
 }
 
+// ShouldDescendForRecSize returns true if the node may have children
+// for recursive size calculation
+func ShouldDescendForRecSize(n Node) bool {
+	return n.GetType() == FileTypeDir || n.GetType() == FileTypeStorage
+}
+
 // MayHaveChildren returns true if the node may have children
 func MayHaveChildren(n Node) bool {
-	return n.GetType() == FileTypeDir || n.GetType() == FileTypeStorage
+	return n.GetType() == FileTypeDir || n.GetType() == FileTypeStorage || n.GetType() == FileTypeArchive
 }
 
 // IsDir returns true if node is a directory
@@ -42,4 +50,10 @@ func IsDir(n Node) bool {
 // IsStorage returns true if node is storage
 func IsStorage(n Node) bool {
 	return n.GetType() == FileTypeStorage
+}
+
+// IsModeDir returns true if mode is a directory
+func IsModeDir(n Node) bool {
+	mode := n.GetMode()
+	return strings.HasPrefix(mode, "d")
 }

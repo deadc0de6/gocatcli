@@ -70,26 +70,53 @@ func create(_ *cobra.Command, args []string) error {
 			p := filepath.Join(subPath, n.GetPath())
 			switch n.GetType() {
 			case node.FileTypeArchive:
-				log.Debugf("mkdir %s", p)
+				log.Debugf("mkdir for archive %s", p)
 				err := os.MkdirAll(p, os.ModePerm)
 				if err != nil {
 					log.Error(err)
 				}
 			case node.FileTypeArchived:
-				log.Debugf("touch %s", p)
-				fd, err := os.Create(p)
+				sub := filepath.Dir(p)
+				log.Debugf("mkdir for archived %s", sub)
+				err := os.MkdirAll(sub, os.ModePerm)
 				if err != nil {
 					log.Error(err)
 				}
-				fd.Close()
+				// handle files inside archive
+				isArchivedDir := false
+				if n.GetMode() == "" {
+					// in doubt or when imported from catcli
+					// check the children
+					if len(n.GetDirectChildren()) > 0 {
+						isArchivedDir = true
+					}
+				} else if node.IsModeDir(n) {
+					isArchivedDir = true
+				}
+
+				if isArchivedDir {
+					log.Debugf("mkdir for archived %s", p)
+					err := os.MkdirAll(p, os.ModePerm)
+					if err != nil {
+						log.Error(err)
+					}
+				} else {
+					log.Debugf("touch for archived %s", p)
+					fd, err := os.Create(p)
+					if err != nil {
+						log.Error(err)
+					}
+					fd.Close()
+				}
+
 			case node.FileTypeDir:
-				log.Debugf("mkdir %s", p)
+				log.Debugf("mkdir for dir %s", p)
 				err := os.MkdirAll(p, os.ModePerm)
 				if err != nil {
 					log.Error(err)
 				}
 			case node.FileTypeFile:
-				log.Debugf("touch %s", p)
+				log.Debugf("touch for file %s", p)
 				fd, err := os.Create(p)
 				if err != nil {
 					log.Error(err)
