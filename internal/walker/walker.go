@@ -36,7 +36,8 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 			// skipping
 			return nil
 		}
-		if filepath.Base(pathUnderRoot) == filepath.Base(walkPath) {
+
+		if pathUnderRoot == walkPath {
 			//log.Debugf("skipping \"%s\"", pathUnderRoot)
 			// skipping
 			return nil
