@@ -104,7 +104,7 @@ wildcards.
 
 All command line switches can be provided using environment variables by
 prefixing with `GOCATCLI_` and adding the switch name in capital and `-`
-replaced with `-`. For example `--catalog` would be `GOCATCLI_CATALOG=mycatalog.catalog`.
+replaced with `_`. For example `--catalog` would be `GOCATCLI_CATALOG=mycatalog.catalog`.
 
 You can generate shell completion scripts using `gocatcli completion`
 ```bash
