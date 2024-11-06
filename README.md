@@ -27,8 +27,8 @@ Features:
 Quick start:
 ```bash
 gocatcli index <some-path>
-gocatli nav
-gocatli tree
+gocatcli nav
+gocatcli tree
 ```
 
 # Why gocatcli?
@@ -133,7 +133,7 @@ $ gocatcli completion fish
 ## Index data
 
 ```bash
-$ gocatli index --help
+$ gocatcli index --help
 ```
 
 Index any directories with
@@ -189,7 +189,7 @@ Supported archive formats (from <https://github.com/mholt/archiver>):
 ## Navigate with ls
 
 ```bash
-$ gocatli ls --help
+$ gocatcli ls --help
 ```
 
 ```bash
@@ -202,7 +202,7 @@ $ gocatcli ls 'storage-name/direc*/subdire*'
 
 A terminal file browser for your catalog
 ```bash
-$ gocatli nav --help
+$ gocatcli nav --help
 ```
 
 You can type `?` to get a list of available options.
@@ -210,7 +210,7 @@ You can type `?` to get a list of available options.
 ## Tree view
 
 ```bash
-$ gocatli tree --help
+$ gocatcli tree --help
 ```
 
 ## Find files
@@ -219,7 +219,7 @@ With the `find` command you can easily find all files matching a specific
 pattern. You can also limit your search to a specific path
 
 ```bash
-$ gocatli find --help
+$ gocatcli find --help
 ## lists all files
 $ gocatcli find
 ## find using pattern
@@ -233,31 +233,31 @@ $ gocatcli find pattern -p 'some/p*th'
 
 A terminal fzf file browser for your catalog
 ```bash
-$ gocatli fzfind --help
+$ gocatcli fzfind --help
 ```
 
 ## Disk usage
 
 ```bash
-$ gocatli du --help
+$ gocatcli du --help
 ```
 
 ## Create hierarchy locally
 
 ```bash
-$ gocatli create --help
+$ gocatcli create --help
 ```
 
 ## Mount filesystem
 
 ```bash
-$ gocatli mount --help
+$ gocatcli mount --help
 ```
 
 ## Edit storage
 
 ```bash
-$ gocatli storage --help
+$ gocatcli storage --help
 ```
 
 List all storages with the `storage list` command.
@@ -282,7 +282,7 @@ Following commands allow to edit a storage and its fields:
 ## Convert catcli catalog
 
 ```bash
-$ gocatli convert --help
+$ gocatcli convert --help
 ```
 
 # From catcli to gocatcli
@@ -290,7 +290,7 @@ $ gocatli convert --help
 <https://github.com/deadc0de6/catcli/>
 
 ```bash
-$ gocatli convert --help
+$ gocatcli convert --help
 ```
 
 # Contribution
