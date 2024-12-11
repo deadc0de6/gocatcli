@@ -37,10 +37,12 @@ def size_to_str(size: int, human: bool = False) -> str:
     size = float(size)
     for i in suf:
         if size < div:
-            return f'{round(size)}{i}'
+            # return f'{round(size)}{i}'
+            return f'{int(size)}{i}'
         size = size / div
     sufix = suf[-1]
-    return f'{round(size)}{sufix}'
+    # return f'{round(size)}{sufix}'
+    return f'{int(size)}{sufix}'
 
 
 def must_ignore(path: str, patterns: List[str]) -> bool:
