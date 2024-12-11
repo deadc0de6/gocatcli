@@ -84,7 +84,7 @@ $ ./bin/gocatcli --help
 
 # Usage
 
-The primary use of gocatcli is to index your data (external hardrives, etc) into a library
+The primary use of gocatcli is to index your data (external hardrives, etc) into a catalog
 and then have the ability to browse their content (as well as search, navigate, etc) while these
 are stored away.
 
@@ -96,6 +96,16 @@ $ gocatcli tree --help
 $ gocatcli nav --help
 ...
 ```
+
+[gocatcli](https://github.com/deadc0de6/gocatcli) indexes files in a tree-like structure.
+There are different types of entry in a catalog:
+
+* `top node`: the root of the hierarchy
+* `storage node`: this represents an indexed storage (a DVD, an external hard drive, an USB drive, some arbitrary directory, etc).
+* `dir node`: this is a directory
+* `file node`: this is a file
+* `archive node`: this is an archive file (tar, zip, etc)
+* `archived node`: this is a file contained in an archive
 
 Wildcards are supported in the `<path>` arguments of all commands and provide a way
 to explore the catalog using something like `'storage/directory*/sub-directory*'`,
@@ -128,8 +138,16 @@ $ gocatli index --help
 
 Index any directories with
 ```bash
+# the directory will be stored in the catalog under
+# the storage "directory"
 $ gocatcli index /some/directory
+
+# you can specify the name of the storage
+$ gocatcli index /some/other/path myStorageName
 ```
+
+[gocatcli](https://github.com/deadc0de6/gocatcli) uses the *basename* of the
+path to index as the storage name unless you specify the name when indexing.
 
 The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory:
 ```bash
