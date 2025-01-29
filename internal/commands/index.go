@@ -113,17 +113,20 @@ func index(_ *cobra.Command, args []string) error {
 		log.Warn(err.Error())
 	}
 
-	cnt, err := w.Walk(top.ID, path, top)
+	cnt, size, err := w.Walk(top.ID, path, top, spinner)
 	if err == nil {
+		log.Debug("stop spinner...")
 		err := spinner.Stop()
 		if err != nil {
 			log.Error(err)
 		}
+		log.Debug("saving catalog...")
 		err = t.Save(rootOptCatalogPath, indexOptIndent)
 		if err != nil {
 			return err
 		}
-		log.Infof("\"%s\" indexed to \"%s\" (%d entries in %v)", path, rootOptCatalogPath, cnt, time.Since(t0))
+		hsize := utils.SizeToHuman(size)
+		log.Infof("\"%s\" indexed to \"%s\" (%d entries, %s in %v)", path, rootOptCatalogPath, cnt, hsize, time.Since(t0))
 	}
 	return err
 }

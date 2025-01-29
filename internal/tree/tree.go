@@ -220,6 +220,7 @@ func (t *Tree) Serialize(indent bool) ([]byte, error) {
 		content, err = json.Marshal(t)
 	}
 	if err != nil {
+		log.Debugf("marshal failed: %v", err)
 		return nil, err
 	}
 
@@ -228,11 +229,13 @@ func (t *Tree) Serialize(indent bool) ([]byte, error) {
 
 // Save saves a tree to json
 func (t *Tree) Save(path string, indent bool) error {
+	log.Debug("serialize tree...")
 	content, err := t.Serialize(indent)
 	if err != nil {
 		return err
 	}
 
+	log.Debugf("write tree to \"%s\"...", path)
 	err = os.WriteFile(path, content, os.ModePerm)
 	if err != nil {
 		return err

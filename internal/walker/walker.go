@@ -6,6 +6,8 @@ Copyright (c) 2024, deadc0de6
 package walker
 
 import (
+	"fmt"
+	"github.com/pterm/pterm"
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
@@ -26,9 +28,12 @@ type Walker struct {
 }
 
 // walk walks a dir - returns nb children and error if any
-func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent node.Node) (int64, error) {
+func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent node.Node, spinner *pterm.SpinnerPrinter) (int64, error) {
 	var cnt int64
 	//log.Debugf("walking %s with parent %s", walkPath, parent.GetName())
+	if spinner != nil {
+		spinner.UpdateText(fmt.Sprintf("indexing %s", walkPath))
+	}
 	children := parent.GetDirectChildren()
 	err := filepath.WalkDir(walkPath, func(pathUnderRoot string, dentry fs.DirEntry, err error) error {
 		if err != nil {
@@ -89,7 +94,7 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 
 			// handle directory
 			if node.IsDir(child) {
-				subcnt, err := w.walk(storageID, pathUnderRoot, storagePath, child)
+				subcnt, err := w.walk(storageID, pathUnderRoot, storagePath, child, spinner)
 				if err != nil {
 					log.Error(err)
 				}
@@ -146,8 +151,9 @@ func processArchive(path string, storageID int, storagePath string, child *node.
 }
 
 // Walk walks the filesystem hierarchy
-func (w *Walker) Walk(storageID int, walkPath string, storage *node.StorageNode) (int64, error) {
-	cnt, err := w.walk(storageID, walkPath, walkPath, storage)
+func (w *Walker) Walk(storageID int, walkPath string, storage *node.StorageNode, spinner *pterm.SpinnerPrinter) (int64, uint64, error) {
+	// index everything
+	cnt, err := w.walk(storageID, walkPath, walkPath, storage, spinner)
 
 	type parentChild struct {
 		parent node.Node
@@ -166,19 +172,30 @@ func (w *Walker) Walk(storageID int, walkPath string, storage *node.StorageNode)
 		}
 		return true
 	}
+	if spinner != nil {
+		spinner.UpdateText("cleaning tree...")
+	}
 	w.tree.ProcessChildren(storage, true, callback, -1)
 
 	// we do in two steps since ProcessChildren loops the children
 	// and RemoveChild alters the children slice
+	if spinner != nil {
+		spinner.UpdateText("cleaning tree (2)...")
+	}
 	for _, torm := range toRemove {
 		torm.parent.RemoveChild(torm.child)
 	}
 
 	// re-traverse tree to set total size of directory
 	log.Debugf("calculating total sizes...")
+	if spinner != nil {
+		spinner.UpdateText("calculating total sizes recursively...")
+	}
 	storage.RecursiveFillSize()
 
-	return cnt, err
+	log.Debugf("done indexing...")
+
+	return cnt, storage.Size, err
 }
 
 func (w *Walker) mustIgnore(path string) bool {
