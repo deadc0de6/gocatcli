@@ -63,7 +63,7 @@ func fzFind(_ *cobra.Command, args []string) error {
 		RawSize:     false,
 		Separator:   separator,
 	}
-	stringGetter, err := stringer.GetStringer(loadedTree, fzFindOptFormat, m)
+	stringGetter, err := stringer.GetStringer(rootTree, fzFindOptFormat, m)
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func fzFind(_ *cobra.Command, args []string) error {
 			return fmt.Errorf("no such start path: \"%s\"", startPath)
 		}
 	} else {
-		for _, top := range loadedTree.GetStorages() {
+		for _, top := range rootTree.GetStorages() {
 			startNodes = append(startNodes, top)
 		}
 	}
@@ -141,7 +141,7 @@ func fzFind(_ *cobra.Command, args []string) error {
 		stringGetter.PrintPrefix()
 		stringGetter.Print(entry.item, 0)
 		if hasChildren {
-			loadedTree.ProcessChildren(entry.item, fzFindOptShowAll, callback, 1)
+			rootTree.ProcessChildren(entry.item, fzFindOptShowAll, callback, 1)
 		}
 		stringGetter.PrintSuffix()
 	}
@@ -151,7 +151,7 @@ func fzFind(_ *cobra.Command, args []string) error {
 
 func fzFindFillList(n node.Node) []*fzfEntry {
 	var list []*fzfEntry
-	top := loadedTree.GetStorageNode(n)
+	top := rootTree.GetStorageNode(n)
 	callback := func(n node.Node, _ int, _ node.Node) bool {
 		item := &fzfEntry{
 			Path:    filepath.Join(top.GetName(), n.GetPath()),
@@ -161,6 +161,6 @@ func fzFindFillList(n node.Node) []*fzfEntry {
 		list = append(list, item)
 		return true
 	}
-	loadedTree.ProcessChildren(n, fzFindOptShowAll, callback, -1)
+	rootTree.ProcessChildren(n, fzFindOptShowAll, callback, -1)
 	return list
 }

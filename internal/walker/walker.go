@@ -7,7 +7,6 @@ package walker
 
 import (
 	"fmt"
-	"github.com/pterm/pterm"
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
@@ -16,6 +15,8 @@ import (
 	"io/fs"
 	"path/filepath"
 	"regexp"
+
+	"github.com/pterm/pterm"
 )
 
 // Walker a walker
@@ -58,6 +59,7 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 		info, err := dentry.Info()
 		if err != nil {
 			log.Errorf("cannot index %s: %v", walkPath, err)
+			return nil
 		}
 
 		if w.mustIgnore(pathUnderRoot) {

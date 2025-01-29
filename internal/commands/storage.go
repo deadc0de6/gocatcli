@@ -83,7 +83,7 @@ func init() {
 }
 
 func storageSave() error {
-	return loadedTree.Save(rootOptCatalogPath, storageOptIndent)
+	return rootCatalog.Save(rootTree)
 }
 
 func storageRemove(_ *cobra.Command, args []string) error {
@@ -92,7 +92,7 @@ func storageRemove(_ *cobra.Command, args []string) error {
 		log.Fatal(fmt.Errorf("user interrupted"))
 	}
 
-	loadedTree.RemoveStorage(name)
+	rootTree.RemoveStorage(name)
 	ret := storageSave()
 	listStorages()
 	return ret
@@ -102,7 +102,7 @@ func storageMeta(_ *cobra.Command, args []string) error {
 	name := args[0]
 	meta := args[1]
 
-	storage := loadedTree.GetStorageByName(name)
+	storage := rootTree.GetStorageByName(name)
 	if storage == nil {
 		return fmt.Errorf("no such storage %s", name)
 	}
@@ -117,7 +117,7 @@ func storageTag(_ *cobra.Command, args []string) error {
 	name := args[0]
 	tag := args[1]
 
-	storage := loadedTree.GetStorageByName(name)
+	storage := rootTree.GetStorageByName(name)
 	if storage == nil {
 		return fmt.Errorf("no such storage %s", name)
 	}
@@ -132,7 +132,7 @@ func storageUntag(_ *cobra.Command, args []string) error {
 	name := args[0]
 	tag := args[1]
 
-	storage := loadedTree.GetStorageByName(name)
+	storage := rootTree.GetStorageByName(name)
 	if storage == nil {
 		return fmt.Errorf("no such storage %s", name)
 	}
@@ -144,7 +144,7 @@ func storageUntag(_ *cobra.Command, args []string) error {
 }
 
 func listStorages() {
-	storages := loadedTree.GetStorages()
+	storages := rootTree.GetStorages()
 	if storages == nil {
 		return
 	}
@@ -157,7 +157,7 @@ func listStorages() {
 		RawSize:     false,
 		Separator:   separator,
 	}
-	stringGetter, err := stringer.GetStringer(loadedTree, stringer.FormatNative, m)
+	stringGetter, err := stringer.GetStringer(rootTree, stringer.FormatNative, m)
 	if err != nil {
 		return
 	}

@@ -7,6 +7,7 @@ package commands
 
 import (
 	"fmt"
+	"gocatcli/internal/catalog"
 	"gocatcli/internal/catcli"
 	"gocatcli/internal/utils"
 
@@ -22,14 +23,14 @@ var (
 		RunE:   convert,
 	}
 
-	convertOptTo     string
+	convertOptOutput string
 	convertOptIndent bool
 )
 
 func init() {
 	rootCmd.AddCommand(convertCmd)
 
-	convertCmd.PersistentFlags().StringVarP(&convertOptTo, "output", "o", "", "output path")
+	convertCmd.PersistentFlags().StringVarP(&convertOptOutput, "output", "o", "", "output path")
 	convertCmd.PersistentFlags().BoolVarP(&convertOptIndent, "indent", "I", true, "do not indent json")
 }
 
@@ -44,11 +45,12 @@ func convert(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	if len(convertOptTo) > 0 {
-		return t.Save(convertOptTo, convertOptIndent)
+	if len(convertOptOutput) > 0 {
+		c := catalog.NewCatalog(convertOptOutput)
+		return c.Save(t)
 	}
 
-	content, err := t.Serialize(convertOptIndent)
+	content, err := rootCatalog.Serialize(t)
 	if err != nil {
 		return err
 	}
