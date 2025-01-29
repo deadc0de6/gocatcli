@@ -14,6 +14,11 @@ import (
 	"time"
 )
 
+// GetID returns this storage id
+func (n *StorageNode) GetID() int {
+	return n.ID
+}
+
 // GetName returns this node name
 func (n *StorageNode) GetName() string {
 	return n.Name
@@ -45,7 +50,12 @@ func (n *StorageNode) GetDirectChildren() map[string]*FileNode {
 		return nil
 	}
 	children := make(map[string]*FileNode, len(n.Children))
-	for _, child := range n.Children {
+	for _, childID := range n.Children {
+		child := n.tree.GetFileNodeByID(childID)
+		if child == nil {
+			log.Errorf("unable to find %s child %v", n.GetName(), childID)
+			continue
+		}
 		children[child.GetName()] = child
 	}
 	return children
@@ -200,12 +210,11 @@ func (n *StorageNode) UpdateStorage(fsPath string, path string, meta string, tag
 // DeriveStorageID derive id from storage name
 func DeriveStorageID(name string) int {
 	now := time.Now().Format("2006-01-02 15:04:05")
-	return utils.HashString(name + now)
+	return utils.HashString("storage" + name + now)
 }
 
 // NewStorageNode creates a new storage node
 func NewStorageNode(name string, fsPath string, path string, meta string, tags []string) *StorageNode {
-
 	storage := StorageNode{
 		ID:   DeriveStorageID(name),
 		Name: name,

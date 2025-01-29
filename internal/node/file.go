@@ -7,6 +7,7 @@ package node
 
 import (
 	"fmt"
+	"gocatcli/internal/log"
 	"gocatcli/internal/utils"
 	"io/fs"
 	"path/filepath"
@@ -14,6 +15,11 @@ import (
 	"strings"
 	"time"
 )
+
+// GetID returns this node id
+func (n *FileNode) GetID() int {
+	return n.ID
+}
 
 // GetName returns this node name
 func (n *FileNode) GetName() string {
@@ -33,7 +39,12 @@ func (n *FileNode) GetMode() string {
 // GetDirectChildren returns this node children
 func (n *FileNode) GetDirectChildren() map[string]*FileNode {
 	children := make(map[string]*FileNode, len(n.Children))
-	for _, child := range n.Children {
+	for _, childID := range n.Children {
+		child := n.tree.GetFileNodeByID(childID)
+		if child == nil {
+			log.Errorf("unable to find %s child %v", n.GetName(), childID)
+			continue
+		}
 		children[child.GetName()] = child
 	}
 	return children
@@ -72,15 +83,15 @@ func (n *FileNode) GetPath() string {
 
 // AddChild adds a child to this node
 func (n *FileNode) AddChild(child *FileNode) {
-	n.Children = append(n.Children, child)
+	n.Children = append(n.Children, child.ID)
 }
 
 // RemoveChild removes a child from this node
 func (n *FileNode) RemoveChild(removeMe Node) {
 	var newChildrenSlice []*FileNode
-	for _, child := range n.Children {
-		if child.GetName() != removeMe.GetName() {
-			newChildrenSlice = append(newChildrenSlice, child)
+	for _, childID := range n.Children {
+		if childID != removeMe.ID {
+			newChildrenSlice = append(newChildrenSlice, childID)
 		}
 	}
 	n.Children = newChildrenSlice
@@ -195,6 +206,12 @@ func (n *FileNode) Update(info fs.FileInfo) {
 	n.seen = true
 }
 
+// DeriveStorageID derive id from storage name
+func DeriveFileID(typ string, name string) int {
+	now := time.Now().Format("2006-01-02 15:04:05")
+	return utils.HashString(typ + name + now)
+}
+
 // NewArchivedFileNode creates a new archived file node
 func NewArchivedFileNode(storageID int, path string, info fs.FileInfo, nameInsideArchive string) *FileNode {
 	node := NewFileNode(storageID, path, info)
@@ -217,6 +234,7 @@ func NewFileNode(storageID int, path string, info fs.FileInfo) *FileNode {
 		typ = FileTypeDir
 	}
 	node := FileNode{
+		ID:        DeriveFileID(typ, path),
 		Type:      FileType(typ),
 		StorageID: storageID,
 	}

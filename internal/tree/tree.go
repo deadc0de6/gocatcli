@@ -26,7 +26,7 @@ type Tree struct {
 	Created  int64               `json:"created" toml:"created"`
 	Updated  int64               `json:"updated" toml:"updated"`
 	Note     string              `json:"note" toml:"note"`
-	//Nodes    map[string]*node.FileNode `json:"-" toml:"-"`
+	Nodes    []*node.FileNode    `json:"nodes" toml:"nodes"`
 }
 
 // ProcessCallback will be called with the current node, its depth and its parent
@@ -181,6 +181,17 @@ func (t *Tree) GetStorageByID(id int) *node.StorageNode {
 	for _, storage := range t.Storages {
 		if storage.ID == id {
 			return storage
+		}
+	}
+	return nil
+}
+
+// GetFileNodeByID returns the node by id
+func (t *Tree) GetFileNodeByID(id int) *node.FileNode {
+	// TODO improve me
+	for _, node := range t.Nodes {
+		if node.ID == id {
+			return node
 		}
 	}
 	return nil
