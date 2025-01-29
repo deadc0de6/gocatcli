@@ -16,6 +16,7 @@ type FileType string
 
 // Node generic node interface
 type Node interface {
+	GetID() int
 	GetName() string
 	GetDirectChildren() map[string]*FileNode
 	GetSortedDirectChildren() []*FileNode

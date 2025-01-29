@@ -6,6 +6,7 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
+	"gocatcli/internal/catalog"
 	"gocatcli/internal/colorme"
 	"gocatcli/internal/log"
 	"gocatcli/internal/stringer"
@@ -20,11 +21,12 @@ import (
 )
 
 var (
-	version    = "1.0.3"
-	myName     = "gocatcli"
-	defCatalog = "gocatcli.catalog"
-	loadedTree *tree.Tree
-	separator  = ","
+	version     = "1.0.3"
+	myName      = "gocatcli"
+	defCatalog  = "gocatcli.catalog"
+	rootTree    *tree.Tree
+	rootCatalog *catalog.Catalog
+	separator   = ","
 
 	rootCmd = &cobra.Command{
 		Use:     "gocatcli",
@@ -88,8 +90,9 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 			s.Stop()
 		}()
 
-		// load tree
-		loadedTree, err = tree.LoadTree(rootOptCatalogPath)
+		// load catalog
+		rootCatalog = catalog.NewCatalog(rootOptCatalogPath)
+		rootTree, err = rootCatalog.LoadTree()
 		if err != nil && loadCatalogFatal {
 			log.Fatal(err)
 		}
