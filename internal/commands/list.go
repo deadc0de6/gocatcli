@@ -108,7 +108,7 @@ func listHierarchy(path string, format string, showAll bool, rawSize bool, long 
 
 	// get the base paths for start
 	startNodes := getStartPaths(path)
-	if startNodes == nil || len(startNodes) < 1 {
+	if len(startNodes) < 1 {
 		return fmt.Errorf("no such start path: \"%s\"", path)
 	}
 
