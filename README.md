@@ -82,6 +82,11 @@ $ make
 $ ./bin/gocatcli --help
 ```
 
+It's also available on [Nix](https://github.com/NixOS/nixpkgs) (unstable channel only, for now). If you have Nix installed, one way you can try it out is like this:
+``` bash
+nix-shell -p gocatcli
+```
+
 # Usage
 
 The primary use of gocatcli is to index your data (external hardrives, etc) into a catalog
