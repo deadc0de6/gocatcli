@@ -51,7 +51,7 @@ func diskUsage(_ *cobra.Command, args []string) error {
 			return fmt.Errorf("no such start path: \"%s\"", path)
 		}
 	} else {
-		for _, top := range loadedTree.GetStorages() {
+		for _, top := range rootTree.GetStorages() {
 			startNodes = append(startNodes, top)
 		}
 	}
@@ -63,7 +63,7 @@ func diskUsage(_ *cobra.Command, args []string) error {
 		RawSize:     duOptRawSize,
 		Separator:   separator,
 	}
-	stringer := stringer.NewDuStringer(loadedTree, m)
+	stringer := stringer.NewDuStringer(rootTree, m)
 	for _, n := range startNodes {
 		var nodes []node.Node
 		callback := func(n node.Node, _ int, _ node.Node) bool {
@@ -79,7 +79,7 @@ func diskUsage(_ *cobra.Command, args []string) error {
 			return true
 		}
 
-		loadedTree.ProcessChildren(n, true, callback, duOptDepth)
+		rootTree.ProcessChildren(n, true, callback, duOptDepth)
 		if len(nodes) > 0 {
 			slices.SortFunc(nodes, func(left, right node.Node) int {
 				return cmp.Compare(left.GetSize(), right.GetSize())

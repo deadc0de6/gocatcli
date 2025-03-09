@@ -46,7 +46,7 @@ func create(_ *cobra.Command, args []string) error {
 			return fmt.Errorf("no such start path: \"%s\"", createOptStart)
 		}
 	} else {
-		for _, top := range loadedTree.GetStorages() {
+		for _, top := range rootTree.GetStorages() {
 			startNodes = append(startNodes, top)
 		}
 	}
@@ -138,7 +138,7 @@ func create(_ *cobra.Command, args []string) error {
 			return true
 		}
 
-		loadedTree.ProcessChildren(n, true, callback, -1)
+		rootTree.ProcessChildren(n, true, callback, -1)
 	}
 	return nil
 }
