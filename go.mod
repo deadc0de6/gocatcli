@@ -3,6 +3,7 @@ module gocatcli
 go 1.22.0
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/TwiN/go-color v1.2.0
 	github.com/anacrolix/fuse v0.3.1-0.20231110084244-c6729d8bb2af
 	github.com/briandowns/spinner v1.19.0
@@ -20,7 +21,6 @@ require (
 require (
 	atomicgo.dev/cursor v0.1.1 // indirect
 	atomicgo.dev/keyboard v0.2.8 // indirect
-	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/anacrolix/generics v0.0.0-20230113004304-d6428d516633 // indirect
 	github.com/anacrolix/log v0.14.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
