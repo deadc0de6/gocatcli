@@ -14,7 +14,7 @@ import (
 
 func getStartPaths(path string) []node.Node {
 	log.Debugf("getting start paths from \"%s\"", path)
-	storages := loadedTree.GetStorages()
+	storages := rootTree.GetStorages()
 	// do not mess with pattern
 	if !strings.Contains(path, "*") && len(storages) == 1 {
 		// complete if single storage
@@ -23,5 +23,5 @@ func getStartPaths(path string) []node.Node {
 			path = filepath.Join(name, path)
 		}
 	}
-	return loadedTree.GetNodesFromPath(path)
+	return rootTree.GetNodesFromPath(path)
 }

@@ -74,7 +74,7 @@ func listHierarchy(path string, format string, showAll bool, rawSize bool, long 
 		RawSize:     rawSize,
 		Separator:   separator,
 	}
-	stringGetter, err := stringer.GetStringer(loadedTree, format, m)
+	stringGetter, err := stringer.GetStringer(rootTree, format, m)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func listHierarchy(path string, format string, showAll bool, rawSize bool, long 
 	if len(path) < 1 {
 		if maxDepth != 0 {
 			// list everything recursively
-			for _, top := range loadedTree.GetStorages() {
+			for _, top := range rootTree.GetStorages() {
 				err := listPrint(stringGetter, top, showAll, maxDepth, true)
 				if err != nil {
 					log.Error(err)
@@ -96,7 +96,7 @@ func listHierarchy(path string, format string, showAll bool, rawSize bool, long 
 			// print the storages only
 			// we are intentionally not listing recursively
 			// when no storage is selected use find for that
-			for _, top := range loadedTree.GetStorages() {
+			for _, top := range rootTree.GetStorages() {
 				stringGetter.Print(top, 0)
 			}
 		}
@@ -150,6 +150,6 @@ func listPrint(prt stringer.Stringer, n node.Node, showAll bool, maxDepth int, t
 
 	// for a directory, this will automatically
 	// list direct children even if recursive is false
-	loadedTree.ProcessChildren(n, showAll, callback, maxDepth)
+	rootTree.ProcessChildren(n, showAll, callback, maxDepth)
 	return nil
 }
