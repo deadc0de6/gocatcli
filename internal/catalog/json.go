@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	jsonIndent bool = true
+	jsonIndent = true
 )
 
 // JSONBackend the JSON backend

@@ -47,6 +47,9 @@ func convert(_ *cobra.Command, args []string) error {
 
 	if len(convertOptOutput) > 0 {
 		c := catalog.NewCatalog(convertOptOutput)
+		if c == nil {
+			return fmt.Errorf("cannot construct catalog")
+		}
 		return c.Save(t)
 	}
 

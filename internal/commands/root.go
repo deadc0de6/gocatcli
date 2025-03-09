@@ -92,6 +92,9 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 
 		// load catalog
 		rootCatalog = catalog.NewCatalog(rootOptCatalogPath)
+		if rootCatalog == nil {
+			log.Fatalf("cannot construct catalog")
+		}
 		rootTree, err = rootCatalog.LoadTree()
 		if err != nil && loadCatalogFatal {
 			log.Fatal(err)

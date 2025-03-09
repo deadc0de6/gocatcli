@@ -12,29 +12,35 @@ const (
 	catalogExt = ".catalog"
 )
 
+// Backend catalog backend
 type Backend interface {
 	Serialize(t *tree.Tree) ([]byte, error)
 	Save(path string, t *tree.Tree) error
 	LoadTree(path string) (*tree.Tree, error)
 }
 
+// Catalog the file catalog
 type Catalog struct {
-	Path string
-	B    Backend
+	Path       string
+	TheBackend Backend
 }
 
+// Serialize the tree
 func (c *Catalog) Serialize(t *tree.Tree) ([]byte, error) {
-	return c.B.Serialize(t)
+	return c.TheBackend.Serialize(t)
 }
 
+// Save tree to file
 func (c *Catalog) Save(t *tree.Tree) error {
-	return c.B.Save(c.Path, t)
+	return c.TheBackend.Save(c.Path, t)
 }
 
+// LoadTree from file
 func (c *Catalog) LoadTree() (*tree.Tree, error) {
-	return c.B.LoadTree(c.Path)
+	return c.TheBackend.LoadTree(c.Path)
 }
 
+// NewCatalog creates a new catalog
 func NewCatalog(path string) *Catalog {
 	var b Backend
 	ext := filepath.Ext(path)
@@ -45,9 +51,12 @@ func NewCatalog(path string) *Catalog {
 	} else if ext == tomlExt {
 		b = NewTOMLBackend()
 	}
+	if b == nil {
+		return nil
+	}
 	c := Catalog{
-		Path: path,
-		B:    b,
+		Path:       path,
+		TheBackend: b,
 	}
 	return &c
 }
