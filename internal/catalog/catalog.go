@@ -45,15 +45,18 @@ func NewCatalog(path string) *Catalog {
 	var b Backend
 	ext := filepath.Ext(path)
 	if ext == catalogExt {
-		b = NewTOMLBackend()
+		// defaults to json
+		b = NewJSONBackend()
 	} else if ext == jsonExt {
+		// .json
 		b = NewJSONBackend()
 	} else if ext == tomlExt {
+		// .toml
 		b = NewTOMLBackend()
+	} else {
+		b = NewJSONBackend()
 	}
-	if b == nil {
-		return nil
-	}
+
 	c := Catalog{
 		Path:       path,
 		TheBackend: b,
