@@ -34,7 +34,7 @@ func nav(_ *cobra.Command, args []string) error {
 		path = args[0]
 	}
 
-	n := navigator.NewNavigator(callback(loadedTree))
+	n := navigator.NewNavigator(callback(rootTree))
 
 	// get the base paths for start
 	startNodes := getStartPaths(path)
@@ -77,7 +77,7 @@ func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 			return true, entries
 		}
 
-		founds := loadedTree.GetNodesFromPath(path)
+		founds := rootTree.GetNodesFromPath(path)
 		if len(founds) != 1 {
 			// nothing there
 			return false, nil
@@ -89,7 +89,7 @@ func callback(t *tree.Tree) func(string, bool, bool) (bool, []*stringer.Entry) {
 			entries = append(entries, sub)
 			return true
 		}
-		loadedTree.ProcessChildren(founds[0], showHidden, callback, 0)
+		rootTree.ProcessChildren(founds[0], showHidden, callback, 0)
 		return false, entries
 	}
 }

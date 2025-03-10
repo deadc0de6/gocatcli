@@ -27,6 +27,6 @@ func init() {
 
 func mount(_ *cobra.Command, args []string) error {
 	path := args[0]
-	err := fuser.Mount(loadedTree, path, rootOptDebugMode)
+	err := fuser.Mount(rootTree, path, rootOptDebugMode)
 	return err
 }

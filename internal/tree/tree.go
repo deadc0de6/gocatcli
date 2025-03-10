@@ -6,11 +6,9 @@ Copyright (c) 2024, deadc0de6
 package tree
 
 import (
-	"encoding/json"
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/utils"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -22,12 +20,13 @@ const (
 
 // Tree the tree
 type Tree struct {
-	Storages []*node.StorageNode `json:"storages"`
-	Tool     string              `json:"tool"`
-	Version  string              `json:"version"`
-	Created  int64               `json:"created"`
-	Updated  int64               `json:"updated"`
-	Note     string              `json:"note"`
+	Storages []*node.StorageNode `json:"storages" toml:"storages"`
+	Tool     string              `json:"tool" toml:"tool"`
+	Version  string              `json:"version" toml:"version"`
+	Created  int64               `json:"created" toml:"created"`
+	Updated  int64               `json:"updated" toml:"updated"`
+	Note     string              `json:"note" toml:"note"`
+	//Nodes    map[string]*node.FileNode `json:"-" toml:"-"`
 }
 
 // ProcessCallback will be called with the current node, its depth and its parent
@@ -206,60 +205,6 @@ func (t *Tree) RemoveStorage(name string) {
 		}
 	}
 	t.Storages = newStorage
-}
-
-// Serialize gets the tree as string
-func (t *Tree) Serialize(indent bool) ([]byte, error) {
-	t.Updated = time.Now().Unix()
-
-	var content []byte
-	var err error
-	if indent {
-		content, err = json.MarshalIndent(t, "", "  ")
-	} else {
-		content, err = json.Marshal(t)
-	}
-	if err != nil {
-		log.Debugf("marshal failed: %v", err)
-		return nil, err
-	}
-
-	return content, err
-}
-
-// Save saves a tree to json
-func (t *Tree) Save(path string, indent bool) error {
-	log.Debug("serialize tree...")
-	content, err := t.Serialize(indent)
-	if err != nil {
-		return err
-	}
-
-	log.Debugf("write tree to \"%s\"...", path)
-	err = os.WriteFile(path, content, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	log.Debugf("tree saved to \"%s\"", path)
-	return nil
-}
-
-// LoadTree loads a tree from json
-func LoadTree(path string) (*Tree, error) {
-	log.Debugf("loading catalog from %s", path)
-	fd, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer fd.Close()
-
-	var tree Tree
-	err = json.NewDecoder(fd).Decode(&tree)
-	if err != nil {
-		return nil, err
-	}
-
-	return &tree, nil
 }
 
 // NewTree creates a new tree

@@ -58,6 +58,7 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 		info, err := dentry.Info()
 		if err != nil {
 			log.Errorf("cannot index %s: %v", walkPath, err)
+			return nil
 		}
 
 		if w.mustIgnore(pathUnderRoot) {

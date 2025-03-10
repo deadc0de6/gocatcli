@@ -63,7 +63,7 @@ func find(_ *cobra.Command, args []string) error {
 		RawSize:     false,
 		Separator:   separator,
 	}
-	stringGetter, err := stringer.GetStringer(loadedTree, findOptFormat, m)
+	stringGetter, err := stringer.GetStringer(rootTree, findOptFormat, m)
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func find(_ *cobra.Command, args []string) error {
 			return fmt.Errorf("no such start path: \"%s\"", findOptStart)
 		}
 	} else {
-		for _, top := range loadedTree.GetStorages() {
+		for _, top := range rootTree.GetStorages() {
 			startNodes = append(startNodes, top)
 		}
 	}
@@ -93,7 +93,7 @@ func find(_ *cobra.Command, args []string) error {
 		log.Debugf("search pattern: %s", patt)
 
 		for _, startNode := range startNodes {
-			matchNodes(loadedTree, startNode, re, stringGetter)
+			matchNodes(rootTree, startNode, re, stringGetter)
 		}
 	}
 
