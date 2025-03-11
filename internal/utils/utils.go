@@ -68,7 +68,7 @@ func UniqStrings(slices ...[]string) []string {
 
 // SizeToHuman converts size to human readable string
 func SizeToHuman(bytes uint64) string {
-	str := humanize.IBytes(bytes)
+	str := humanize.Bytes(bytes)
 	return strings.ReplaceAll(str, " ", "")
 }
 

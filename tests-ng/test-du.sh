@@ -66,7 +66,7 @@ echo ">>> test du total size human <<<"
 #expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
 expected=$("${cur}/pdu.py" --human "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
 cat_file "${out}"
-size=$(tail -1 "${out}" | awk '{print $1}' | sed 's/MiB//g')
+size=$(tail -1 "${out}" | awk '{print $1}' | sed 's/MiB//g' | sed 's/MB//g')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total human size" && exit 1)
 

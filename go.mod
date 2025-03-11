@@ -3,6 +3,7 @@ module gocatcli
 go 1.22.0
 
 require (
+	github.com/BurntSushi/toml v1.4.0
 	github.com/TwiN/go-color v1.2.0
 	github.com/anacrolix/fuse v0.3.1-0.20231110084244-c6729d8bb2af
 	github.com/briandowns/spinner v1.19.0

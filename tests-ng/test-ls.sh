@@ -48,7 +48,7 @@ echo ">>> test ls storage <<<"
 "${bin}" --debug ls -l -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
-[ "${cnt}" != "11" ] && echo "expecting 11 lines got ${cnt}" && exit 1
+[ "${cnt}" != "12" ] && echo "expecting 12 lines got ${cnt}" && exit 1
 #grep '^storage internal.*' "${out}" || (echo "bad content 1" && exit 1)
 grep 'fuser *d.*' "${out}" || (echo "bad content 2" && exit 1)
 grep 'walker *d.*' "${out}" || (echo "bad content 3" && exit 1)

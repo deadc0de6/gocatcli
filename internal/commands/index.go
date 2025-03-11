@@ -97,7 +97,7 @@ func index(_ *cobra.Command, args []string) error {
 		// get a new storage
 		top = node.NewStorageNode(name, path, filepath.Base(path), indexOptMeta, indexOptTags)
 		// and append to tree
-		loadedTree.Storages = append(loadedTree.Storages, top)
+		rootTree.Storages = append(rootTree.Storages, top)
 	}
 
 	// walk the filesystem
@@ -121,7 +121,7 @@ func index(_ *cobra.Command, args []string) error {
 			log.Error(err)
 		}
 		log.Debug("saving catalog...")
-		err = t.Save(rootOptCatalogPath, indexOptIndent)
+		err = rootCatalog.Save(t)
 		if err != nil {
 			return err
 		}
@@ -135,20 +135,20 @@ func loadCatalog(storageName string, fsPath string) (*tree.Tree, *node.StorageNo
 	var top *node.StorageNode
 	var err error
 
-	if loadedTree != nil {
+	if rootTree != nil {
 		//log.Debugf("trying to load storage %s", storageName)
-		top = loadedTree.GetStorageByName(storageName)
+		top = rootTree.GetStorageByName(storageName)
 		if top != nil {
 			log.Debugf("updating storage info for \"%s\"", storageName)
 			top.UpdateStorage(fsPath, filepath.Base(fsPath), indexOptMeta, indexOptTags)
 		}
 	} else {
 		// create a new catalog
-		loadedTree, err = tree.NewTree(version)
+		rootTree, err = tree.NewTree(version)
 		if err != nil {
 			return nil, nil, err
 		}
 	}
 
-	return loadedTree, top, nil
+	return rootTree, top, nil
 }
