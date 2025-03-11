@@ -18,7 +18,8 @@ Features:
 * Multiple ways to explore the catalog (`ls`, `find`, `tree`, tui browser, `fzf`, etc)
 * Use wildcards to search for files
 * archives support (index their content as well)
-* Save catalog to json for easy versioning with git
+* Save catalog for easy versioning with git
+* Support catalog in json or toml
 * Multiple outputs (`csv`, etc)
 * Mount file using fuse
 * Re-create locally the catalog hierarchy
