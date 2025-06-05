@@ -22,31 +22,24 @@ clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
+path="${cur}/../"
 
 # index
-"${bin}" index -a -C -c "${catalog}" "${cur}/../" gocatcli
+"${bin}" index -a -C -c "${catalog}" "${path}" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 echo ">>> test du raw <<<"
 "${bin}" --debug du -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 
 # shellcheck disable=SC2126
-expected=$(find "${cur}/../" -type d | grep -v '^.$' | wc -l)
+expected=$(find "${path}" -type d | grep -v '^.$' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
-
-# bin size
-echo ">>> test du bin size raw <<<"
-#expected=$(du -c --block=1 --apparent-size "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
-expected=$("${cur}/pdu.py" "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
-size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
-echo "size:${size} VS exp:${expected}"
-[ "${expected}" != "${size}" ] && (echo "bad bin size" && exit 1)
 
 # total size
 echo ">>> test du total size raw <<<"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}')
-expected=$("${cur}/pdu.py" "${cur}/../" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${path}" | tail -1 | awk '{print $1}')
 #cat_file "${out}"
 size=$(tail -1 "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
@@ -55,7 +48,7 @@ echo "size:${size} VS exp:${expected}"
 echo ">>> test du human size <<<"
 "${bin}" --debug du -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-expected=$(find "${cur}/../" -type d | grep -v '^.$' | wc -l)
+expected=$(find "${path}" -type d | grep -v '^.$' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
@@ -64,11 +57,20 @@ echo ">>> test du total size human <<<"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
 # for some reason "du -h" uses 1000 with above options instead of 1024
 #expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
-expected=$("${cur}/pdu.py" --human "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
+"${cur}/pdu.py" --human "${path}"
+expected=$("${cur}/pdu.py" --human "${path}" | tail -1 | awk '{print $1}' | sed -e 's/M//g' -e 's/K//g')
 cat_file "${out}"
-size=$(tail -1 "${out}" | awk '{print $1}' | sed 's/MiB//g' | sed 's/MB//g')
+size=$(tail -1 "${out}" | awk '{print $1}' | sed -e 's/MiB//g' -e 's/MB//g' -e 's/kB//g' -e 's/\..*$//g')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total human size" && exit 1)
+
+# bin size
+echo ">>> test du bin size raw <<<"
+#expected=$(du -c --block=1 --apparent-size "${path}" | tail -1 | awk '{print $1}')
+expected=$("${cur}/pdu.py" "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
+size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')
+echo "size:${size} VS exp:${expected}"
+[ "${expected}" != "${size}" ] && (echo "bad bin size" && exit 1)
 
 echo "test $(basename "${0}") OK!"
 exit 0
