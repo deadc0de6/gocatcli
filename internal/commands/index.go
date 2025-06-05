@@ -10,7 +10,7 @@ import (
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"gocatcli/internal/walker"
 	"path/filepath"
 	"regexp"
@@ -73,7 +73,7 @@ func index(_ *cobra.Command, args []string) error {
 	// build ignore pattern
 	var ignPatterns []*regexp.Regexp
 	for _, ign := range indexOptIgnores {
-		ign = utils.PatchPattern(ign)
+		ign = utilities.PatchPattern(ign)
 		re, err := regexp.Compile(ign)
 		if err != nil {
 			log.Fatal(err)
@@ -85,7 +85,7 @@ func index(_ *cobra.Command, args []string) error {
 	for _, storage := range t.Storages {
 		if !indexOptForce && name == storage.Name {
 			question := fmt.Sprintf("A storage with the name \"%s\" already exists, update it?", name)
-			if !utils.AskUser(question) {
+			if !utilities.AskUser(question) {
 				log.Fatal(fmt.Errorf("user interrupted"))
 			}
 		}
@@ -125,7 +125,7 @@ func index(_ *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		hsize := utils.SizeToHuman(size)
+		hsize := utilities.SizeToHuman(size)
 		log.Infof("\"%s\" indexed to \"%s\" (%d entries, %s in %v)", path, rootOptCatalogPath, cnt, hsize, time.Since(t0))
 	}
 	return err

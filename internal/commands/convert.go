@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"gocatcli/internal/catalog"
 	"gocatcli/internal/catcli"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 
 	"github.com/spf13/cobra"
 )
@@ -36,7 +36,7 @@ func init() {
 
 func convert(_ *cobra.Command, args []string) error {
 	path := args[0]
-	if !utils.FileExists(path) {
+	if !utilities.FileExists(path) {
 		return fmt.Errorf("\"%s\" does not exist", path)
 	}
 

@@ -11,7 +11,7 @@ import (
 	"gocatcli/internal/node"
 	"gocatcli/internal/stringer"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"regexp"
 	"strings"
 	"time"
@@ -83,7 +83,7 @@ func find(_ *cobra.Command, args []string) error {
 
 	for _, arg := range args {
 		// patch pattern
-		arg = utils.PatchPattern(arg)
+		arg = utilities.PatchPattern(arg)
 		// get the pattern to search for
 		patt := arg
 		re, err := regexp.Compile(patt)

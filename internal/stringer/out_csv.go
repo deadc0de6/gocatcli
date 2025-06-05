@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"strings"
 )
 
@@ -41,7 +41,7 @@ func (p *CSVStringer) getSize(sz uint64) string {
 	if p.mode.RawSize {
 		return fmt.Sprintf("%d", sz)
 	}
-	return utils.SizeToHuman(sz)
+	return utilities.SizeToHuman(sz)
 }
 
 func (p *CSVStringer) storageToString(storage *node.StorageNode) string {
@@ -50,7 +50,7 @@ func (p *CSVStringer) storageToString(storage *node.StorageNode) string {
 	fields = append(fields, string(storage.Type))
 	fields = append(fields, storage.GetPath())
 	fields = append(fields, p.getSize(storage.Size))
-	fields = append(fields, utils.DateToString(storage.IndexedAt))
+	fields = append(fields, utilities.DateToString(storage.IndexedAt))
 	fields = append(fields, "") // maccess
 	fields = append(fields, "") // checksum
 	fields = append(fields, fmt.Sprintf("%d", storage.TotalFiles))
@@ -67,8 +67,8 @@ func (p *CSVStringer) fileToString(n *node.FileNode) string {
 	fields = append(fields, string(n.Type))
 	fields = append(fields, n.GetPath())
 	fields = append(fields, p.getSize(n.Size))
-	fields = append(fields, utils.DateToString(n.IndexedAt))
-	maccess := utils.DateToString(n.Maccess)
+	fields = append(fields, utilities.DateToString(n.IndexedAt))
+	maccess := utilities.DateToString(n.Maccess)
 	fields = append(fields, maccess)
 	fields = append(fields, string(n.Checksum))
 	fields = append(fields, fmt.Sprintf("%d", len(n.Children)))

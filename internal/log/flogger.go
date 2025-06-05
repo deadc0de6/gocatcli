@@ -7,6 +7,8 @@ package log
 
 import (
 	"os"
+
+	"github.com/caarlos0/log"
 )
 
 // appendToFile appends content (string) to file
@@ -15,7 +17,12 @@ func appendToFile(path string, content string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			log.Error(err.Error())
+		}
+	}()
 	_, err = f.WriteString(content)
 	return err
 }

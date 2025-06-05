@@ -6,6 +6,7 @@ Copyright (c) 2024, deadc0de6
 package fuser
 
 import (
+	"gocatcli/internal/log"
 	"gocatcli/internal/tree"
 
 	"github.com/anacrolix/fuse"
@@ -44,7 +45,12 @@ func Mount(theTree *tree.Tree, mountpoint string, debug bool) error {
 	if err != nil {
 		return err
 	}
-	defer c.Close()
+	defer func() {
+		err := c.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	myFS := &FS{
 		mountPoint: mountpoint,

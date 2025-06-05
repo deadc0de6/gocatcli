@@ -7,15 +7,16 @@ package walker
 
 import (
 	"fmt"
-	"github.com/pterm/pterm"
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"gocatcli/internal/walker/archives"
 	"io/fs"
 	"path/filepath"
 	"regexp"
+
+	"github.com/pterm/pterm"
 )
 
 // Walker a walker
@@ -110,7 +111,7 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 
 			// handle checksums
 			if w.withChecksum {
-				chk, err := utils.ChecksumFileContent(pathUnderRoot)
+				chk, err := utilities.ChecksumFileContent(pathUnderRoot)
 				if err != nil {
 					log.Error(err)
 				} else {

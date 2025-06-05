@@ -58,7 +58,12 @@ func (b *JSONBackend) LoadTree(path string) (*tree.Tree, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer fd.Close()
+	defer func() {
+		err := fd.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	var tree tree.Tree
 	err = json.NewDecoder(fd).Decode(&tree)

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"gocatcli/internal/colorme"
 	"gocatcli/internal/node"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"sort"
 	"strings"
 )
@@ -22,17 +22,18 @@ var (
 
 func attrToStringColored(key string, value string, cm *colorme.ColorMe) string {
 	var line string
-	if key == "date" {
+	switch key {
+	case "date":
 		line = cm.InBlue(value)
-	} else if key == "maccess" {
+	case "maccess":
 		line = cm.InBlue(value)
-	} else if key == "mode" {
+	case "mode":
 		line = cm.InYellow(value)
-	} else if key == "size" {
+	case "size":
 		line = cm.InGreen(fmt.Sprintf("%6s", value))
-	} else if key == "type" {
+	case "type":
 		line = cm.InRed(fmt.Sprintf("%-4s", value))
-	} else {
+	default:
 		line = cm.InGray(value)
 	}
 
@@ -51,10 +52,7 @@ func getAttr(attrs map[string]string, key string) string {
 func getMoreAttrs(attrs map[string]string, notThose []string, cm *colorme.ColorMe) []string {
 	var outs []string
 
-	skipChildren := false
-	if getAttr(attrs, "type") == node.FileTypeFile || getAttr(attrs, "type") == node.FileTypeArchive || getAttr(attrs, "type") == node.FileTypeArchived {
-		skipChildren = true
-	}
+	skipChildren := getAttr(attrs, "type") == node.FileTypeFile || getAttr(attrs, "type") == node.FileTypeArchive || getAttr(attrs, "type") == node.FileTypeArchived
 
 	// get the extra first
 	for _, key := range extraAttrs {
@@ -72,7 +70,7 @@ func getMoreAttrs(attrs map[string]string, notThose []string, cm *colorme.ColorM
 
 	keys := make([]string, 0, len(attrs))
 	for k := range attrs {
-		if utils.NotIn(k, notThose) {
+		if utilities.NotIn(k, notThose) {
 			keys = append(keys, k)
 		}
 	}

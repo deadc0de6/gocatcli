@@ -3,7 +3,7 @@ author: deadc0de6 (https://github.com/deadc0de6)
 Copyright (c) 2024, deadc0de6
 */
 
-package utils
+package utilities
 
 import (
 	"crypto/md5"
@@ -37,7 +37,12 @@ func ChecksumFileContent(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer f.Close()
+	defer func() {
+		err := f.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	h := md5.New()
 	_, err = io.Copy(h, f)
@@ -171,7 +176,7 @@ func NotIn(needle string, stack []string) bool {
 // PatchPattern fix pattern
 func PatchPattern(patt string) string {
 	// replace any dot with \.
-	patt = strings.Replace(patt, ".", "\\.", -1)
+	patt = strings.ReplaceAll(patt, ".", "\\.")
 
 	// ensure pattern is enclosed in stars
 	if !strings.Contains(patt, "*") {

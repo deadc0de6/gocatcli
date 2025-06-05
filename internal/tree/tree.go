@@ -8,7 +8,7 @@ package tree
 import (
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"path/filepath"
 	"strings"
 	"time"
@@ -78,7 +78,7 @@ func (t *Tree) GetNodesFromPath(path string) []node.Node {
 	}
 
 	// split path for search
-	paths := utils.SplitPath(path)
+	paths := utilities.SplitPath(path)
 	if len(paths) < 1 {
 		return nil
 	}

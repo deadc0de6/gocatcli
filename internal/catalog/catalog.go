@@ -44,16 +44,13 @@ func (c *Catalog) LoadTree() (*tree.Tree, error) {
 func NewCatalog(path string) *Catalog {
 	var b Backend
 	ext := filepath.Ext(path)
-	if ext == catalogExt {
-		// defaults to json
+	switch ext {
+	case catalogExt, jsonExt:
 		b = NewJSONBackend()
-	} else if ext == jsonExt {
-		// .json
-		b = NewJSONBackend()
-	} else if ext == tomlExt {
-		// .toml
+	case tomlExt:
 		b = NewTOMLBackend()
-	} else {
+	default:
+		// defaults to json
 		b = NewJSONBackend()
 	}
 

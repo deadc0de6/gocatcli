@@ -26,37 +26,55 @@ var (
 // Info print info to stdout
 func Info(text string) {
 	out := color.InBlue(infoPre) + text + eol
-	os.Stdout.WriteString(clearLine + out)
+	_, err := os.Stdout.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Infof print info to stdout
 func Infof(format string, a ...interface{}) {
 	out := color.InBlue(fmt.Sprintf(format, a...) + eol)
-	os.Stdout.WriteString(clearLine + out)
+	_, err := os.Stdout.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Error print error to stderr
 func Error(err error) {
 	out := color.InRed(errorPre) + err.Error() + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err = os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Errorf print error to stderr
 func Errorf(format string, a ...interface{}) {
 	out := color.InRed(errorPre) + fmt.Sprintf(format, a...) + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err := os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Warn print warning to stderr
 func Warn(text string) {
 	out := color.InRed(warnPre) + text + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err := os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Warnf print warning to stderr
 func Warnf(format string, a ...interface{}) {
 	out := color.InRed(warnPre) + fmt.Sprintf(format, a...) + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err := os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Debug print debug to stderr
@@ -65,7 +83,10 @@ func Debug(text string) {
 		return
 	}
 	out := color.InYellow(debugPre) + text + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err := os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Debugf print debug to stderr
@@ -74,7 +95,10 @@ func Debugf(format string, a ...interface{}) {
 		return
 	}
 	out := color.InYellow(debugPre) + fmt.Sprintf(format, a...) + eol
-	os.Stderr.WriteString(clearLine + out)
+	_, err := os.Stderr.WriteString(clearLine + out)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
 
 // Fatal error and exit

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"path/filepath"
 )
 
@@ -47,7 +47,7 @@ func (p *DuString) ToString(n node.Node, _ int, _ bool) *Entry {
 		size = fmt.Sprintf("%d", n.GetSize())
 		entry.Line = fmt.Sprintf("%-10s    %s", size, path)
 	} else {
-		size = utils.SizeToHuman(n.GetSize())
+		size = utilities.SizeToHuman(n.GetSize())
 		entry.Line = fmt.Sprintf("%-6s    %s", size, path)
 	}
 	return &entry

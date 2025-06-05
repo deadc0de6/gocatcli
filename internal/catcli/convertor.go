@@ -21,8 +21,12 @@ func readCatalog(path string) (*Top, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer fd.Close()
-
+	defer func() {
+		err := fd.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 	var top Top
 	err = json.NewDecoder(fd).Decode(&top)
 	if err != nil {

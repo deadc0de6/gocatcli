@@ -11,7 +11,7 @@ import (
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	iofs "io/fs"
 	"os"
 	"syscall"
@@ -94,10 +94,10 @@ func (h *FuseDir) Attr(_ context.Context, a *fuse.Attr) error {
 		a.Ctime = time.Now()
 		a.Mode = os.ModeDir | 0755
 	} else {
-		a.Inode = utils.HashString64(h.current.GetPath())
+		a.Inode = utilities.HashString64(h.current.GetPath())
 		a.Mtime = time.Unix(h.current.GetMAccess(), 0)
 		a.Ctime = time.Unix(h.current.GetMAccess(), 0)
-		mode := iofs.FileMode(utils.ModeStrToInt(h.current.GetMode()))
+		mode := iofs.FileMode(utilities.ModeStrToInt(h.current.GetMode()))
 		log.ToFile(logPath, fmt.Sprintf("mode %s -> %v", h.current.GetMode(), mode))
 		a.Mode = os.ModeDir | mode
 	}

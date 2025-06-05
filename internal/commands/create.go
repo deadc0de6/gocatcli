@@ -84,7 +84,10 @@ func create(_ *cobra.Command, args []string) error {
 					if err != nil {
 						log.Error(err)
 					}
-					fd.Close()
+					err = fd.Close()
+					if err != nil {
+						log.Error(err)
+					}
 				}
 			case node.FileTypeArchived:
 				if createOptWithArchive {
@@ -118,7 +121,10 @@ func create(_ *cobra.Command, args []string) error {
 						if err != nil {
 							log.Error(err)
 						}
-						fd.Close()
+						err = fd.Close()
+						if err != nil {
+							log.Error(err)
+						}
 					}
 				}
 			case node.FileTypeDir:
@@ -133,7 +139,10 @@ func create(_ *cobra.Command, args []string) error {
 				if err != nil {
 					log.Error(err)
 				}
-				fd.Close()
+				err = fd.Close()
+				if err != nil {
+					log.Error(err)
+				}
 			}
 			return true
 		}

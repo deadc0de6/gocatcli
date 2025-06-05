@@ -11,7 +11,7 @@ import (
 	"gocatcli/internal/log"
 	"gocatcli/internal/stringer"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"strings"
 	"time"
 
@@ -74,7 +74,7 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		}
 
 		// check catalog file path
-		if !utils.FileExists(rootOptCatalogPath) && loadCatalogFatal {
+		if !utilities.FileExists(rootOptCatalogPath) && loadCatalogFatal {
 			log.Fatalf("catalog not found %s", rootOptCatalogPath)
 		}
 

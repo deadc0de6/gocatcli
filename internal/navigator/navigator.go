@@ -9,7 +9,7 @@ import (
 	"gocatcli/internal/log"
 	"gocatcli/internal/node"
 	"gocatcli/internal/stringer"
-	"gocatcli/internal/utils"
+	"gocatcli/internal/utilities"
 	"path/filepath"
 
 	"github.com/gdamore/tcell/v2"
@@ -281,7 +281,7 @@ func (a *Navigator) goBack() {
 		return
 	}
 
-	fields := utils.SplitPath(a.path)
+	fields := utilities.SplitPath(a.path)
 	if len(fields) < 2 {
 		a.path = ""
 		return

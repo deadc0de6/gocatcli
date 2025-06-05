@@ -27,7 +27,12 @@ func IsArchive(path string) bool {
 	if err != nil {
 		return false
 	}
-	defer fd.Close()
+	defer func() {
+		err := fd.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	_, _, err = archiver.Identify(path, fd)
 	return err != archiver.ErrNoMatch
@@ -41,7 +46,12 @@ func GetFiles(path string) ([]*ArchivedFile, error) {
 	if err != nil {
 		return names, err
 	}
-	defer fd.Close()
+	defer func() {
+		err := fd.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}()
 
 	format, stream, err := archiver.Identify(path, fd)
 	if err == archiver.ErrNoMatch {
