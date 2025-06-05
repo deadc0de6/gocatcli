@@ -8,6 +8,7 @@ builds:
       - GO111MODULE=on
     goos:
       - linux
+      - darwin
     goarch:
       - arm
       - arm64
