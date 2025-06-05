@@ -6,7 +6,6 @@
 # ./tests-ng/pdu.py . --ignore='*/.git*' -H
 #
 
-
 import os
 import argparse
 import fnmatch
@@ -27,7 +26,7 @@ def debug(txt: str):
     print(f'[DEBUG] {txt}')
 
 
-def size_to_str(size: int, human: bool = False) -> str:
+def size_to_str(size: int, human: bool = False, digits=None) -> str:
     """size to string"""
     div = 1024.
     suf = ['B', 'K', 'M', 'G', 'T', 'P']
@@ -37,11 +36,11 @@ def size_to_str(size: int, human: bool = False) -> str:
     sz = float(size)
     for i in suf:
         if sz < div:
-            return f'{round(sz)}{i}'
+            return f'{round(sz, digits)}{i}'
             # return f'{int(sz)}{i}'
         sz = sz / div
     sufix = suf[-1]
-    return f'{round(size)}{sufix}'
+    return f'{round(size, digits)}{sufix}'
     # return f'{int(sz)}{sufix}'
 
 
@@ -78,7 +77,7 @@ def main(path: str, human: bool,
             dirsz += size
             total += size
         if root != path:
-            print(f'{size_to_str(dirsz, human=human)} {root}')
+            print(f'{size_to_str(dirsz, human=human, digits=1)} {root}')
     print(f'{size_to_str(total, human=human)} {path}')
     return True
 
