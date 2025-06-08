@@ -8,7 +8,6 @@ require (
 	github.com/anacrolix/fuse v0.3.1-0.20231110084244-c6729d8bb2af
 	github.com/briandowns/spinner v1.19.0
 	github.com/caarlos0/log v0.4.8
-	github.com/dustin/go-humanize v1.0.0
 	github.com/gdamore/tcell/v2 v2.5.3
 	github.com/h2non/filetype v1.1.3
 	github.com/ktr0731/go-fuzzyfinder v0.7.0
