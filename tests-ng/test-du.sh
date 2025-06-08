@@ -45,7 +45,7 @@ size=$(tail -1 "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total raw size" && exit 1)
 
-echo ">>> test du human size <<<"
+echo ">>> test count du human size output <<<"
 "${bin}" --debug du -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 expected=$(find "${path}" -type d | grep -v '^.$' | wc -l)
@@ -58,9 +58,9 @@ echo ">>> test du total size human <<<"
 # for some reason "du -h" uses 1000 with above options instead of 1024
 #expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
 "${cur}/pdu.py" --human "${path}"
-expected=$("${cur}/pdu.py" --human "${path}" | tail -1 | awk '{print $1}' | sed -e 's/M//g' -e 's/K//g')
+expected=$("${cur}/pdu.py" --human "${path}" | tail -1 | awk '{print $1}')
 cat_file "${out}"
-size=$(tail -1 "${out}" | awk '{print $1}' | sed -e 's/MiB//g' -e 's/MB//g' -e 's/kB//g' -e 's/\..*$//g')
+size=$(tail -1 "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total human size" && exit 1)
 

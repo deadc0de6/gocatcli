@@ -12,13 +12,13 @@ import (
 	"gocatcli/internal/log"
 	"hash/fnv"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
-	humanize "github.com/dustin/go-humanize"
 	"github.com/pterm/pterm"
 )
 
@@ -73,8 +73,36 @@ func UniqStrings(slices ...[]string) []string {
 
 // SizeToHuman converts size to human readable string
 func SizeToHuman(bytes uint64) string {
-	str := humanize.Bytes(bytes)
-	return strings.ReplaceAll(str, " ", "")
+	const (
+		KB = 1024
+		MB = KB * 1024
+		GB = MB * 1024
+		TB = GB * 1024
+		PB = TB * 1024
+	)
+	var size float64
+	var unit string
+
+	switch {
+	case bytes >= TB:
+		size = float64(bytes) / TB
+		unit = "TB"
+	case bytes >= GB:
+		size = float64(bytes) / GB
+		unit = "GB"
+	case bytes >= MB:
+		size = float64(bytes) / MB
+		unit = "MB"
+	case bytes >= KB:
+		size = float64(bytes) / KB
+		unit = "KB"
+	default:
+		size = float64(bytes)
+		//unit = "Bytes"
+		unit = ""
+	}
+	sz := int(math.Round(size))
+	return fmt.Sprintf("%d%s", sz, unit)
 }
 
 // DateToString converts date to string

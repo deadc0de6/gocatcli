@@ -29,13 +29,13 @@ def debug(txt: str):
 def size_to_str(size: int, human: bool = False, digits=None) -> str:
     """size to string"""
     div = 1024.
-    suf = ['B', 'K', 'M', 'G', 'T', 'P']
+    suf = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     if not human or size < div:
         # not human
         return f'{size}'
     sz = float(size)
     for i in suf:
-        if sz < div:
+        if sz <= div:
             return f'{round(sz, digits)}{i}'
             # return f'{int(sz)}{i}'
         sz = sz / div
