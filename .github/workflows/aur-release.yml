@@ -16,7 +16,7 @@ jobs:
         sed -i "s/^pkgver=.*$/pkgver=${version}/g" packages/arch-gocatcli-git/PKGBUILD
         cat packages/arch-gocatcli-git/PKGBUILD
     - name: Publish to aur
-      uses: KSXGitHub/github-actions-deploy-aur@v2.2.4
+      uses: KSXGitHub/github-actions-deploy-aur@v3.0.0
       with:
         pkgname: gocatcli-git
         pkgbuild: ./packages/arch-gocatcli-git/PKGBUILD
