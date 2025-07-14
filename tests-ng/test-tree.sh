@@ -24,7 +24,7 @@ catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
 
 # index
-"${bin}" index -a -C -c "${catalog}" --ignore=".git" "${cur}/../" gocatcli
+"${bin}" index -a -C -c "${catalog}" --ignore="\.git" "${cur}/../" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # tree

@@ -15,7 +15,6 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
@@ -203,35 +202,5 @@ func NotIn(needle string, stack []string) bool {
 
 // PatchPattern fix pattern
 func PatchPattern(pattern string) string {
-	// replace any dot with \.
-	patt := strings.ReplaceAll(pattern, ".", "\\..")
-
-	// ensure pattern is enclosed in stars
-	if !strings.Contains(patt, "*") {
-		ret := fmt.Sprintf(".*%s.*", patt)
-		log.Debugf("patched non pattern from \"%s\" to \"%s\"", patt, ret)
-		return ret
-	}
-
-	// replace all "*" with ".*" for golang pattern
-	notDotStar := regexp.MustCompile(`([^\.])\*`)
-	ret := notDotStar.ReplaceAllString(patt, "$1.*")
-
-	// replace the first star if any
-	if strings.HasPrefix(ret, "*") {
-		ret = fmt.Sprintf(".*%s", ret[1:])
-	}
-
-	// limit start of line if not star
-	if !strings.HasPrefix(ret, ".*") {
-		ret = fmt.Sprintf("^%s", ret)
-	}
-
-	// limit end of line if not star
-	if !strings.HasSuffix(ret, ".*") {
-		ret = fmt.Sprintf("%s$", ret)
-	}
-
-	log.Debugf("patched pattern from \"%s\" to \"%s\"", pattern, ret)
-	return ret
+	return pattern
 }

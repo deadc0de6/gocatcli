@@ -11,7 +11,6 @@ import (
 	"gocatcli/internal/node"
 	"gocatcli/internal/stringer"
 	"gocatcli/internal/tree"
-	"gocatcli/internal/utilities"
 	"regexp"
 	"strings"
 	"time"
@@ -83,7 +82,7 @@ func find(_ *cobra.Command, args []string) error {
 
 	for _, arg := range args {
 		// patch pattern
-		arg = utilities.PatchPattern(arg)
+		arg = patchFindPattern(arg)
 		// get the pattern to search for
 		patt := arg
 		re, err := regexp.Compile(patt)
@@ -126,4 +125,39 @@ func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stri
 	prt.PrintSuffix()
 
 	log.Debugf("found %d entries matching \"%s\" in %v", cnt, patt.String(), time.Since(t0))
+}
+
+// fix pattern
+func patchFindPattern(pattern string) string {
+	// replace any dot with \.
+	patt := strings.ReplaceAll(pattern, ".", "\\.")
+
+	// ensure pattern is enclosed in stars
+	if !strings.Contains(patt, "*") {
+		ret := fmt.Sprintf(".*%s.*", patt)
+		log.Debugf("patched non pattern from \"%s\" to \"%s\"", patt, ret)
+		return ret
+	}
+
+	// replace all "*" with ".*" for golang pattern
+	notDotStar := regexp.MustCompile(`([^\.])\*`)
+	ret := notDotStar.ReplaceAllString(patt, "$1.*")
+
+	// replace the first star if any
+	if strings.HasPrefix(ret, "*") {
+		ret = fmt.Sprintf(".*%s", ret[1:])
+	}
+
+	// limit start of line if not star
+	if !strings.HasPrefix(ret, ".*") {
+		ret = fmt.Sprintf("^%s", ret)
+	}
+
+	// limit end of line if not star
+	if !strings.HasSuffix(ret, ".*") {
+		ret = fmt.Sprintf("%s$", ret)
+	}
+
+	log.Debugf("patched pattern from \"%s\" to \"%s\"", pattern, ret)
+	return ret
 }

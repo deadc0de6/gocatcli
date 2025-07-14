@@ -26,6 +26,8 @@ out="${tmpd}/output.txt"
 ## create a fake dir
 src="${tmpd}/to-index"
 mkdir -p "${src}"
+
+# add some hidden and non hidden files
 mkdir "${src}/.hidden"
 echo "hidden" > "${src}/.hidden/hiddenfile"
 mkdir "${src}/nothidden"
@@ -33,29 +35,33 @@ echo "not-hidden" > "${src}/nothidden/subfile"
 echo "hidden" > "${src}/.file-hidden"
 echo "not-hidden" > "${src}/notfile-hidden"
 
+# add some with extensions
+mkdir -p "${src}/with.ext"
+echo "withext" > "${src}/with.ext/inside"
+echo "theext" > "${src}/file.ext"
+
 # index
 echo ">>> indexing <<<"
-"${bin}" index -a -C -c "${catalog}" --ignore='.*' "${tmpd}/to-index" gocatcli
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='\.+' --ignore='\.ext' "${tmpd}/to-index" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
-echo ">>> test ls <<<"
+echo ">>> test index ignore ls <<<"
 "${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
 cat_file "${out}"
 
 expected=4
-cnt=$(cat "${out}" | wc -l)
+cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
-cat "${out}" | grep 'notfile-hidden' || exit 1
-cat "${out}" | grep 'nothidden' || exit 1
-cat "${out}" | grep 'subfile' || exit 1
-
-cat "${out}" | grep '\.hidden' && exit 1
-cat "${out}" | grep 'hiddenfile' && exit 1
-cat "${out}" | grep '\.file-hidden' && exit 1
+grep 'notfile-hidden' "${out}" || exit 1
+grep 'nothidden' "${out}" || exit 1
+grep 'subfile' "${out}" || exit 1
+grep '\.hidden' "${out}" && exit 1
+grep 'hiddenfile' "${out}" && exit 1
+grep '\.file-hidden' "${out}" && exit 1
 
 echo "test $(basename "${0}") OK!"
 exit 0

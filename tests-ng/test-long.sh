@@ -27,7 +27,7 @@ out="${tmpd}/output.txt"
 "${bin}" --debug index -a -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-echo ">>> test ls <<<"
+echo ">>> test long ls <<<"
 "${bin}" --debug ls -l -r -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
