@@ -202,9 +202,9 @@ func NotIn(needle string, stack []string) bool {
 }
 
 // PatchPattern fix pattern
-func PatchPattern(patt string) string {
+func PatchPattern(pattern string) string {
 	// replace any dot with \.
-	patt = strings.ReplaceAll(patt, ".", "\\.")
+	patt := strings.ReplaceAll(pattern, ".", "\\..")
 
 	// ensure pattern is enclosed in stars
 	if !strings.Contains(patt, "*") {
@@ -232,6 +232,6 @@ func PatchPattern(patt string) string {
 		ret = fmt.Sprintf("%s$", ret)
 	}
 
-	log.Debugf("patched pattern from \"%s\" to \"%s\"", patt, ret)
+	log.Debugf("patched pattern from \"%s\" to \"%s\"", pattern, ret)
 	return ret
 }

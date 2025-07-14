@@ -201,9 +201,11 @@ func (w *Walker) Walk(storageID int, walkPath string, storage *node.StorageNode,
 }
 
 func (w *Walker) mustIgnore(path string) bool {
+	sub := filepath.Base(path)
 	for _, patt := range w.ignores {
-		matched := patt.MatchString(path)
+		matched := patt.MatchString(sub)
 		if matched {
+			log.Debugf("path \"%s\" matched with pattern \"%s\"", sub, patt)
 			return matched
 		}
 	}
