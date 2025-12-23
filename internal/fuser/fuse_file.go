@@ -11,10 +11,10 @@ import (
 	"io/fs"
 	"time"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/anacrolix/fuse"
 )
@@ -33,12 +33,12 @@ func (h *FuseFile) Attr(_ context.Context, a *fuse.Attr) error {
 		log.ToFile(logPath, line)
 	}
 
-	a.Inode = utilities.HashString64(h.current.GetPath())
+	a.Inode = helpers.HashString64(h.current.GetPath())
 	a.Mode = 0755
 	a.Size = h.current.GetSize()
 	a.Atime = time.Unix(h.current.GetMAccess(), 0)
 	a.Mtime = time.Unix(h.current.GetMAccess(), 0)
-	a.Mode = fs.FileMode(utilities.ModeStrToInt(h.current.GetMode()))
+	a.Mode = fs.FileMode(helpers.ModeStrToInt(h.current.GetMode()))
 	log.ToFile(logPath, fmt.Sprintf("mode %s -> %v", h.current.GetMode(), a.Mode))
 	return nil
 }

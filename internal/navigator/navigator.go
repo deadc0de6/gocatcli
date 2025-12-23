@@ -8,10 +8,10 @@ package navigator
 import (
 	"path/filepath"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
@@ -282,7 +282,7 @@ func (a *Navigator) goBack() {
 		return
 	}
 
-	fields := utilities.SplitPath(a.path)
+	fields := helpers.SplitPath(a.path)
 	if len(fields) < 2 {
 		a.path = ""
 		return

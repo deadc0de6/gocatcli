@@ -11,10 +11,10 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 	"github.com/deadc0de6/gocatcli/internal/walker/archives"
 
 	"github.com/pterm/pterm"
@@ -112,7 +112,7 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 
 			// handle checksums
 			if w.withChecksum {
-				chk, err := utilities.ChecksumFileContent(pathUnderRoot)
+				chk, err := helpers.ChecksumFileContent(pathUnderRoot)
 				if err != nil {
 					log.Error(err)
 				} else {

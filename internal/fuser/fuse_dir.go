@@ -13,10 +13,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/anacrolix/fuse"
 	"github.com/anacrolix/fuse/fs"
@@ -95,10 +95,10 @@ func (h *FuseDir) Attr(_ context.Context, a *fuse.Attr) error {
 		a.Ctime = time.Now()
 		a.Mode = os.ModeDir | 0755
 	} else {
-		a.Inode = utilities.HashString64(h.current.GetPath())
+		a.Inode = helpers.HashString64(h.current.GetPath())
 		a.Mtime = time.Unix(h.current.GetMAccess(), 0)
 		a.Ctime = time.Unix(h.current.GetMAccess(), 0)
-		mode := iofs.FileMode(utilities.ModeStrToInt(h.current.GetMode()))
+		mode := iofs.FileMode(helpers.ModeStrToInt(h.current.GetMode()))
 		log.ToFile(logPath, fmt.Sprintf("mode %s -> %v", h.current.GetMode(), mode))
 		a.Mode = os.ModeDir | mode
 	}

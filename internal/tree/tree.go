@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 const (
@@ -79,7 +79,7 @@ func (t *Tree) GetNodesFromPath(path string) []node.Node {
 	}
 
 	// split path for search
-	paths := utilities.SplitPath(path)
+	paths := helpers.SplitPath(path)
 	if len(paths) < 1 {
 		return nil
 	}

@@ -10,7 +10,7 @@ import (
 
 	"github.com/deadc0de6/gocatcli/internal/catalog"
 	"github.com/deadc0de6/gocatcli/internal/catcli"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 
 	"github.com/spf13/cobra"
 )
@@ -37,7 +37,7 @@ func init() {
 
 func convert(_ *cobra.Command, args []string) error {
 	path := args[0]
-	if !utilities.FileExists(path) {
+	if !helpers.FileExists(path) {
 		return fmt.Errorf("\"%s\" does not exist", path)
 	}
 

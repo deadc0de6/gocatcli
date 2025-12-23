@@ -11,10 +11,10 @@ import (
 
 	"github.com/deadc0de6/gocatcli/internal/catalog"
 	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
@@ -75,7 +75,7 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		}
 
 		// check catalog file path
-		if !utilities.FileExists(rootOptCatalogPath) && loadCatalogFatal {
+		if !helpers.FileExists(rootOptCatalogPath) && loadCatalogFatal {
 			log.Fatalf("catalog not found %s", rootOptCatalogPath)
 		}
 

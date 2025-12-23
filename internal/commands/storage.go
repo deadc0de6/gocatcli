@@ -8,9 +8,9 @@ package commands
 import (
 	"fmt"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/spf13/cobra"
 )
@@ -89,7 +89,7 @@ func storageSave() error {
 
 func storageRemove(_ *cobra.Command, args []string) error {
 	name := args[0]
-	if !storageRmOptForce && !utilities.AskUser(fmt.Sprintf("Do you really want to remove storage \"%s\" and its children?", name)) {
+	if !storageRmOptForce && !helpers.AskUser(fmt.Sprintf("Do you really want to remove storage \"%s\" and its children?", name)) {
 		log.Fatal(fmt.Errorf("user interrupted"))
 	}
 

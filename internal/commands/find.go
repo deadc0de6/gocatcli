@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/spf13/cobra"
 )
@@ -84,7 +84,7 @@ func find(_ *cobra.Command, args []string) error {
 
 	for _, arg := range args {
 		// patch pattern
-		arg = utilities.PatchPattern(arg)
+		arg = helpers.PatchPattern(arg)
 		// get the pattern to search for
 		patt := arg
 		re, err := regexp.Compile(patt)

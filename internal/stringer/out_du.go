@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/tree"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 // DuString printer struct
@@ -48,7 +48,7 @@ func (p *DuString) ToString(n node.Node, _ int, _ bool) *Entry {
 		size = fmt.Sprintf("%d", n.GetSize())
 		entry.Line = fmt.Sprintf("%-10s    %s", size, path)
 	} else {
-		size = utilities.SizeToHuman(n.GetSize())
+		size = helpers.SizeToHuman(n.GetSize())
 		entry.Line = fmt.Sprintf("%-6s    %s", size, path)
 	}
 	return &entry

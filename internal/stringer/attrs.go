@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/node"
-	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 var (
@@ -71,7 +71,7 @@ func getMoreAttrs(attrs map[string]string, notThose []string, cm *colorme.ColorM
 
 	keys := make([]string, 0, len(attrs))
 	for k := range attrs {
-		if utilities.NotIn(k, notThose) {
+		if helpers.NotIn(k, notThose) {
 			keys = append(keys, k)
 		}
 	}
