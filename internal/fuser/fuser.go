@@ -6,8 +6,8 @@ Copyright (c) 2024, deadc0de6
 package fuser
 
 import (
-	"gocatcli/internal/log"
-	"gocatcli/internal/tree"
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 
 	"github.com/anacrolix/fuse"
 	"github.com/anacrolix/fuse/fs"

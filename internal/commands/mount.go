@@ -6,7 +6,7 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/fuser"
+	"github.com/deadc0de6/gocatcli/internal/fuser"
 
 	"github.com/spf13/cobra"
 )

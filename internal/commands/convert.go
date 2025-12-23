@@ -7,9 +7,10 @@ package commands
 
 import (
 	"fmt"
-	"gocatcli/internal/catalog"
-	"gocatcli/internal/catcli"
-	"gocatcli/internal/utilities"
+
+	"github.com/deadc0de6/gocatcli/internal/catalog"
+	"github.com/deadc0de6/gocatcli/internal/catcli"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/spf13/cobra"
 )

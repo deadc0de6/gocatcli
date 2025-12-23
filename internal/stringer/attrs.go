@@ -7,11 +7,12 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/colorme"
-	"gocatcli/internal/node"
-	"gocatcli/internal/utilities"
 	"sort"
 	"strings"
+
+	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 var (

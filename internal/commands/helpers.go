@@ -6,10 +6,11 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
 	"path/filepath"
 	"strings"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
 )
 
 func getStartPaths(path string) []node.Node {

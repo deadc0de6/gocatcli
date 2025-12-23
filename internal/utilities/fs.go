@@ -9,7 +9,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"gocatcli/internal/log"
 	"hash/fnv"
 	"io"
 	"math"
@@ -18,6 +17,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
 
 	"github.com/pterm/pterm"
 )

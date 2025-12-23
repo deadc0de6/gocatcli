@@ -8,9 +8,10 @@ package commands
 import (
 	"cmp"
 	"fmt"
-	"gocatcli/internal/node"
-	"gocatcli/internal/stringer"
 	"slices"
+
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
 
 	"github.com/spf13/cobra"
 )

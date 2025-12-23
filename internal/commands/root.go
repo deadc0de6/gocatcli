@@ -6,14 +6,15 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/catalog"
-	"gocatcli/internal/colorme"
-	"gocatcli/internal/log"
-	"gocatcli/internal/stringer"
-	"gocatcli/internal/tree"
-	"gocatcli/internal/utilities"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/catalog"
+	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
+	"github.com/deadc0de6/gocatcli/internal/tree"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"

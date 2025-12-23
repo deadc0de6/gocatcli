@@ -6,9 +6,10 @@ Copyright (c) 2024, deadc0de6
 package main
 
 import (
-	"gocatcli/internal/commands"
-	"gocatcli/internal/log"
 	"os"
+
+	"github.com/deadc0de6/gocatcli/internal/commands"
+	"github.com/deadc0de6/gocatcli/internal/log"
 )
 
 func main() {

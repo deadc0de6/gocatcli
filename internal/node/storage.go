@@ -7,11 +7,12 @@ package node
 
 import (
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/utilities"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 // GetName returns this node name

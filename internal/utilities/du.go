@@ -9,8 +9,9 @@ Copyright (c) 2024, deadc0de6
 package utilities
 
 import (
-	"gocatcli/internal/log"
 	"syscall"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
 )
 
 // DiskUsage returns free and total size of disk

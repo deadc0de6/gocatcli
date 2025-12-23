@@ -6,12 +6,13 @@ Copyright (c) 2024, deadc0de6
 package tree
 
 import (
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
-	"gocatcli/internal/utilities"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 const (

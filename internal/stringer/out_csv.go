@@ -7,10 +7,11 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/node"
-	"gocatcli/internal/tree"
-	"gocatcli/internal/utilities"
 	"strings"
+
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/tree"
+	"github.com/deadc0de6/gocatcli/internal/utilities"
 )
 
 var (

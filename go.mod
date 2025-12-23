@@ -1,4 +1,4 @@
-module gocatcli
+module github.com/deadc0de6/gocatcli
 
 go 1.22.0
 
