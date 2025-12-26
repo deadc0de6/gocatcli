@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
