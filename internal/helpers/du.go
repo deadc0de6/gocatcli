@@ -6,11 +6,12 @@ author: deadc0de6 (https://github.com/deadc0de6)
 Copyright (c) 2024, deadc0de6
 */
 
-package utilities
+package helpers
 
 import (
-	"gocatcli/internal/log"
 	"syscall"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
 )
 
 // DiskUsage returns free and total size of disk

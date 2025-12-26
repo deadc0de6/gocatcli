@@ -41,7 +41,7 @@ echo ">>> test tree <<<"
 # shellcheck disable=SC2126
 expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
 # +1 empty line
-expected=$(("${expected}" + 1))
+expected=$((expected + 1))
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (got ${cnt})" && exit 1
 grep 'indexed:' "${out}" || (echo "indexed not shown" && exit 1)

@@ -7,9 +7,10 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/colorme"
-	"gocatcli/internal/node"
-	"gocatcli/internal/tree"
+
+	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 )
 
 const (

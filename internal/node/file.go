@@ -7,12 +7,13 @@ package node
 
 import (
 	"fmt"
-	"gocatcli/internal/utilities"
 	"io/fs"
 	"path/filepath"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 )
 
 // GetName returns this node name
@@ -102,7 +103,7 @@ func (n *FileNode) GetAttr(rawSize bool, long bool) map[string]string {
 	// size
 	size := fmt.Sprintf("%d", n.Size)
 	if !rawSize {
-		size = utilities.SizeToHuman(n.Size)
+		size = helpers.SizeToHuman(n.Size)
 	}
 	attrs["size"] = size
 
@@ -113,7 +114,7 @@ func (n *FileNode) GetAttr(rawSize bool, long bool) map[string]string {
 	attrs["type"] = string(n.Type)
 
 	// maccess
-	tstr := utilities.DateToString(n.Maccess)
+	tstr := helpers.DateToString(n.Maccess)
 	attrs["maccess"] = tstr
 
 	// checksum
@@ -122,7 +123,7 @@ func (n *FileNode) GetAttr(rawSize bool, long bool) map[string]string {
 	}
 
 	// index at
-	indexed := utilities.DateToString(n.IndexedAt)
+	indexed := helpers.DateToString(n.IndexedAt)
 	attrs["indexed"] = indexed
 
 	// mime type

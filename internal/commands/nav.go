@@ -6,11 +6,11 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/log"
-	"gocatcli/internal/navigator"
-	"gocatcli/internal/node"
-	"gocatcli/internal/stringer"
-	"gocatcli/internal/tree"
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/navigator"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 
 	"github.com/spf13/cobra"
 )

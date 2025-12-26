@@ -7,13 +7,15 @@ package commands
 
 import (
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
-	"gocatcli/internal/stringer"
-	"gocatcli/internal/tree"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/helpers"
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 
 	"github.com/spf13/cobra"
 )

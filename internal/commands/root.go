@@ -6,14 +6,15 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/catalog"
-	"gocatcli/internal/colorme"
-	"gocatcli/internal/log"
-	"gocatcli/internal/stringer"
-	"gocatcli/internal/tree"
-	"gocatcli/internal/utilities"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/catalog"
+	"github.com/deadc0de6/gocatcli/internal/colorme"
+	"github.com/deadc0de6/gocatcli/internal/helpers"
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ import (
 )
 
 var (
-	version     = "1.1.2"
+	version     = "1.1.3"
 	myName      = "gocatcli"
 	defCatalog  = "gocatcli.catalog"
 	rootTree    *tree.Tree
@@ -74,7 +75,7 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		}
 
 		// check catalog file path
-		if !utilities.FileExists(rootOptCatalogPath) && loadCatalogFatal {
+		if !helpers.FileExists(rootOptCatalogPath) && loadCatalogFatal {
 			log.Fatalf("catalog not found %s", rootOptCatalogPath)
 		}
 

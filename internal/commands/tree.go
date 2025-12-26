@@ -6,7 +6,7 @@ Copyright (c) 2024, deadc0de6
 package commands
 
 import (
-	"gocatcli/internal/stringer"
+	"github.com/deadc0de6/gocatcli/internal/stringer"
 
 	"github.com/spf13/cobra"
 )

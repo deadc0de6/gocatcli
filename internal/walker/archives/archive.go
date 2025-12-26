@@ -8,9 +8,10 @@ package archives
 import (
 	"context"
 	"fmt"
-	"gocatcli/internal/log"
 	"io/fs"
 	"os"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
 
 	"github.com/mholt/archiver/v4"
 )

@@ -8,11 +8,12 @@ package catcli
 import (
 	"encoding/json"
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
-	"gocatcli/internal/tree"
 	"os"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 )
 
 // readCatalog read catalog json file

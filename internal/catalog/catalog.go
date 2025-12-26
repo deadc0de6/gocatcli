@@ -1,8 +1,9 @@
 package catalog
 
 import (
-	"gocatcli/internal/tree"
 	"path/filepath"
+
+	"github.com/deadc0de6/gocatcli/internal/tree"
 )
 
 const (

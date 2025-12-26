@@ -7,8 +7,9 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/node"
-	"gocatcli/internal/tree"
+
+	"github.com/deadc0de6/gocatcli/internal/node"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 )
 
 // DebugStringer printer struct
