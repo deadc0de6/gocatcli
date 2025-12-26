@@ -7,11 +7,12 @@ package node
 
 import (
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/utilities"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/helpers"
+	"github.com/deadc0de6/gocatcli/internal/log"
 )
 
 // GetName returns this node name
@@ -125,7 +126,7 @@ func sizeToString(sz uint64, rawSize bool) string {
 	if rawSize {
 		return fmt.Sprintf("%d", sz)
 	}
-	return utilities.SizeToHuman(sz)
+	return helpers.SizeToHuman(sz)
 }
 
 // GetAttr returns the node attribute as string
@@ -145,7 +146,7 @@ func (n *StorageNode) GetAttr(rawSize bool, long bool) map[string]string {
 	attrs["fs_free"] = fmt.Sprintf("%3s", freePercent)
 	used := sizeToString(n.Total-n.Free, rawSize)
 	attrs["fs_du"] = fmt.Sprintf("%6s/%6s", used, total)
-	attrs["indexed"] = utilities.DateToString(n.IndexedAt)
+	attrs["indexed"] = helpers.DateToString(n.IndexedAt)
 
 	attrs["meta"] = n.Meta
 	tags := n.Tags
@@ -162,7 +163,7 @@ func (n *StorageNode) Tag(tag string) {
 			return
 		}
 	}
-	n.Tags = utilities.UniqStrings(n.Tags, []string{tag})
+	n.Tags = helpers.UniqStrings(n.Tags, []string{tag})
 }
 
 // Untag removes a tag from storage
@@ -173,7 +174,7 @@ func (n *StorageNode) Untag(tag string) {
 			slice = append(slice, t)
 		}
 	}
-	n.Tags = utilities.UniqStrings(slice, []string{})
+	n.Tags = helpers.UniqStrings(slice, []string{})
 }
 
 // GetSize returns this node size
@@ -188,8 +189,8 @@ func (n *StorageNode) SetSize(size uint64) {
 
 // UpdateStorage updates a storage fields
 func (n *StorageNode) UpdateStorage(fsPath string, path string, meta string, tags []string) {
-	free, total := utilities.DiskUsage(fsPath)
-	n.Tags = utilities.UniqStrings(n.Tags, tags)
+	free, total := helpers.DiskUsage(fsPath)
+	n.Tags = helpers.UniqStrings(n.Tags, tags)
 	n.Free = free
 	n.Total = total
 	n.Path = path
@@ -200,7 +201,7 @@ func (n *StorageNode) UpdateStorage(fsPath string, path string, meta string, tag
 // DeriveStorageID derive id from storage name
 func DeriveStorageID(name string) int {
 	now := time.Now().Format("2006-01-02 15:04:05")
-	return utilities.HashString(name + now)
+	return helpers.HashString(name + now)
 }
 
 // NewStorageNode creates a new storage node

@@ -7,8 +7,9 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
 
 	"github.com/TwiN/go-color"
 	"github.com/pterm/pterm"

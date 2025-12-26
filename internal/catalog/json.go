@@ -2,10 +2,11 @@ package catalog
 
 import (
 	"encoding/json"
-	"gocatcli/internal/log"
-	"gocatcli/internal/tree"
 	"os"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/tree"
 )
 
 var (

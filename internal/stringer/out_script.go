@@ -7,7 +7,8 @@ package stringer
 
 import (
 	"fmt"
-	"gocatcli/internal/node"
+
+	"github.com/deadc0de6/gocatcli/internal/node"
 )
 
 const (

@@ -3,13 +3,12 @@ author: deadc0de6 (https://github.com/deadc0de6)
 Copyright (c) 2024, deadc0de6
 */
 
-package utilities
+package helpers
 
 import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"gocatcli/internal/log"
 	"hash/fnv"
 	"io"
 	"math"
@@ -18,6 +17,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
 
 	"github.com/pterm/pterm"
 )

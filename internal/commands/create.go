@@ -7,10 +7,11 @@ package commands
 
 import (
 	"fmt"
-	"gocatcli/internal/log"
-	"gocatcli/internal/node"
 	"os"
 	"path/filepath"
+
+	"github.com/deadc0de6/gocatcli/internal/log"
+	"github.com/deadc0de6/gocatcli/internal/node"
 
 	"github.com/spf13/cobra"
 )
