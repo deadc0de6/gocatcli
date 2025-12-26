@@ -7,7 +7,7 @@ cur=$(cd "$(dirname "${0}")" && pwd)
 
 # deps
 echo "install deps..."
-go install golang.org/x/lint/golint@latest
+#go install golang.org/x/lint/golint@latest
 go install honnef.co/go/tools/cmd/staticcheck@latest
 go install github.com/mgechev/revive@latest
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
