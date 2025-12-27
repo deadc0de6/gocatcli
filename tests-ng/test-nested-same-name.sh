@@ -40,7 +40,7 @@ echo "top-file" > "${topf}"
 
 # index
 echo ">>> index dir <<<"
-"${bin}" index -a -C --debug -c "${catalog}" --ignore=".git" "${top}" top
+"${bin}" index -a -C --debug -c "${catalog}" --ignore="\.git" "${top}" top
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls

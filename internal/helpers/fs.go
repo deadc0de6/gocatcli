@@ -14,12 +14,12 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/deadc0de6/gocatcli/internal/log"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/pterm/pterm"
 )
 
@@ -202,37 +202,21 @@ func NotIn(needle string, stack []string) bool {
 	return true
 }
 
-// PatchPattern fix pattern
-func PatchPattern(patt string) string {
-	// replace any dot with \.
-	patt = strings.ReplaceAll(patt, ".", "\\.")
-
-	// ensure pattern is enclosed in stars
-	if !strings.Contains(patt, "*") {
-		ret := fmt.Sprintf(".*%s.*", patt)
-		log.Debugf("patched non pattern from \"%s\" to \"%s\"", patt, ret)
-		return ret
+// PathMatch returns true if str matches pattern
+func PathMatch(pattern string, str string) bool {
+	ok, err := doublestar.Match(pattern, str)
+	if err != nil {
+		log.Error(err)
 	}
+	return ok
+}
 
-	// replace all "*" with ".*" for golang pattern
-	notDotStar := regexp.MustCompile(`([^\.])\*`)
-	ret := notDotStar.ReplaceAllString(patt, "$1.*")
-
-	// replace the first star if any
-	if strings.HasPrefix(ret, "*") {
-		ret = fmt.Sprintf(".*%s", ret[1:])
+// PathMatchPatterns returns true if str matches any patterns
+func PathMatchPatterns(patterns []string, str string) bool {
+	for _, patt := range patterns {
+		if PathMatch(patt, str) {
+			return true
+		}
 	}
-
-	// limit start of line if not star
-	if !strings.HasPrefix(ret, ".*") {
-		ret = fmt.Sprintf("^%s", ret)
-	}
-
-	// limit end of line if not star
-	if !strings.HasSuffix(ret, ".*") {
-		ret = fmt.Sprintf("%s$", ret)
-	}
-
-	log.Debugf("patched pattern from \"%s\" to \"%s\"", patt, ret)
-	return ret
+	return false
 }

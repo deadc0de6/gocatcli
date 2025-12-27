@@ -155,9 +155,17 @@ $ gocatcli index /some/other/path myStorageName
 [gocatcli](https://github.com/deadc0de6/gocatcli) uses the *basename* of the
 path to index as the storage name unless you specify the name when indexing.
 
+### ignore pattern
+
 The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory:
 ```bash
-$ gocatcli index ../gocatcli --ignore="*.go" --ignore="*.md" --ignore="*.git/*"
+$ gocatcli index ../gocatcli --ignore="\.go" --ignore="\.md" --ignore="\.git/*"
+```
+
+To ignore any hidden file for example, you would use `\.+` to ensure
+that at least a single dot (`.`) is matched.
+```bash
+$ gocatcli index ../gocatcli --ignore='\.+'
 ```
 
 ## Reindex and update

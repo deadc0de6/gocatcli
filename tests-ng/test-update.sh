@@ -56,7 +56,7 @@ echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
 echo ">>> test re-index with ignore <<<"
-"${bin}" index -a -f -C -c "${catalog}" --ignore='*.go' "${tmpd}/internal" internal
+"${bin}" index -a -f -C -c "${catalog}" --ignore='tes\.go' "${tmpd}/internal" internal
 "${bin}" ls -r -S -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 grep '^.*.go$' "${out}" && (echo ".go files found" && exit 1)
