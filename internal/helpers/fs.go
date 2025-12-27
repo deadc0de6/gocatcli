@@ -19,6 +19,7 @@ import (
 
 	"github.com/deadc0de6/gocatcli/internal/log"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/pterm/pterm"
 )
 
@@ -201,7 +202,21 @@ func NotIn(needle string, stack []string) bool {
 	return true
 }
 
-// PatchPattern fix pattern
-func PatchPattern(pattern string) string {
-	return pattern
+// PathMatch returns true if str matches pattern
+func PathMatch(pattern string, str string) bool {
+	ok, err := doublestar.Match(pattern, str)
+	if err != nil {
+		log.Error(err)
+	}
+	return ok
+}
+
+// PathMatchPatterns returns true if str matches any patterns
+func PathMatchPatterns(patterns []string, str string) bool {
+	for _, patt := range patterns {
+		if PathMatch(patt, str) {
+			return true
+		}
+	}
+	return false
 }

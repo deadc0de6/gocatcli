@@ -7,10 +7,10 @@ package commands
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
 
+	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 	"github.com/deadc0de6/gocatcli/internal/stringer"
@@ -82,36 +82,36 @@ func find(_ *cobra.Command, args []string) error {
 	}
 
 	for _, arg := range args {
-		// patch pattern
-		arg = patchFindPattern(arg)
-		// get the pattern to search for
-		patt := arg
-		re, err := regexp.Compile(patt)
-		if err != nil {
-			return err
-		}
-		log.Debugf("search pattern: %s", patt)
-
 		for _, startNode := range startNodes {
-			matchNodes(rootTree, startNode, re, stringGetter)
+			patt := patchFindPattern(arg)
+			matchNodes(rootTree, startNode, patt, stringGetter)
 		}
 	}
 
 	return nil
 }
 
+func patchFindPattern(pattern string) string {
+	// ensure pattern is enclosed in stars
+	if !strings.Contains(pattern, "*") {
+		ret := fmt.Sprintf("*%s*", pattern)
+		log.Debugf("patched non pattern from \"%s\" to \"%s\"", pattern, ret)
+		return ret
+	}
+	return pattern
+}
+
 // find in the tree every node from "startNode" where its name
 // matches the pattern "patt"
-func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stringer.Stringer) {
+func matchNodes(t *tree.Tree, startNode node.Node, patt string, prt stringer.Stringer) {
 	var cnt int64
 
 	t0 := time.Now()
 	callback := func(n node.Node, _ int, _ node.Node) bool {
 		name := n.GetName()
-		log.Debugf("matching name \"%s\" against pattern %v", name, patt)
-		ret := patt.MatchString(name)
-		if ret {
-			log.Debugf("\"%s\" matching \"%v\": %v", name, patt, ret)
+		log.Debugf("matching name \"%s\" against pattern \"%s\"", name, patt)
+		if helpers.PathMatch(patt, name) {
+			log.Debugf("\"%s\" matches \"%s\"", name, patt)
 			prt.Print(n, 0)
 			cnt++
 		}
@@ -121,44 +121,9 @@ func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stri
 
 	prt.PrintPrefix()
 	// process all elements of tree
-	log.Debugf("processing children and looking for name pattern: %v", patt)
+	log.Debugf("processing children and looking for name pattern: %s", patt)
 	t.ProcessChildren(startNode, true, callback, -1)
 	prt.PrintSuffix()
 
-	log.Debugf("found %d entries matching \"%s\" in %v", cnt, patt.String(), time.Since(t0))
-}
-
-// fix pattern
-func patchFindPattern(pattern string) string {
-	// replace any dot with \.
-	patt := strings.ReplaceAll(pattern, ".", "\\.")
-
-	// ensure pattern is enclosed in stars
-	if !strings.Contains(patt, "*") {
-		ret := fmt.Sprintf(".*%s.*", patt)
-		log.Debugf("patched non pattern from \"%s\" to \"%s\"", patt, ret)
-		return ret
-	}
-
-	// replace all "*" with ".*" for golang pattern
-	notDotStar := regexp.MustCompile(`([^\.])\*`)
-	ret := notDotStar.ReplaceAllString(patt, "$1.*")
-
-	// replace the first star if any
-	if strings.HasPrefix(ret, "*") {
-		ret = fmt.Sprintf(".*%s", ret[1:])
-	}
-
-	// limit start of line if not star
-	if !strings.HasPrefix(ret, ".*") {
-		ret = fmt.Sprintf("^%s", ret)
-	}
-
-	// limit end of line if not star
-	if !strings.HasSuffix(ret, ".*") {
-		ret = fmt.Sprintf("%s$", ret)
-	}
-
-	log.Debugf("patched pattern from \"%s\" to \"%s\"", pattern, ret)
-	return ret
+	log.Debugf("found %d entries matching \"%s\" in %v", cnt, patt, time.Since(t0))
 }

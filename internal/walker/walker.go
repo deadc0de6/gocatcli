@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io/fs"
 	"path/filepath"
-	"regexp"
 
 	"github.com/deadc0de6/gocatcli/internal/helpers"
 	"github.com/deadc0de6/gocatcli/internal/log"
@@ -25,7 +24,7 @@ type Walker struct {
 	tree         *tree.Tree
 	withChecksum bool
 	withArchive  bool
-	ignores      []*regexp.Regexp
+	ignores      []string
 	noMime       bool
 }
 
@@ -63,7 +62,8 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 			return nil
 		}
 
-		if w.mustIgnore(pathUnderRoot) {
+		log.Debugf("trying to match \"%s\" against %v", pathUnderRoot, w.ignores)
+		if helpers.PathMatchPatterns(w.ignores, pathUnderRoot) {
 			// skipping
 			if info.IsDir() {
 				log.Infof("ignoring directory \"%s\"...", pathUnderRoot)
@@ -201,20 +201,8 @@ func (w *Walker) Walk(storageID int, walkPath string, storage *node.StorageNode,
 	return cnt, storage.Size, err
 }
 
-func (w *Walker) mustIgnore(path string) bool {
-	sub := filepath.Base(path)
-	for _, patt := range w.ignores {
-		matched := patt.MatchString(sub)
-		if matched {
-			log.Debugf("path \"%s\" matched with pattern \"%s\"", sub, patt)
-			return matched
-		}
-	}
-	return false
-}
-
 // NewWalker creates a new walker on path
-func NewWalker(t *tree.Tree, withChecksum bool, withArchive bool, ignores []*regexp.Regexp, noMime bool) *Walker {
+func NewWalker(t *tree.Tree, withChecksum bool, withArchive bool, ignores []string, noMime bool) *Walker {
 	w := Walker{
 		tree:         t,
 		withChecksum: withChecksum,
