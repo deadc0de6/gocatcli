@@ -108,12 +108,14 @@ func matchNodes(t *tree.Tree, startNode node.Node, patt string, prt stringer.Str
 
 	t0 := time.Now()
 	callback := func(n node.Node, _ int, _ node.Node) bool {
-		name := n.GetName()
-		log.Debugf("matching name \"%s\" against pattern \"%s\"", name, patt)
-		if helpers.PathMatch(patt, name) {
-			log.Debugf("\"%s\" matches \"%s\"", name, patt)
+		path := n.GetPath()
+		log.Debugf("trying to match path \"%s\" against pattern \"%s\"", path, patt)
+		if helpers.PathMatch(patt, path) {
+			log.Debugf("\"%s\" matches \"%s\"", path, patt)
 			prt.Print(n, 0)
 			cnt++
+		} else {
+			log.Debugf("\"%s\" does NOT match pattern \"%s\"", path, patt)
 		}
 		// always continue
 		return true

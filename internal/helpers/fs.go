@@ -14,6 +14,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -194,12 +195,7 @@ func ModeStrToInt(mode string) int32 {
 
 // NotIn returns true if needle is not in stack
 func NotIn(needle string, stack []string) bool {
-	for _, element := range stack {
-		if needle == element {
-			return false
-		}
-	}
-	return true
+	return !slices.Contains(stack, needle)
 }
 
 // PathMatch returns true if str matches pattern

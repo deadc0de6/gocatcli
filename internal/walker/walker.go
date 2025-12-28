@@ -62,15 +62,17 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 			return nil
 		}
 
-		log.Debugf("trying to match \"%s\" against %v", pathUnderRoot, w.ignores)
-		if helpers.PathMatchPatterns(w.ignores, pathUnderRoot) {
-			// skipping
-			if info.IsDir() {
-				log.Infof("ignoring directory \"%s\"...", pathUnderRoot)
-				return filepath.SkipDir
+		if len(w.ignores) > 0 {
+			log.Debugf("trying to match \"%s\" against ignores %v", pathUnderRoot, w.ignores)
+			if helpers.PathMatchPatterns(w.ignores, pathUnderRoot) {
+				// skipping
+				if info.IsDir() {
+					log.Infof("ignoring directory \"%s\"...", pathUnderRoot)
+					return filepath.SkipDir
+				}
+				log.Infof("ignoring \"%s\"", pathUnderRoot)
+				return nil
 			}
-			log.Infof("ignoring \"%s\"", pathUnderRoot)
-			return nil
 		}
 
 		// create or update child
