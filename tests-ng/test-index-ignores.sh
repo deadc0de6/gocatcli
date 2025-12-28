@@ -43,7 +43,7 @@ echo "theext" > "${src}/file.ext"
 # index
 # ===================================================
 title ">>> indexing <<<"
-"${bin}" index -a -C -c "${catalog}" --debug --ignore='\.+' --ignore='\.ext' "${tmpd}/to-index" gocatcli
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.*' --ignore='**/*.ext' "${tmpd}/to-index" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
