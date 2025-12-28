@@ -100,7 +100,9 @@ func patchFindPattern(pattern string) string {
 	}
 
 	// prepend generic matcher for paths
-	patt = fmt.Sprintf("**/%s", patt)
+	if !strings.HasPrefix(patt, "**/") {
+		patt = fmt.Sprintf("**/%s", patt)
+	}
 	return patt
 }
 
