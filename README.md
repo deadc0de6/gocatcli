@@ -262,6 +262,45 @@ $ gocatcli find <pattern> --path 'some/p*th'
 * https://git-scm.com/docs/gitignore
 * https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html
 
+Following formats are supported as output for `find`:
+```bash
+$ gocatcli index internal
+
+$ gocatcli find 'tree' --format=native
+internal/commands/tree.go                                    -rw-r--r-- file    1KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+internal/stringer/out_tree.go                                -rw-r--r-- file    3KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+internal/tree                                                drwx------ dir     6KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23 children:1
+internal/tree/tree.go                                        -rw-r--r-- file    6KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+
+$ gocatcli find 'tree' --format=csv-with-header
+name,type,path,size,indexed_at,maccess,checksum,nbfiles,free_space,total_space,meta,storage
+tree.go,file,commands/tree.go,1KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+out_tree.go,file,stringer/out_tree.go,3KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+tree,dir,tree,6KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,1,,,,internal
+tree.go,file,tree/tree.go,6KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+
+$ gocatcli find 'tree' --format=script
+op=file; source=/media/mnt; ${op} "${source}/commands/tree.go" "${source}/stringer/out_tree.go" "${source}/tree" "${source}/tree/tree.go"
+
+$ gocatcli find 'tree' --format=filename
+tree.go
+out_tree.go
+tree
+tree.go
+
+$ gocatcli find 'tree' 'out' --format=filename
+tree.go
+out_tree.go
+tree
+tree.go
+out_csv.go
+out_debug.go
+out_du.go
+out_native.go
+out_script.go
+out_tree.go
+```
+
 ## Find files with fzf
 
 A terminal fzf file browser for your catalog

@@ -21,7 +21,7 @@ import (
 
 var (
 	findCmd = &cobra.Command{
-		Use:    "find [<pattern>]",
+		Use:    "find [<patterns>]",
 		Short:  "Find files in the catalog",
 		PreRun: preRun(true),
 		RunE:   find,
@@ -92,13 +92,16 @@ func find(_ *cobra.Command, args []string) error {
 }
 
 func patchFindPattern(pattern string) string {
+	patt := pattern
 	// ensure pattern is enclosed in stars
 	if !strings.Contains(pattern, "*") {
-		ret := fmt.Sprintf("*%s*", pattern)
-		log.Debugf("patched non pattern from \"%s\" to \"%s\"", pattern, ret)
-		return ret
+		patt = fmt.Sprintf("*%s*", pattern)
+		log.Debugf("patched non pattern from \"%s\" to \"%s\"", pattern, patt)
 	}
-	return pattern
+
+	// prepend generic matcher for paths
+	patt = fmt.Sprintf("**/%s", patt)
+	return patt
 }
 
 // find in the tree every node from "startNode" where its name
