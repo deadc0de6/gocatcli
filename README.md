@@ -166,8 +166,8 @@ Examples
 
 * `*.go`: all `.go` files in the current directory
 * `**/*.go`: all .go files recursively
+* `**/.git*`: ignore `.git` directory
 * `**/.git*/**`: ignore `.git` directory content
-* `**/.git*{,/**}`: ignore `.git` directory and its content
 
 The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory,
 and the directory `.git` itself:

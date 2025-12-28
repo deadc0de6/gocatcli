@@ -36,7 +36,8 @@ rm -rf "${tmpd}/internal/utils"
 mkdir -p "${tmpd}/internal/new"
 echo "this is a test" > "${tmpd}/internal/new/newfile"
 
-echo ">>> test re-index <<<"
+# ===================================================
+title ">>> test re-index <<<"
 "${bin}" index -a -f -C -c "${catalog}" "${tmpd}/internal" internal
 
 #"${bin}" tree -c "${catalog}"
@@ -55,7 +56,8 @@ size=$(grep '^storage' "${out}" | awk '{print $3}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
-echo ">>> test re-index with ignore <<<"
+# ===================================================
+title ">>> test re-index with ignore <<<"
 "${bin}" index -a -f -C -c "${catalog}" --ignore='tes\.go' "${tmpd}/internal" internal
 "${bin}" ls -r -S -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"

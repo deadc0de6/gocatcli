@@ -41,12 +41,14 @@ echo "withext" > "${src}/with.ext/inside"
 echo "theext" > "${src}/file.ext"
 
 # index
-echo ">>> indexing <<<"
+# ===================================================
+title ">>> indexing <<<"
 "${bin}" index -a -C -c "${catalog}" --debug --ignore='\.+' --ignore='\.ext' "${tmpd}/to-index" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
-echo ">>> test index ignore ls <<<"
+# ===================================================
+title ">>> test index ignore ls <<<"
 "${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)

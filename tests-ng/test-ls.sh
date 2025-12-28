@@ -28,14 +28,16 @@ out="${tmpd}/output.txt"
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls no arg
-echo ">>> test ls no arg <<<"
+# ===================================================
+title ">>> test ls no arg <<<"
 "${bin}" --debug ls -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "1" ] && echo "expecting single line (${cnt})" && exit 1
 grep '^storage internal.*' "${out}" || (echo "bad content" && exit 1)
 
 # ls no arg but rec
-echo ">>> test ls no arg but rec <<<"
+# ===================================================
+title ">>> test ls no arg but rec <<<"
 "${bin}" --debug ls -r -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
 # shellcheck disable=SC2126
@@ -44,7 +46,8 @@ expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -
 grep '^storage internal.*' "${out}" || (echo "bad content" && exit 1)
 
 # ls storage
-echo ">>> test ls storage <<<"
+# ===================================================
+title ">>> test ls storage <<<"
 "${bin}" --debug ls -l -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
@@ -54,7 +57,8 @@ grep 'fuser *d.*' "${out}" || (echo "bad content 2" && exit 1)
 grep 'walker *d.*' "${out}" || (echo "bad content 3" && exit 1)
 
 # ls recursive
-echo ">>> test ls recursive <<<"
+# ===================================================
+title ">>> test ls recursive <<<"
 "${bin}" --debug ls -l -r -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
@@ -65,7 +69,8 @@ grep 'walker.go *-.*' "${out}" || (echo "bad content 1" && exit 1)
 grep 'walker *d.*' "${out}" || (echo "bad content 2" && exit 1)
 
 # ls pattern
-echo ">>> test ls pattern <<<"
+# ===================================================
+title ">>> test ls pattern <<<"
 # expect to list
 # - internal/navigator
 # - internal/node

@@ -5,6 +5,20 @@
 IN_CICD=${GITHUB_WORKFLOW:-}
 to_be_cleared=()
 
+GREEN=$'\e[32m'
+RED=$'\e[31m'
+RESET=$'\e[0m'
+
+title()
+{
+  echo -e "${GREEN}===> ${1} <===${RESET}"
+}
+
+error()
+{
+  echo -e "${RED}ERROR ${1}${RESET}"
+}
+
 # add a file/directory to be cleared
 # on exit
 #

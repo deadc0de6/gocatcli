@@ -24,7 +24,8 @@ catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
 
 # index
-echo ">>> test index <<<"
+# ===================================================
+title ">>> test index <<<"
 "${bin}" index -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 

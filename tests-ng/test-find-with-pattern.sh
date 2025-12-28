@@ -27,8 +27,8 @@ out="${tmpd}/output.txt"
 "${bin}" --debug index -a -C -c "${catalog}" "${cur}/.." gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-# ==============================================================================
-echo ">>> test find go files <<<"
+# ===================================================
+title ">>> test find go files <<<"
 "${bin}" find -c "${catalog}" '*.go' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../" -name '*.go' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
