@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -25,7 +25,7 @@ out="${tmpd}/output.txt"
 
 # index
 echo ">>> test index <<<"
-"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git*/**' "${cur}/../" gocatcli
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git*/**' --ignore='**/.git*' "${cur}/../" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
@@ -51,6 +51,51 @@ echo ">>> test index ls (2) <<<"
 # shellcheck disable=SC2126
 #expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
 expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/\.git*')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+catalog="${tmpd}/catalog3"
+
+echo ">>> test index with more ignore <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git*/**' --ignore='**/*.go' --ignore='**/*.md' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+expected=$(find . \
+  \( -type d -name ".git*" -prune \) -o \
+  \( -type f \( -name "*.go" -o -name "*.md" \) -prune \) -o \
+  -print | wc -l)
+cat_file "${out}"
+#expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*' --ignore='*.go' --ignore='*.md')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+catalog="${tmpd}/catalog4"
+
+echo ">>> test index with ignore hidden <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.*' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+#expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
+cat_file "${out}"
+expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.*')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+echo ">>> test index 33 <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git*{,/**}' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+# ls
+echo ">>> test index ls <<<"
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+#expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
+cat_file "${out}"
+expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 

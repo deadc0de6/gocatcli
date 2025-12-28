@@ -2,7 +2,7 @@
 # author: deadc0de6 (https://github.com/deadc0de6)
 # Copyright (c) 2024, deadc0de6
 #
-# test format script command
+# test find command with pattern
 #
 
 ## start-test-cookie
@@ -24,19 +24,19 @@ catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
 
 # index
-echo ">>> test index <<<"
-"${bin}" index -C -c "${catalog}" "${cur}/../internal" internal
+"${bin}" --debug index -a -C -c "${catalog}" "${cur}/.." gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-#"${bin}" tree -c "${catalog}"
-#"${bin}" ls -r -c "${catalog}"
-
-"${bin}" ls -r -S -a --format=script -c "${catalog}" internal/tree | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# ==============================================================================
+echo ">>> test find go files <<<"
+"${bin}" find -c "${catalog}" '*.go' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+expected=$(find "${cur}/../" -name '*.go' | wc -l)
+cnt=$(wc -l "${out}" | awk '{print $1}')
 cat_file "${out}"
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines, got ${cnt}" && exit 1
+grep -v '.go$' "${out}" || (echo "bad content" && exit 1)
 
-# shellcheck disable=SC2016
-exp='op=file; source=/media/mnt; ${op} "${source}/tree/tree.go"'
-grep "${exp}" "${out}" || (echo "bad output" && exit 1)
+# TODO add more
 
 echo "test $(basename "${0}") OK!"
 exit 0
