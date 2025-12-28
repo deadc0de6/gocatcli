@@ -157,15 +157,28 @@ path to index as the storage name unless you specify the name when indexing.
 
 ### ignore pattern
 
-The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory:
+`gocatcli` uses shell glob / gitignore like pattern, for more see
+
+* https://git-scm.com/docs/gitignore
+* https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html
+
+Examples
+
+* `*.go`: all `.go` files in the current directory
+* `**/*.go`: all .go files recursively
+* `**/.git*/**`: ignore `.git` directory content
+* `**/.git*{,/**}`: ignore `.git` directory and its content
+
+The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory,
+and the directory `.git` itself:
 ```bash
-$ gocatcli index ../gocatcli --ignore="\.go" --ignore="\.md" --ignore="\.git/*"
+$ gocatcli index ../gocatcli --ignore='*.go' --ignore='*.md' --ignore='**/.git*/**' --ignore='**/.git*'
 ```
 
 To ignore any hidden file for example, you would use `\.+` to ensure
 that at least a single dot (`.`) is matched.
 ```bash
-$ gocatcli index ../gocatcli --ignore='\.+'
+$ gocatcli index ../gocatcli --ignore='**/.*'
 ```
 
 ## Reindex and update
@@ -237,11 +250,16 @@ $ gocatcli find --help
 ## lists all files
 $ gocatcli find
 ## find using pattern
-$ gocatcli find pattern
+$ gocatcli find <pattern>
 ## find using pattern and limit to a specific path
-$ gocatcli find pattern -p some/path
-$ gocatcli find pattern -p 'some/p*th'
+$ gocatcli find <pattern> --path 'some/path'
+$ gocatcli find <pattern> --path 'some/p*th'
 ```
+
+`gocatcli` uses shell glob / gitignore like pattern, for more see
+
+* https://git-scm.com/docs/gitignore
+* https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html
 
 ## Find files with fzf
 
