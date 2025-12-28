@@ -19,7 +19,7 @@ Features:
 * Use wildcards to search for files
 * archives support (index their content as well)
 * Save catalog for easy versioning with git
-* Support catalog in json or toml
+* Support catalog in `json` or `toml`
 * Multiple outputs (`csv`, etc)
 * Mount file using fuse
 * Re-create locally the catalog hierarchy
@@ -70,20 +70,19 @@ Pick a binary in the [releases](https://github.com/deadc0de6/gocatcli/releases)
 
 Or if you have go installed, you can installed it directly
 ```bash
-## You need at least golang 1.22
 $ go install -v github.com/deadc0de6/gocatcli/cmd/gocatcli@latest
 $ gocatcli --help
 ```
 
 Or if you want to compile it yourself
 ```bash
-## You need at least golang 1.22
 $ go mod tidy
 $ make
 $ ./bin/gocatcli --help
 ```
 
-It's also available on [Nix](https://github.com/NixOS/nixpkgs) (unstable channel only, for now). If you have Nix installed, one way you can try it out is like this:
+It's also available on [Nix](https://github.com/NixOS/nixpkgs) (unstable channel only, for now).
+If you have Nix installed, one way you can try it out is like this:
 ``` bash
 nix-shell -p gocatcli
 ```
@@ -114,7 +113,7 @@ There are different types of entry in a catalog:
 * `archived node`: this is a file contained in an archive
 
 Wildcards are supported in the `<path>` arguments of all commands and provide a way
-to explore the catalog using something like `'storage/directory*/sub-directory*'`,
+to explore the catalog.
 Make sure to quote these on the command line to avoid your shell interpreting the
 wildcards.
 
@@ -173,11 +172,10 @@ Examples
 The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory,
 and the directory `.git` itself:
 ```bash
-$ gocatcli index ../gocatcli --ignore='*.go' --ignore='*.md' --ignore='**/.git*/**' --ignore='**/.git*'
+$ gocatcli index ../gocatcli --ignore='**/*.go' --ignore='**/*.md' --ignore='**/.git/**' --ignore='**/.git'
 ```
 
-To ignore any hidden file for example, you would use `\.+` to ensure
-that at least a single dot (`.`) is matched.
+To ignore any hidden file for example
 ```bash
 $ gocatcli index ../gocatcli --ignore='**/.*'
 ```
@@ -200,19 +198,19 @@ Simply provide `-a --archive` to your `index` command.
 
 Supported archive formats (from <https://github.com/mholt/archiver>):
 
-* brotli (.br)
-* bzip2 (.bz2)
-* flate (.zip)
-* gzip (.gz)
-* lz4 (.lz4)
-* snappy (.sz)
-* xz (.xz)
-* zlib (.zz)
-* zstandard (.zst)
-* .zip
-* .tar (including any compressed variants like .tar.gz)
-* .rar
-* .7z
+* brotli (`.br`)
+* bzip2 (`.bz2`)
+* flate (`.zip`)
+* gzip (`.gz`)
+* lz4 (`.lz4`)
+* snappy (`.sz`)
+* xz (`.xz`)
+* zlib (`.zz`)
+* zstandard (`.zst`)
+* `.zip`
+* `.tar` (including any compressed variants like `.tar.gz`)
+* `.rar`
+* `.7z`
 
 ## Navigate with ls
 
@@ -223,7 +221,7 @@ $ gocatcli ls --help
 ```bash
 $ gocatcli ls
 $ gocatcli ls storage-name/some/path
-$ gocatcli ls 'storage-name/direc*/subdire*'
+$ gocatcli ls 'storage-name/direc*/file'
 ```
 
 ## File browser
@@ -257,10 +255,10 @@ $ gocatcli find <pattern> --path 'some/path'
 $ gocatcli find <pattern> --path 'some/p*th'
 ```
 
-`gocatcli` uses shell glob / gitignore like pattern, for more see
+`<pattern>` uses shell glob / gitignore like pattern, for more see
 
-* https://git-scm.com/docs/gitignore
-* https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html
+* <https://git-scm.com/docs/gitignore>
+* <https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html>
 
 Following formats are supported as output for `find`:
 ```bash
@@ -350,6 +348,7 @@ Following commands allow to edit a storage and its fields:
 * `tree`: tree
 * `script`: generates a script to handle matches
 * `debug`: debug output
+* `filename`: only filename
 
 ## Convert catcli catalog
 
@@ -380,4 +379,3 @@ If you like `gocatcli`, [buy me a coffee](https://ko-fi.com/deadc0de6).
 # License
 
 This project is licensed under the terms of the GPLv3 license.
-
