@@ -14,6 +14,11 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 #go install github.com/goreleaser/goreleaser@latest
 go install github.com/goreleaser/goreleaser/v2@latest
 
+if grep replace "${cur}/go.mod" &>/dev/null; then
+  echo "found \"replace\" in go.mod"
+  exit 1
+fi
+
 # download go deps
 go mod tidy
 
