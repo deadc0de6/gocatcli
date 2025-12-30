@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -27,7 +27,8 @@ out="${tmpd}/output.txt"
 "${bin}" --debug index -a -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-echo ">>> test file size <<<"
+# ===================================================
+title ">>> test file size <<<"
 "${bin}" --debug ls -r -l -S -c "${catalog}" "${cur}/../internal/walker/walker.go" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(du --block=1 --apparent-size "${cur}/../internal/walker/walker.go" | awk '{print $1}')
@@ -38,7 +39,8 @@ size=$(grep 'walker.go' "${out}" | awk '{print $4}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
-echo ">>> test directory size <<<"
+# ===================================================
+title ">>> test directory size <<<"
 "${bin}" --debug ls -l -r -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 #expected=$(du -c --block=1 --apparent-size "${cur}/../internal/catcli" | tail -1 | awk '{print $1}')
@@ -49,7 +51,8 @@ size=$(grep '^catcli' "${out}" | awk '{print $4}')
 echo "size:${size} VS exp:${expected}"
 [ "${size}" != "${expected}" ] && echo "expecting ${expected} (got ${size})" && exit 1
 
-echo ">>> test storage size <<<"
+# ===================================================
+title ">>> test storage size <<<"
 "${bin}" --debug ls -l -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../internal" | tail -1 | awk '{print $1}')

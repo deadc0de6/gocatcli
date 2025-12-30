@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	jsonExt    = ".json"
-	tomlExt    = ".toml"
-	sqliteExt  = ".sqlite" // TODO
+	jsonExt = ".json"
+	tomlExt = ".toml"
+	//sqliteExt  = ".sqlite"
 	catalogExt = ".catalog"
 )
 

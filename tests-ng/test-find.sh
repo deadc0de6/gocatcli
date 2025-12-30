@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -28,14 +28,16 @@ out="${tmpd}/output.txt"
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # find no arg
-echo ">>> test find no arg <<<"
+# ===================================================
+title ">>> test find no arg <<<"
 "${bin}" find -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" ! -path '*/.git/*' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 grep '^storage internal.*' "${out}" || (echo "bad content" && exit 1)
 
-echo ">>> test find no star <<<"
+# ===================================================
+title ">>> test find no star <<<"
 "${bin}" --debug find -c "${catalog}" nav | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" ! -path '*/.git/*' -name 'nav*' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
@@ -44,7 +46,8 @@ grep '^internal/commands/nav.go.*' "${out}" || (echo "bad content" && exit 1)
 grep '^internal/navigator.*' "${out}" || (echo "bad content" && exit 1)
 grep '^internal/navigator/navigator.go.*' "${out}" || (echo "bad content" && exit 1)
 
-echo ">>> test find with star <<<"
+# ===================================================
+title ">>> test find with star <<<"
 "${bin}" --debug find -c "${catalog}" '*nav*' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" ! -path '*/.git/*' -name '*nav*' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
@@ -53,19 +56,22 @@ grep '^internal/commands/nav.go.*' "${out}" || (echo "bad content" && exit 1)
 grep '^internal/navigator.*' "${out}" || (echo "bad content" && exit 1)
 grep '^internal/navigator/navigator.go.*' "${out}" || (echo "bad content" && exit 1)
 
-echo ">>> test find with only leading star <<<"
+# ===================================================
+title ">>> test find with only leading star <<<"
 "${bin}" --debug find -c "${catalog}" '*gator' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" ! -path '*/.git/*' -name '*gator' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
-echo ">>> test find with only trailing star <<<"
+# ===================================================
+title ">>> test find with only trailing star <<<"
 "${bin}" --debug find -c "${catalog}" 'find*' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" ! -path '*/.git/*' -name 'find*' | wc -l)
 cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
-echo ">>> test find with multiple args <<<"
+# ===================================================
+title ">>> test find with multiple args <<<"
 "${bin}" --debug find -c "${catalog}" storage tree | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" | grep -c 'storage\|tree')
 cnt=$(wc -l "${out}" | awk '{print $1}')

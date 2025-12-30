@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -28,7 +28,8 @@ path="${cur}/../"
 "${bin}" index -a -C -c "${catalog}" "${path}" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-echo ">>> test du raw <<<"
+# ===================================================
+title ">>> test du raw <<<"
 "${bin}" --debug du -S -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 
 # shellcheck disable=SC2126
@@ -37,7 +38,8 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
 # total size
-echo ">>> test du total size raw <<<"
+# ===================================================
+title ">>> test du total size raw <<<"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}')
 expected=$("${cur}/pdu.py" "${path}" | tail -1 | awk '{print $1}')
 #cat_file "${out}"
@@ -45,7 +47,8 @@ size=$(tail -1 "${out}" | awk '{print $1}')
 echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total raw size" && exit 1)
 
-echo ">>> test count du human size output <<<"
+# ===================================================
+title ">>> test count du human size output <<<"
 "${bin}" --debug du -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 expected=$(find "${path}" -type d | grep -v '^.$' | wc -l)
@@ -53,7 +56,8 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
 # total size
-echo ">>> test du total size human <<<"
+# ===================================================
+title ">>> test du total size human <<<"
 #expected=$(du -c --block=1 --apparent-size "${cur}/../" | tail -1 | awk '{print $1}' | sed 's/M//g')
 # for some reason "du -h" uses 1000 with above options instead of 1024
 #expected=$(awk 'BEGIN {printf "%.0f",'"${expected}"'/1024/1024}')
@@ -65,7 +69,8 @@ echo "size:${size} VS exp:${expected}"
 [ "${expected}" != "${size}" ] && (echo "bad total human size" && exit 1)
 
 # bin size
-echo ">>> test du bin size raw <<<"
+# ===================================================
+title ">>> test du bin size raw <<<"
 #expected=$(du -c --block=1 --apparent-size "${path}" | tail -1 | awk '{print $1}')
 expected=$("${cur}/pdu.py" "${cur}/../cmd/gocatcli" | tail -1 | awk '{print $1}')
 size=$(grep '^.* *gocatcli/cmd/gocatcli$' "${out}" | awk '{print $1}')

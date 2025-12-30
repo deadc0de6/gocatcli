@@ -18,8 +18,8 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
-tmpx=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
+tmpx=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 clear_on_exit "${tmpx}"
 
@@ -39,12 +39,14 @@ echo "sup-file" > "${supf}"
 echo "top-file" > "${topf}"
 
 # index
-echo ">>> index dir <<<"
-"${bin}" index -a -C --debug -c "${catalog}" --ignore=".git" "${top}" top
+# ===================================================
+title ">>> index dir <<<"
+"${bin}" index -a -C --debug -c "${catalog}" --ignore="\.git" "${top}" top
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
-echo ">>> ls catalog <<<"
+# ===================================================# ===================================================
+title ">>> ls catalog <<<"
 "${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' | sed 's/[[:space:]]*$//' > "${out}"
 
 cat > "${tmpx}/expected" << _EOF

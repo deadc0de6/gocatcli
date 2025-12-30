@@ -8,7 +8,6 @@ package commands
 import (
 	"fmt"
 	"path/filepath"
-	"regexp"
 	"time"
 
 	"github.com/deadc0de6/gocatcli/internal/helpers"
@@ -71,17 +70,6 @@ func index(_ *cobra.Command, args []string) error {
 		log.Fatal(err)
 	}
 
-	// build ignore pattern
-	var ignPatterns []*regexp.Regexp
-	for _, ign := range indexOptIgnores {
-		ign = helpers.PatchPattern(ign)
-		re, err := regexp.Compile(ign)
-		if err != nil {
-			log.Fatal(err)
-		}
-		ignPatterns = append(ignPatterns, re)
-	}
-
 	// ensure storage name does not already exist
 	for _, storage := range t.Storages {
 		if !indexOptForce && name == storage.Name {
@@ -102,7 +90,7 @@ func index(_ *cobra.Command, args []string) error {
 	}
 
 	// walk the filesystem
-	w := walker.NewWalker(t, indexOptChecksum, indexOptArchive, ignPatterns, indexOptNoMIME)
+	w := walker.NewWalker(t, indexOptChecksum, indexOptArchive, indexOptIgnores, indexOptNoMIME)
 
 	t0 := time.Now()
 	// spinner

@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/TwiN/go-color v1.2.0
 	github.com/anacrolix/fuse v0.3.1-0.20231110084244-c6729d8bb2af
+	github.com/bmatcuk/doublestar/v4 v4.9.1
 	github.com/briandowns/spinner v1.19.0
 	github.com/caarlos0/log v0.4.8
 	github.com/gdamore/tcell/v2 v2.5.3

@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -27,7 +27,8 @@ out="${tmpd}/output.txt"
 "${bin}" --debug index -a -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-echo ">>> test ls <<<"
+# ===================================================
+title ">>> test long ls <<<"
 "${bin}" --debug ls -l -r -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
@@ -36,7 +37,8 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 grep 'indexed:' "${out}" || (echo "indexed not shown" && exit 1)
 grep 'checksum:' "${out}" || (echo "checksum not shown" && exit 1)
 
-echo ">>> test tree <<<"
+# ===================================================
+title ">>> test tree <<<"
 "${bin}" --debug tree -l -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
 expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)

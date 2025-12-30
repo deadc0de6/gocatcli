@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -28,7 +28,8 @@ create_dir="${tmpd}/create"
 "${bin}" --debug index -a -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
-echo ">>> create <<<"
+# ===================================================
+title ">>> create <<<"
 "${bin}" --debug create -c "${catalog}" "${create_dir}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 tree "${create_dir}"
 diff "${cur}/../internal/" "${create_dir}/internal/"

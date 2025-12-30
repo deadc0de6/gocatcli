@@ -17,41 +17,87 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
 
 # index
-echo ">>> test index <<<"
-"${bin}" index -a -C -c "${catalog}" --ignore=".git" "${cur}/../" gocatcli
+# ===================================================
+title ">>> test index <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git/**' --ignore='**/.git' "${cur}/../" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
-echo ">>> test ls <<<"
+# ===================================================
+title ">>> test index ls <<<"
 "${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-#expected=$(find "${cur}/../" -not -path '*/.git*' | grep -v '^.$' | wc -l)
-cat_file "${out}"
-"${cur}/plist.py" -l "${cur}/../" --ignore '*/.git*'
-expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
+#cat_file "${out}"
+expected=$(find "${cur}/../" -mindepth 1 -name '.git' -prune -o -print | wc -l | awk '{print $1}')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 catalog="${tmpd}/catalog2"
 
 # index
-echo ">>> test index <<<"
-"${bin}" index -a -C -c "${catalog}" "${cur}/../internal" gocatcli
+# ===================================================
+title ">>> test index <<<"
+"${bin}" index -a -C -c "${catalog}" "${cur}/../internal" internal
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # ls
-echo ">>> test ls (2) <<<"
+# ===================================================
+title ">>> test index ls (2) <<<"
 "${bin}" --debug -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 # shellcheck disable=SC2126
-#expected=$(find "${cur}/../internal" -not -path '*/.git*' | grep -v '^.$' | wc -l)
-expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/.git*')
+expected=$(find "${cur}/../internal" -mindepth 1 -print | wc -l | awk '{print $1}')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+catalog="${tmpd}/catalog3"
+
+# ===================================================
+title ">>> test index with more ignore <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git/**' --ignore='**/.git' --ignore='**/*.go' --ignore='**/*.md' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+expected=$(find "${cur}/../" -mindepth 1 -name '.git' -prune -o -name '*.md' -prune -o -name '*.go' -prune -o -print | wc -l | awk '{print $1}')
+cat_file "${out}"
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+catalog="${tmpd}/catalog4"
+
+# ===================================================
+title ">>> test index with ignore hidden <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.*' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+#cat_file "${out}"
+expected=$(find "${cur}/../" -mindepth 1 -name '.*' -prune -o -print | wc -l | awk '{print $1}')
+cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
+
+catalog="${tmpd}/catalog5"
+
+# ===================================================
+title ">>> test index 33 <<<"
+"${bin}" index -a -C -c "${catalog}" --debug --ignore='**/.git*/**' --ignore='**/.git' "${cur}/../" gocatcli
+[ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
+
+# ls
+# ===================================================
+title ">>> test index ls <<<"
+"${bin}" -c "${catalog}" ls -a -r | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+# shellcheck disable=SC2126
+cat_file "${out}"
+expected=$(find "${cur}/../" -mindepth 1 -name '.git*' -prune -o -print | wc -l | awk '{print $1}')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 

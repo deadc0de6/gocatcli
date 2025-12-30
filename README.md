@@ -19,7 +19,7 @@ Features:
 * Use wildcards to search for files
 * archives support (index their content as well)
 * Save catalog for easy versioning with git
-* Support catalog in json or toml
+* Support catalog in `json` or `toml`
 * Multiple outputs (`csv`, etc)
 * Mount file using fuse
 * Re-create locally the catalog hierarchy
@@ -70,20 +70,19 @@ Pick a binary in the [releases](https://github.com/deadc0de6/gocatcli/releases)
 
 Or if you have go installed, you can installed it directly
 ```bash
-## You need at least golang 1.22
 $ go install -v github.com/deadc0de6/gocatcli/cmd/gocatcli@latest
 $ gocatcli --help
 ```
 
 Or if you want to compile it yourself
 ```bash
-## You need at least golang 1.22
 $ go mod tidy
 $ make
 $ ./bin/gocatcli --help
 ```
 
-It's also available on [Nix](https://github.com/NixOS/nixpkgs) (unstable channel only, for now). If you have Nix installed, one way you can try it out is like this:
+It's also available on [Nix](https://github.com/NixOS/nixpkgs) (unstable channel only, for now).
+If you have Nix installed, one way you can try it out is like this:
 ``` bash
 nix-shell -p gocatcli
 ```
@@ -114,7 +113,7 @@ There are different types of entry in a catalog:
 * `archived node`: this is a file contained in an archive
 
 Wildcards are supported in the `<path>` arguments of all commands and provide a way
-to explore the catalog using something like `'storage/directory*/sub-directory*'`,
+to explore the catalog.
 Make sure to quote these on the command line to avoid your shell interpreting the
 wildcards.
 
@@ -155,9 +154,30 @@ $ gocatcli index /some/other/path myStorageName
 [gocatcli](https://github.com/deadc0de6/gocatcli) uses the *basename* of the
 path to index as the storage name unless you specify the name when indexing.
 
-The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory:
+### ignore pattern
+
+`gocatcli` uses shell glob / gitignore like pattern, for more see
+
+* https://git-scm.com/docs/gitignore
+* https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html
+
+Examples
+
+* `*.go`: all `.go` files in the current directory
+* `**/*.go`: all .go files recursively
+* `**/.git*`: ignore `.git` directory
+* `**/.git*/**`: ignore `.git` directory content
+* `**/.*`: ignore all hidden file
+
+The below example ignores any file ending with `.go` or `.md` and anything in the `.git` directory,
+and the directory `.git` itself:
 ```bash
-$ gocatcli index ../gocatcli --ignore="*.go" --ignore="*.md" --ignore="*.git/*"
+$ gocatcli index ../gocatcli --ignore='**/*.go' --ignore='**/*.md' --ignore='**/.git/**' --ignore='**/.git'
+```
+
+To ignore any hidden file for example
+```bash
+$ gocatcli index ../gocatcli --ignore='**/.*'
 ```
 
 ## Reindex and update
@@ -178,19 +198,19 @@ Simply provide `-a --archive` to your `index` command.
 
 Supported archive formats (from <https://github.com/mholt/archiver>):
 
-* brotli (.br)
-* bzip2 (.bz2)
-* flate (.zip)
-* gzip (.gz)
-* lz4 (.lz4)
-* snappy (.sz)
-* xz (.xz)
-* zlib (.zz)
-* zstandard (.zst)
-* .zip
-* .tar (including any compressed variants like .tar.gz)
-* .rar
-* .7z
+* brotli (`.br`)
+* bzip2 (`.bz2`)
+* flate (`.zip`)
+* gzip (`.gz`)
+* lz4 (`.lz4`)
+* snappy (`.sz`)
+* xz (`.xz`)
+* zlib (`.zz`)
+* zstandard (`.zst`)
+* `.zip`
+* `.tar` (including any compressed variants like `.tar.gz`)
+* `.rar`
+* `.7z`
 
 ## Navigate with ls
 
@@ -201,7 +221,7 @@ $ gocatcli ls --help
 ```bash
 $ gocatcli ls
 $ gocatcli ls storage-name/some/path
-$ gocatcli ls 'storage-name/direc*/subdire*'
+$ gocatcli ls 'storage-name/direc*/file'
 ```
 
 ## File browser
@@ -229,10 +249,54 @@ $ gocatcli find --help
 ## lists all files
 $ gocatcli find
 ## find using pattern
-$ gocatcli find pattern
+$ gocatcli find <pattern>
 ## find using pattern and limit to a specific path
-$ gocatcli find pattern -p some/path
-$ gocatcli find pattern -p 'some/p*th'
+$ gocatcli find <pattern> --path 'some/path'
+$ gocatcli find <pattern> --path 'some/p*th'
+```
+
+`<pattern>` uses shell glob / gitignore like pattern, for more see
+
+* <https://git-scm.com/docs/gitignore>
+* <https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html>
+
+Following formats are supported as output for `find`:
+```bash
+$ gocatcli index internal
+
+$ gocatcli find 'tree' --format=native
+internal/commands/tree.go                                    -rw-r--r-- file    1KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+internal/stringer/out_tree.go                                -rw-r--r-- file    3KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+internal/tree                                                drwx------ dir     6KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23 children:1
+internal/tree/tree.go                                        -rw-r--r-- file    6KB 2025-12-26 22:15:53 indexed:2025-12-28 22:33:23
+
+$ gocatcli find 'tree' --format=csv-with-header
+name,type,path,size,indexed_at,maccess,checksum,nbfiles,free_space,total_space,meta,storage
+tree.go,file,commands/tree.go,1KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+out_tree.go,file,stringer/out_tree.go,3KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+tree,dir,tree,6KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,1,,,,internal
+tree.go,file,tree/tree.go,6KB,2025-12-28 22:33:23,2025-12-26 22:15:53,,0,,,,internal
+
+$ gocatcli find 'tree' --format=script
+op=file; source=/media/mnt; ${op} "${source}/commands/tree.go" "${source}/stringer/out_tree.go" "${source}/tree" "${source}/tree/tree.go"
+
+$ gocatcli find 'tree' --format=filename
+tree.go
+out_tree.go
+tree
+tree.go
+
+$ gocatcli find 'tree' 'out' --format=filename
+tree.go
+out_tree.go
+tree
+tree.go
+out_csv.go
+out_debug.go
+out_du.go
+out_native.go
+out_script.go
+out_tree.go
 ```
 
 ## Find files with fzf
@@ -284,6 +348,7 @@ Following commands allow to edit a storage and its fields:
 * `tree`: tree
 * `script`: generates a script to handle matches
 * `debug`: debug output
+* `filename`: only filename
 
 ## Convert catcli catalog
 
@@ -314,4 +379,3 @@ If you like `gocatcli`, [buy me a coffee](https://ko-fi.com/deadc0de6).
 # License
 
 This project is licensed under the terms of the GPLv3 license.
-

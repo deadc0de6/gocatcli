@@ -17,7 +17,7 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
@@ -47,7 +47,8 @@ cnt=$(find "${cur}/../internal" | wc -l)
 # +1 for gzipped
 total="$(("${cnt}" + "${cnt}" + 1 + 2 + 1))"
 
-echo ">>> test archive ls <<<"
+# ===================================================
+title ">>> test archive ls <<<"
 "${bin}" --debug ls -r -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
 cnt=$(wc -l "${out}" | awk '{print $1}')
@@ -57,7 +58,8 @@ grep '^archive1.tar.gz' "${out}" || (echo "no archive1" && exit 1)
 grep '^archive2.zip' "${out}" || (echo "archive2" && exit 1)
 grep '^gzipped.gz' "${out}" || (echo "no gzipped" && exit 1)
 
-echo ">>> test archive create <<<"
+# ===================================================
+title ">>> test archive create <<<"
 dst="${tmpd}/created"
 "${bin}" --debug -c "${catalog}" create --archive "${dst}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 

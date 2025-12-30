@@ -17,30 +17,31 @@ source "${cur}"/helpers
 ######################################
 ## the test
 
-tmpd=$(mktemp -d --suffix='-dotdrop-tests' || mktemp -d)
+tmpd=$(mktemp -d --suffix='-gocatcli-tests' || mktemp -d)
 clear_on_exit "${tmpd}"
 
 catalog="${tmpd}/catalog"
 out="${tmpd}/output.txt"
 
 # index
-"${bin}" index -a -C -c "${catalog}" --ignore=".git" "${cur}/../" gocatcli
+"${bin}" index -a -C -c "${catalog}" --ignore='**/.git/**' --ignore='**/.git*' "${cur}/../" gocatcli
 [ ! -e "${catalog}" ] && echo "catalog not created" && exit 1
 
 # tree
-echo ">>> test tree no arg <<<"
+# ===================================================
+title ">>> test tree no arg <<<"
 "${bin}" --debug tree -a -c "${catalog}" | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
-#expected=$(find "${cur}/../" -not -path '*/.git*' | tail -n +2 | wc -l)
 cat_file "${out}"
-expected=$("${cur}/plist.py" "${cur}/../" --ignore '*/.git*')
+expected=$(find "${cur}/../" -mindepth 1 -name '.git*' -prune -o -print | wc -l | awk '{print $1}')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 
 # tree with arg
-echo ">>> test tree with arg <<<"
+# ===================================================
+title ">>> test tree with arg <<<"
 "${bin}" --debug tree -a -c "${catalog}" internal | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 cat_file "${out}"
-expected=$("${cur}/plist.py" "${cur}/../internal" --ignore '*/.git*')
+expected=$(find "${cur}/../internal" -mindepth 1 -name '.git*' -prune -o -print | wc -l | awk '{print $1}')
 cnt=$(tail -n +2 "${out}" | sed '/^$/d' | wc -l)
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines got ${cnt}" && exit 1
 

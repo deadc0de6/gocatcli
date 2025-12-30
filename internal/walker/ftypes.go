@@ -25,12 +25,12 @@ func getMime(path string) string {
 		return ""
 	}
 
-	log.Debugf("getting mime of %s", path)
+	log.Debugf("getting mime of \"%s\"", path)
 	m, err := filetype.Match(head)
 	if err != nil {
 		log.Debugf("filetype match error: %v", err)
 		return ""
 	}
-	log.Debugf("\"%s\" mime: %s", path, m.MIME.Value)
+	log.Debugf("\"%s\" mime: \"%s\"", path, m.MIME.Value)
 	return m.MIME.Value
 }

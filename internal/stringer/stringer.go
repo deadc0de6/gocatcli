@@ -26,6 +26,8 @@ const (
 	FormatTree = "tree"
 	// FormatDebug debug output
 	FormatDebug = "debug"
+	// FormatFileName only the filename
+	FormatFileName = "filename"
 )
 
 // Entry entries when traversing the tree
@@ -68,6 +70,8 @@ func GetStringer(tree *tree.Tree, format string, mode *PrintMode) (Stringer, err
 		stringGetter = NewTreeStringer(mode)
 	case FormatDebug:
 		stringGetter = NewDebugStringer(tree, mode)
+	case FormatFileName:
+		stringGetter = NewFileNameStringer(tree, mode)
 	default:
 		return nil, fmt.Errorf("not such format: %s", format)
 	}
@@ -81,6 +85,7 @@ func GetSupportedFormats(treeOk bool, scriptOk bool) []string {
 		FormatCSV,
 		FormatCSVWithHeader,
 		FormatDebug,
+		FormatFileName,
 	}
 	if treeOk {
 		fmts = append(fmts, FormatTree)

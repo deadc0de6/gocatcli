@@ -7,7 +7,6 @@ package commands
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
 
@@ -22,7 +21,7 @@ import (
 
 var (
 	findCmd = &cobra.Command{
-		Use:    "find [<pattern>]",
+		Use:    "find [<patterns>]",
 		Short:  "Find files in the catalog",
 		PreRun: preRun(true),
 		RunE:   find,
@@ -83,38 +82,45 @@ func find(_ *cobra.Command, args []string) error {
 	}
 
 	for _, arg := range args {
-		// patch pattern
-		arg = helpers.PatchPattern(arg)
-		// get the pattern to search for
-		patt := arg
-		re, err := regexp.Compile(patt)
-		if err != nil {
-			return err
-		}
-		log.Debugf("search pattern: %s", patt)
-
 		for _, startNode := range startNodes {
-			matchNodes(rootTree, startNode, re, stringGetter)
+			patt := patchFindPattern(arg)
+			matchNodes(rootTree, startNode, patt, stringGetter)
 		}
 	}
 
 	return nil
 }
 
+func patchFindPattern(pattern string) string {
+	patt := pattern
+	// ensure pattern is enclosed in stars
+	if !strings.Contains(pattern, "*") {
+		patt = fmt.Sprintf("*%s*", pattern)
+		log.Debugf("patched non pattern from \"%s\" to \"%s\"", pattern, patt)
+	}
+
+	// prepend generic matcher for paths
+	if !strings.HasPrefix(patt, "**/") {
+		patt = fmt.Sprintf("**/%s", patt)
+	}
+	return patt
+}
+
 // find in the tree every node from "startNode" where its name
 // matches the pattern "patt"
-func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stringer.Stringer) {
+func matchNodes(t *tree.Tree, startNode node.Node, patt string, prt stringer.Stringer) {
 	var cnt int64
 
 	t0 := time.Now()
 	callback := func(n node.Node, _ int, _ node.Node) bool {
-		name := n.GetName()
-		log.Debugf("matching name \"%s\" against pattern %v", name, patt)
-		ret := patt.MatchString(name)
-		if ret {
-			log.Debugf("\"%s\" matching \"%v\": %v", name, patt, ret)
+		path := n.GetPath()
+		log.Debugf("trying to match path \"%s\" against pattern \"%s\"", path, patt)
+		if helpers.PathMatch(patt, path) {
+			log.Debugf("\"%s\" matches \"%s\"", path, patt)
 			prt.Print(n, 0)
 			cnt++
+		} else {
+			log.Debugf("\"%s\" does NOT match pattern \"%s\"", path, patt)
 		}
 		// always continue
 		return true
@@ -122,9 +128,9 @@ func matchNodes(t *tree.Tree, startNode node.Node, patt *regexp.Regexp, prt stri
 
 	prt.PrintPrefix()
 	// process all elements of tree
-	log.Debugf("processing children and looking for name pattern: %v", patt)
+	log.Debugf("processing children and looking for name pattern: %s", patt)
 	t.ProcessChildren(startNode, true, callback, -1)
 	prt.PrintSuffix()
 
-	log.Debugf("found %d entries matching \"%s\" in %v", cnt, patt.String(), time.Since(t0))
+	log.Debugf("found %d entries matching \"%s\" in %v", cnt, patt, time.Since(t0))
 }
