@@ -1,5 +1,8 @@
 # gocatcli
 
+* Case intensive find option now - just use -i Switch nothing else changed!
+
+
 [![Tests Status](https://github.com/deadc0de6/gocatcli/workflows/tests/badge.svg)](https://github.com/deadc0de6/gocatcli/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
