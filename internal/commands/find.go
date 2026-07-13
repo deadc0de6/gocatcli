@@ -27,9 +27,10 @@ var (
 		RunE:   find,
 	}
 
-	findOptStart  string
-	findOptFormat string
-	findOptDepth  int
+	findOptStart      string
+	findOptFormat     string
+	findOptDepth      int
+	findOptIgnoreCase bool
 )
 
 func init() {
@@ -39,6 +40,7 @@ func init() {
 	hlp := fmt.Sprintf("output format (%s)", strings.Join(stringer.GetSupportedFormats(false, true), ","))
 	findCmd.PersistentFlags().StringVarP(&findOptFormat, "format", "f", "native", hlp)
 	findCmd.PersistentFlags().IntVarP(&findOptDepth, "depth", "D", -1, "max depth")
+	findCmd.PersistentFlags().BoolVarP(&findOptIgnoreCase, "ignore-case", "i", false, "case insensitive pattern matching")
 }
 
 func find(_ *cobra.Command, args []string) error {
@@ -111,11 +113,20 @@ func patchFindPattern(pattern string) string {
 func matchNodes(t *tree.Tree, startNode node.Node, patt string, prt stringer.Stringer) {
 	var cnt int64
 
+	matchPatt := patt
+	if findOptIgnoreCase {
+		matchPatt = strings.ToLower(matchPatt)
+	}
+
 	t0 := time.Now()
 	callback := func(n node.Node, _ int, _ node.Node) bool {
 		path := n.GetPath()
 		log.Debugf("trying to match path \"%s\" against pattern \"%s\"", path, patt)
-		if helpers.PathMatch(patt, path) {
+		matchPath := path
+		if findOptIgnoreCase {
+			matchPath = strings.ToLower(matchPath)
+		}
+		if helpers.PathMatch(matchPatt, matchPath) {
 			log.Debugf("\"%s\" matches \"%s\"", path, patt)
 			prt.Print(n, 0)
 			cnt++

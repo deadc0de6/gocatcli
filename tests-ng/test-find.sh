@@ -71,6 +71,22 @@ cnt=$(wc -l "${out}" | awk '{print $1}')
 [ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
 
 # ===================================================
+title ">>> test find case sensitive by default <<<"
+"${bin}" --debug find -c "${catalog}" 'NAV*' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+cnt=$(wc -l "${out}" | awk '{print $1}')
+[ "${cnt}" != "0" ] && echo "expecting 0 lines (case sensitive), got ${cnt}" && exit 1
+
+# ===================================================
+title ">>> test find with --ignore-case <<<"
+"${bin}" --debug find -c "${catalog}" -i 'NAV*' | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
+expected=$(find "${cur}/../internal" ! -path '*/.git/*' -iname 'nav*' | wc -l)
+cnt=$(wc -l "${out}" | awk '{print $1}')
+[ "${cnt}" != "${expected}" ] && echo "expecting ${expected} lines (${cnt})" && exit 1
+grep '^internal/commands/nav.go.*' "${out}" || (echo "bad content" && exit 1)
+grep '^internal/navigator.*' "${out}" || (echo "bad content" && exit 1)
+grep '^internal/navigator/navigator.go.*' "${out}" || (echo "bad content" && exit 1)
+
+# ===================================================
 title ">>> test find with multiple args <<<"
 "${bin}" --debug find -c "${catalog}" storage tree | sed -e 's/\x1b\[[0-9;]*m//g' > "${out}"
 expected=$(find "${cur}/../internal" | grep -c 'storage\|tree')

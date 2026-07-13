@@ -1,5 +1,6 @@
 # gocatcli
 
+
 [![Tests Status](https://github.com/deadc0de6/gocatcli/workflows/tests/badge.svg)](https://github.com/deadc0de6/gocatcli/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
@@ -11,6 +12,8 @@ Did you ever wanted to find back that specific file that should be on one of you
 You usually go through all of them hoping to find the right one on the first try?
 `gocatcli` indexes external media in a catalog file and allows to quickly find
 specific files or even navigate in the catalog as if it was a mounted drive.
+
+* Case intensive find option now - just use -i Switch nothing else changed!
 
 Features:
 
