@@ -17,6 +17,7 @@ import (
 	"github.com/deadc0de6/gocatcli/internal/tree"
 
 	"github.com/briandowns/spinner"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -47,6 +48,14 @@ func init() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
+	colorme.UseColors = colorme.ShouldUseColors(false)
+	log.UseColors = colorme.UseColors
+	if colorme.UseColors {
+		pterm.EnableColor()
+	} else {
+		pterm.DisableColor()
+	}
+
 	// flags
 	defCatalogPath := viper.GetString("CATALOG")
 	if len(defCatalogPath) < 1 {
@@ -70,8 +79,12 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		preRunDebug(ccmd, args)
 
 		// colors
-		if rootOptNoColor {
-			colorme.UseColors = false
+		colorme.UseColors = colorme.ShouldUseColors(rootOptNoColor)
+		log.UseColors = colorme.UseColors
+		if colorme.UseColors {
+			pterm.EnableColor()
+		} else {
+			pterm.DisableColor()
 		}
 
 		// check catalog file path
@@ -82,9 +95,11 @@ func preRun(loadCatalogFatal bool) func(*cobra.Command, []string) {
 		// spinner
 		s := spinner.New(spinner.CharSets[24], 100*time.Millisecond)
 		s.Suffix = " loading catalog..."
-		err = s.Color("blue")
-		if err != nil {
-			log.Error(err)
+		if colorme.UseColors {
+			err = s.Color("blue")
+			if err != nil {
+				log.Error(err)
+			}
 		}
 		s.Start()
 		defer func() {

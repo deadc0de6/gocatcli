@@ -8,10 +8,10 @@ package stringer
 import (
 	"fmt"
 
+	"github.com/deadc0de6/gocatcli/internal/colorme"
 	"github.com/deadc0de6/gocatcli/internal/log"
 	"github.com/deadc0de6/gocatcli/internal/node"
 
-	"github.com/TwiN/go-color"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 )
@@ -28,8 +28,9 @@ type aTree struct {
 }
 
 func (p *TreeStringer) storageToString(storage *node.StorageNode) string {
-	out := color.InUnderline(color.InGray(nativeStorageName))
-	out += " " + color.InPurple(storage.GetName())
+	cm := colorme.NewColorme(false)
+	out := cm.InUnderline(cm.InGray(nativeStorageName))
+	out += " " + cm.InPurple(storage.GetName())
 	attrs := storage.GetAttr(false, p.mode.Long)
 	if len(attrs) > 0 {
 		out += " " + AttrsToString(attrs, p.mode, " ")

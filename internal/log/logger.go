@@ -19,13 +19,36 @@ var (
 	errorPre  = "[ERROR] "
 	warnPre   = "[WARN] "
 	debugPre  = "[DEBUG] "
+	// UseColors enables/disables colored log prefixes.
+	UseColors = true
 	// DebugMode sets debug mode flag
 	DebugMode = false
 )
 
+func blue(text string) string {
+	if !UseColors {
+		return text
+	}
+	return color.InBlue(text)
+}
+
+func red(text string) string {
+	if !UseColors {
+		return text
+	}
+	return color.InRed(text)
+}
+
+func yellow(text string) string {
+	if !UseColors {
+		return text
+	}
+	return color.InYellow(text)
+}
+
 // Info print info to stdout
 func Info(text string) {
-	out := color.InBlue(infoPre) + text + eol
+	out := blue(infoPre) + text + eol
 	_, err := os.Stdout.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -34,7 +57,7 @@ func Info(text string) {
 
 // Infof print info to stdout
 func Infof(format string, a ...interface{}) {
-	out := color.InBlue(fmt.Sprintf(format, a...) + eol)
+	out := blue(fmt.Sprintf(format, a...) + eol)
 	_, err := os.Stdout.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -43,7 +66,7 @@ func Infof(format string, a ...interface{}) {
 
 // Error print error to stderr
 func Error(err error) {
-	out := color.InRed(errorPre) + err.Error() + eol
+	out := red(errorPre) + err.Error() + eol
 	_, err = os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -52,7 +75,7 @@ func Error(err error) {
 
 // Errorf print error to stderr
 func Errorf(format string, a ...interface{}) {
-	out := color.InRed(errorPre) + fmt.Sprintf(format, a...) + eol
+	out := red(errorPre) + fmt.Sprintf(format, a...) + eol
 	_, err := os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -61,7 +84,7 @@ func Errorf(format string, a ...interface{}) {
 
 // Warn print warning to stderr
 func Warn(text string) {
-	out := color.InRed(warnPre) + text + eol
+	out := red(warnPre) + text + eol
 	_, err := os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -70,7 +93,7 @@ func Warn(text string) {
 
 // Warnf print warning to stderr
 func Warnf(format string, a ...interface{}) {
-	out := color.InRed(warnPre) + fmt.Sprintf(format, a...) + eol
+	out := red(warnPre) + fmt.Sprintf(format, a...) + eol
 	_, err := os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -82,7 +105,7 @@ func Debug(text string) {
 	if !DebugMode {
 		return
 	}
-	out := color.InYellow(debugPre) + text + eol
+	out := yellow(debugPre) + text + eol
 	_, err := os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -94,7 +117,7 @@ func Debugf(format string, a ...interface{}) {
 	if !DebugMode {
 		return
 	}
-	out := color.InYellow(debugPre) + fmt.Sprintf(format, a...) + eol
+	out := yellow(debugPre) + fmt.Sprintf(format, a...) + eol
 	_, err := os.Stderr.WriteString(clearLine + out)
 	if err != nil {
 		fmt.Println(err.Error())
