@@ -138,7 +138,7 @@ func (a *Navigator) createList() {
 	// current working directory
 	a.textarea = tview.NewTextView()
 	a.textarea.SetText(a.path)
-	a.textarea.SetTextColor(tcell.ColorSlateGray)
+	a.textarea.SetTextColor(tcell.ColorDefault)
 
 	// create layout
 	content := tview.NewGrid()
@@ -294,6 +294,19 @@ func (a *Navigator) goBack() {
 // Start start the navigator
 func (a *Navigator) Start(path string) {
 	a.path = path
+	tview.Styles = tview.Theme{
+		PrimitiveBackgroundColor:    tcell.ColorDefault,
+		ContrastBackgroundColor:     tcell.ColorDefault,
+		MoreContrastBackgroundColor: tcell.ColorDefault,
+		BorderColor:                 tcell.ColorDefault,
+		TitleColor:                  tcell.ColorDefault,
+		GraphicsColor:               tcell.ColorDefault,
+		PrimaryTextColor:            tcell.ColorDefault,
+		SecondaryTextColor:          tcell.ColorDefault,
+		TertiaryTextColor:           tcell.ColorDefault,
+		InverseTextColor:            tcell.ColorDefault,
+		ContrastSecondaryTextColor:  tcell.ColorDefault,
+	}
 	a.app = tview.NewApplication()
 	a.runApp(path)
 }
