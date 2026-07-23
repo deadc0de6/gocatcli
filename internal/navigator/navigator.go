@@ -6,6 +6,7 @@ Copyright (c) 2024, deadc0de6
 package navigator
 
 import (
+	"os"
 	"path/filepath"
 
 	"github.com/deadc0de6/gocatcli/internal/helpers"
@@ -294,6 +295,23 @@ func (a *Navigator) goBack() {
 // Start start the navigator
 func (a *Navigator) Start(path string) {
 	a.path = path
+
+	// If NO_COLOR is set, invert to black on white for navigator only
+	if os.Getenv("NO_COLOR") != "" {
+		tview.Styles = tview.Theme{
+			PrimitiveBackgroundColor:    tcell.ColorWhite,
+			ContrastBackgroundColor:     tcell.ColorWhite,
+			MoreContrastBackgroundColor: tcell.ColorWhite,
+			BorderColor:                 tcell.ColorBlack,
+			TitleColor:                  tcell.ColorBlack,
+			GraphicsColor:               tcell.ColorBlack,
+			PrimaryTextColor:            tcell.ColorBlack,
+			SecondaryTextColor:          tcell.ColorBlack,
+			TertiaryTextColor:           tcell.ColorBlack,
+			InverseTextColor:            tcell.ColorWhite,
+			ContrastSecondaryTextColor:  tcell.ColorBlack,
+		}
+	}
 	a.app = tview.NewApplication()
 	a.runApp(path)
 }
