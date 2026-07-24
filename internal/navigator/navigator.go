@@ -6,6 +6,7 @@ Copyright (c) 2024, deadc0de6
 package navigator
 
 import (
+	"os"
 	"path/filepath"
 
 	"github.com/deadc0de6/gocatcli/internal/helpers"
@@ -138,7 +139,7 @@ func (a *Navigator) createList() {
 	// current working directory
 	a.textarea = tview.NewTextView()
 	a.textarea.SetText(a.path)
-	a.textarea.SetTextColor(tcell.ColorDefault)
+	a.textarea.SetTextColor(tcell.ColorSlateGray)
 
 	// create layout
 	content := tview.NewGrid()
@@ -294,18 +295,22 @@ func (a *Navigator) goBack() {
 // Start start the navigator
 func (a *Navigator) Start(path string) {
 	a.path = path
-	tview.Styles = tview.Theme{
-		PrimitiveBackgroundColor:    tcell.ColorDefault,
-		ContrastBackgroundColor:     tcell.ColorDefault,
-		MoreContrastBackgroundColor: tcell.ColorDefault,
-		BorderColor:                 tcell.ColorDefault,
-		TitleColor:                  tcell.ColorDefault,
-		GraphicsColor:               tcell.ColorDefault,
-		PrimaryTextColor:            tcell.ColorDefault,
-		SecondaryTextColor:          tcell.ColorDefault,
-		TertiaryTextColor:           tcell.ColorDefault,
-		InverseTextColor:            tcell.ColorDefault,
-		ContrastSecondaryTextColor:  tcell.ColorDefault,
+
+	// If NO_COLOR is set, invert to black on white for navigator only
+	if os.Getenv("NO_COLOR") != "" {
+		tview.Styles = tview.Theme{
+			PrimitiveBackgroundColor:    tcell.ColorWhite,
+			ContrastBackgroundColor:     tcell.ColorWhite,
+			MoreContrastBackgroundColor: tcell.ColorWhite,
+			BorderColor:                 tcell.ColorBlack,
+			TitleColor:                  tcell.ColorBlack,
+			GraphicsColor:               tcell.ColorBlack,
+			PrimaryTextColor:            tcell.ColorBlack,
+			SecondaryTextColor:          tcell.ColorBlack,
+			TertiaryTextColor:           tcell.ColorBlack,
+			InverseTextColor:            tcell.ColorWhite,
+			ContrastSecondaryTextColor:  tcell.ColorBlack,
+		}
 	}
 	a.app = tview.NewApplication()
 	a.runApp(path)
