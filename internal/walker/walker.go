@@ -107,6 +107,13 @@ func (w *Walker) walk(storageID int, walkPath string, storagePath string, parent
 				return filepath.SkipDir
 			}
 
+			// do not open non regular files (fifo, socket, device, symlink...)
+			// since opening them may block (e.g. fifo)
+			if !info.Mode().IsRegular() {
+				log.Debugf("skipping non regular file \"%s\"", pathUnderRoot)
+				return nil
+			}
+
 			// handle mime type
 			if !w.noMime {
 				child.Mime = getMime(pathUnderRoot)
