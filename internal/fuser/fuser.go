@@ -63,10 +63,10 @@ func Mount(theTree *tree.Tree, mountpoint string, debug bool) error {
 		}
 	}()
 
-	// handle SIGINT/SIGTERM: unmount so fs.Serve returns
+	// handle SIGINT/SIGTERM/SIGHUP: unmount so fs.Serve returns
 	// and the deferred close is executed (leaves no stale mount)
 	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer signal.Stop(sig)
 	go func() {
 		<-sig
@@ -75,6 +75,7 @@ func Mount(theTree *tree.Tree, mountpoint string, debug bool) error {
 		if err != nil {
 			log.Errorf("could not unmount %s: %s", mountpoint, err)
 			// unmount failed (mount busy?): force exit on next signal
+			log.Info("press ctrl-c again to force exit")
 			<-sig
 			os.Exit(1)
 		}
