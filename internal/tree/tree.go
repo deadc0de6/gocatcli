@@ -35,6 +35,10 @@ type ProcessCallback func(current node.Node, depth int, parent node.Node) bool
 
 func matchPath(current node.Node, path string) bool {
 	name := current.GetName()
+	if name == path {
+		// literal match, handles names with glob metacharacters ([, ], *, ?)
+		return true
+	}
 	matched, err := filepath.Match(path, name)
 	if !matched || err != nil {
 		return false
